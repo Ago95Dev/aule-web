@@ -1,4 +1,4 @@
-package org.univaq.swa.template.exceptions;
+package org.univaq.swa.exceptions;
 
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;

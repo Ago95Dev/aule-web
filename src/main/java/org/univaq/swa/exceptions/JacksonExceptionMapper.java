@@ -1,4 +1,4 @@
-package org.univaq.swa.template.exceptions;
+package org.univaq.swa.exceptions;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import jakarta.ws.rs.core.Response;

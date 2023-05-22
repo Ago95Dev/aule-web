@@ -1,4 +1,4 @@
-package org.univaq.swa.template.base;
+package org.univaq.swa.base;
 
 import com.fasterxml.jackson.jakarta.rs.json.JacksonJsonProvider;
 import java.util.Collections;
@@ -7,12 +7,13 @@ import java.util.Set;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
 import org.univaq.swa.framework.jackson.ObjectMapperContextResolver;
-import org.univaq.swa.template.exceptions.AppExceptionMapper;
+import org.univaq.swa.exceptions.AppExceptionMapper;
 import org.univaq.swa.framework.security.CORSFilter;
-import org.univaq.swa.template.resources.SimpleRes;
+import org.univaq.swa.resources.SimpleRes;
 import org.univaq.swa.framework.security.AuthenticationRes;
 import org.univaq.swa.framework.security.AuthLoggedFilter;
-import org.univaq.swa.template.exceptions.JacksonExceptionMapper;
+import org.univaq.swa.exceptions.JacksonExceptionMapper;
+import org.univaq.swa.resources.Home;
 
 /**
  *
@@ -28,6 +29,7 @@ public class RESTApp extends Application {
         //aggiungiamo tutte le *root resurces* (cioè quelle
         //con l'annotazione Path) che vogliamo pubblicare
         c.add(SimpleRes.class);
+        c.add(Home.class);
         c.add(AuthenticationRes.class);
 
         //aggiungiamo il provider Jackson per poter
