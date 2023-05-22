@@ -1,0 +1,61 @@
+body {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 10pt;
+}
+
+.rest-test-ok {
+    color: green;
+}
+.rest-test-ok:before {
+    content: '\2705';
+}
+.rest-test-error {
+    color: red;
+}
+.rest-test-error:before {
+    content: '\274c';
+}
+.rest-test-wait:before {
+    content: '\231b';
+}
+
+*[data-rest-test-auth]:after {
+    content: '\1f512';
+}
+
+.rest-test-message-ok,.rest-test-message-error  {
+    display: none;
+}
+.rest-test-error-all .rest-test-message-error {
+    display: block;
+}
+.rest-test-ok-all .rest-test-message-ok {
+    display: block;
+}
+
+table.restest {
+    border: 2px solid black;
+    border-collapse: collapse;  
+    width: 100%;
+    padding:0;
+}
+
+table.restest td {
+    border: 1px solid gray;
+    padding:1px;
+}
+
+table.restest td.output {
+    font-size: 70%;
+}
+
+table.restest tbody tr:nth-child(odd) {
+    background-color: azure;
+}
+
+table.restest thead tr {
+    background-color: cadetblue;
+    color: white;
+    font-weight: bold;
+    border: 2px solid black;
+}

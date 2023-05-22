@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>JAX-RS Template application (JakartaEE 10)</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="res/restest.css"/>
+    </head>
+    <body>
+        <h1>JAX-RS Template application (JakartaEE 10)</h1>
+        <p>This is a template web application based on <strong>JakartaEE 10</strong> that runs on Apache <strong>Tomcat 10.1</strong> with <strong>Java 14</strong> or above.</p>
+        <p> The application is configured to expose RESTful resources through the <strong>JAX-RS</strong> reference implementation, <strong>Jersey</strong> (version 3, for Jakarta EE).</p>
+        <p> JAX-RS JSON serialization is handled by the <strong>Jackson</strong> JSON Provider (version 2, for Jakarta EE).</p>
+
+        <p>The application also shows:</p>
+        <ul>
+            <li>how to <strong>perform the basic JAX-RS environment setup</strong> (class <em>org.univaq.swa.template.base.RESTApp</em>)</li>
+            <li>how to implement a simple <strong>resource class</strong> (class <em>org.univaq.swa.template.resources.SimpleRes</em>)</li>
+            <li>how to implement a simple <strong>WebApplicationException</strong> (class <em>org.univaq.swa.template.exceptions.RESTWebApplicationException</em>)</li>                        
+            <li>how to implement a custom <strong>exception mapper</strong> (classes <em>org.univaq.swa.template.exceptions.AppExceptionMapper</em> and <em>org.univaq.swa.template.exceptions.JacksonExceptionMapper</em>)</li>
+            <li>how to implement <strong>Jackson custom serializers and deserializers</strong> for Java classes (package <em>org.univaq.swa.framework.jackson</em>).</li>
+            <li>how to implement a <strong>filter to handle CORS preflight requests</strong> (class <em>org.univaq.swa.framework.security.CORSFilter</em>)</li>
+            <li>how to declare a <strong>JAX-RS authentication annotation</strong> (class <em>org.univaq.swa.framework.security.Logged</em>)</li>
+            <li>how to implement a simple <strong>login resource class</strong> to issue an access token (class <em>org.univaq.swa.framework.security.AuthenticationRes</em>)</li>
+            <li>how to implement a <strong>filter to handle JAX-RS authentication annotations</strong> (class <em>org.univaq.swa.framework.security.AuthLoggedFilter</em>)</li>
+        </ul>
+
+        <p>The RESTful resources, grouped under the /rest prefix, are the following:</p>
+
+        <table class="restest" width="100%">
+            <thead>
+                <tr>
+                    <th>Path</th>
+                    <th>Method</th>
+                    <th>Parameters</th>
+                    <th>Payload</th>
+                    <th>Authentication</th>
+                    <th>URL to Try</th>
+                    <th>(Expected) Result</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td rowspan="2">/simple</td>
+                    <td>GET</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><a data-rest-test data-rest-test-target href="rest/simple"><small>GET rest/simple</small></a></td>
+                    <td  class="output">a list of greetings</td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td></td>
+                    <td>any string</td>
+                    <td></td>
+                    <td><span data-rest-test-target data-rest-test-method="post" data-rest-test-payoad="testtest"  data-rest-test-status="201" data-rest-test-url="rest/simple"></span></td>
+                    <td class="output">the URL to item 1000</td>
+                </tr>
+                <tr>
+                    <td rowspan="2">/simple/{item}</td>
+                    <td rowspan="2">GET</td>
+                    <td rowspan="2">item: [0-9]+</td>
+                    <td rowspan="2"></td>
+                    <td rowspan="2"></td>
+                    <td><a data-rest-test data-rest-test-target href="rest/simple/14000"><small>GET rest/simple/14000</small></a></td>
+                    <td class="output" >200 with the item</td>
+                </tr>
+                <tr>
+                    <td><a data-rest-test data-rest-test-status="404" data-rest-test-target href="rest/simple/14"><small>GET rest/simple/14</small></a></td>
+                    <td  class="output">404</td>
+                </tr>            
+            </tbody>
+        </table>
+
+        <h2>Authentication</h2>
+        <p>To test the login/logout resource <em>(AuthenticationRes)</em>, use the login form below. <strong>Links marked with &#x1f512; on this page call
+                restful endpoints requiring a bearer token and can be clicked only after a successful login.</strong></p>
+
+        <table class="restest" width="100%">
+            <thead>
+                <tr>
+                    <th>Path</th>
+                    <th>Method</th>
+                    <th>Parameters</th>
+                    <th>Payload</th>
+                    <th>Authentication</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td ><span data-rest-test-token  data-rest-test-url="rest/auth/login" data-rest-test-method="post" data-rest-test-status="200"
+                               data-rest-test-content-type="application/x-www-form-urlencoded" data-rest-test-payload="username=u&password=p">/auth/login</span></td>
+                    <td>POST</td>
+                    <td></td>
+                    <td>form-encoded username and password</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td ><span data-rest-test-auth="1000"  data-rest-test-url="rest/auth/logout" data-rest-test-method="delete" data-rest-test-status="204">/auth/logout</span></td>
+                    <td>DELETE</td>
+                    <td></td>
+                    <td></td>
+                    <td>Bearer token</td>
+                </tr>
+                <tr>
+                    <td ><span data-rest-test-auth  data-rest-test-url="rest/auth/refresh" data-rest-test-method="get" data-rest-test-status="200">/auth/refresh</span></td>
+                    <td>GET</td>
+                    <td></td>
+                    <td></td>
+                    <td>Bearer token</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="5">                        
+                        <form method="post" action="rest/auth/login" enctype="application/x-www-form-urlencoded">
+                            <p>Username: <input style="width:30%" type="text" value="u" id="username-field" name="username-field"/> 
+                                Password: <input style="width:30%" type="password" value="p" id="password-field" name="password-field"/>
+                                <input type="submit" value="login" name="login-button" id="login-button"/>
+                                <input type="submit" value="logout" name="logout-button" id="logout-button"/></p>      
+                        </form>
+                        <form method="post" action="rest/auth/login" enctype="application/x-www-form-urlencoded">
+                            <p>Token: <input style="width:80%" type="text" id="token-field" name="token-field"/> <input type="submit" value="refresh" name="refresh-button" id="refresh-button"/></p>
+                        </form>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div style="border: 1px solid gray; margin: 1em auto; padding: 1em">
+            <p>
+                <em>Note that this project includes a Javascript library that automatically checks the above endpoints when this webpage is opened. This library
+                    is not part of the JAX-RS framework and it is not required to implement RESTful resources, and has been developed only as an aid for the
+                    sample resources included in this project.</em>
+            </p>
+            <p>
+                <span class="rest-test-message-error" style="color: red">
+                    Some tested endpoints did not return the expected result
+
+                </span>
+                <span class="rest-test-message-ok" style="color: green">
+                    All tested endpoints returned the correct result
+                </span>
+            </p>
+        </div>
+
+
+
+
+        <script src="res/restest.js">/* */</script>
+        <script>
+            let tester = new Restest();
+        </script>
+    </body>
+</html>
