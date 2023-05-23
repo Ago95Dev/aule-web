@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS `group`(
 CREATE TABLE IF NOT EXISTS `event_cordinator`(
 	`id` int NOT NULL AUTO_INCREMENT,
 	`email` varchar(255) NOT NULL,
+	UNIQUE KEY `email_event_coordinator_UNIQUE` (`email`),
 	PRIMARY KEY(`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -40,6 +41,7 @@ CREATE TABLE IF NOT EXISTS `event_cordinator`(
 CREATE TABLE IF NOT EXISTS `course`(
 	`id` int NOT NULL AUTO_INCREMENT,
 	`name` varchar(255) NOT NULL,
+	UNIQUE KEY `name_course_UNIQUE` (`name`),
 	PRIMARY KEY(`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -83,7 +85,7 @@ CREATE TABLE IF NOT EXISTS `event`(
     `description` varchar(255),
 	`type` enum('LEZIONE','SEMINARIO','PARZIALE','RIUNIONE','LAUREE','ALTRO') NOT NULL,
 	`event_cordinator_id` int NOT NULL,
-	`course_id` int NOT NULL,
+	`course_id` int,
 	PRIMARY KEY(`id`),
     CONSTRAINT fk_event_cordinator FOREIGN KEY (event_cordinator_id)
     REFERENCES `event_cordinator`(id),
@@ -127,15 +129,15 @@ CREATE TABLE `group_has_classroom`  (
 CREATE TABLE `event_has_recurrent`  (
   `id` int NOT NULL AUTO_INCREMENT,
   `recurrent_id` int NOT NULL,
-  `classroom_id` int NOT NULL,
+  `event_id` int NOT NULL,
   PRIMARY KEY (`id`),
   INDEX par_ind (recurrent_id),  
   CONSTRAINT fk_recurrent FOREIGN KEY (recurrent_id)  
   REFERENCES `recurrent`(id)
   ON DELETE CASCADE  
   ON UPDATE CASCADE ,
-  CONSTRAINT fk_classroom_recurrent FOREIGN KEY (classroom_id)
-  REFERENCES classroom(id)
+  CONSTRAINT fk_event_recurrent FOREIGN KEY (event_id)
+  REFERENCES `event`(id)
   ON DELETE CASCADE  
   ON UPDATE CASCADE  
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
