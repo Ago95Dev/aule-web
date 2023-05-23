@@ -1,4 +1,4 @@
-U-- Database creation
+-- Database creation
 DROP DATABASE IF EXISTS aule_web;
 CREATE DATABASE IF NOT EXISTS aule_web;
 USE aule_web;
@@ -6,8 +6,9 @@ USE aule_web;
 -- Create Position Table
 CREATE TABLE IF NOT EXISTS `user`(
 	`id` int NOT NULL AUTO_INCREMENT,
-	`username` varchar(255) NOT NULL,
+	`email` varchar(255) NOT NULL,
     `password` varchar(255) NOT NULL,
+    `token` varchar(255),
 	PRIMARY KEY(`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -147,3 +148,4 @@ INSERT INTO `aule_web`.`equipment`(`name`) VALUES("PC Fisso");
 INSERT INTO `aule_web`.`equipment`(`name`) VALUES("Microfono Cablato");
 INSERT INTO `aule_web`.`equipment`(`name`) VALUES("Microfono Wireless");
 INSERT INTO `aule_web`.`equipment`(`name`) VALUES("WIFI");
+
