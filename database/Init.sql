@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS `user`(
     `password` varchar(255) NOT NULL,
     `token` varchar(255),
 	PRIMARY KEY(`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Create Position Table
 CREATE TABLE IF NOT EXISTS `position`(
@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS `position`(
     `building` varchar(255) NOT NULL,
     `floor` varchar(255) NOT NULL,
 	PRIMARY KEY(`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Create Group Table
 CREATE TABLE IF NOT EXISTS `group`(
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS `group`(
 	`name` varchar(255) NOT NULL,
 	`description` varchar(255) NOT NULL,
 	PRIMARY KEY(`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Create Event Coordinator Group Table
 CREATE TABLE IF NOT EXISTS `event_cordinator`(
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `event_cordinator`(
 	`email` varchar(255) NOT NULL,
 	UNIQUE KEY `email_event_coordinator_UNIQUE` (`email`),
 	PRIMARY KEY(`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Create Course Coordinator Group Table
 CREATE TABLE IF NOT EXISTS `course`(
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `course`(
 	`name` varchar(255) NOT NULL,
 	UNIQUE KEY `name_course_UNIQUE` (`name`),
 	PRIMARY KEY(`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Create Classroom Table
 CREATE TABLE IF NOT EXISTS `classroom`(
@@ -58,14 +58,14 @@ CREATE TABLE IF NOT EXISTS `classroom`(
 	PRIMARY KEY(`id`),
     CONSTRAINT fk_position FOREIGN KEY (position_id)
     REFERENCES `position`(id)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Create Equipment Table
 CREATE TABLE IF NOT EXISTS `equipment`(
 	`id` int NOT NULL AUTO_INCREMENT,
 	`name` varchar(255) NOT NULL,
 	PRIMARY KEY(`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Create Recurrent Table 
 CREATE TABLE IF NOT EXISTS `recurrent`(
@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS `event`(
     REFERENCES `event_cordinator`(id),
 	CONSTRAINT fk_course FOREIGN KEY (course_id)
     REFERENCES `course`(id)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Create Classroom - Equipment Table
 CREATE TABLE `classroom_has_equipment`  (
@@ -106,7 +106,7 @@ CREATE TABLE `classroom_has_equipment`  (
   REFERENCES equipment(id)  
   ON DELETE CASCADE  
   ON UPDATE CASCADE  
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Create Group - Classroom Pivot Table
 CREATE TABLE `group_has_classroom`  (
@@ -123,7 +123,7 @@ CREATE TABLE `group_has_classroom`  (
   REFERENCES classroom(id)
   ON DELETE CASCADE  
   ON UPDATE CASCADE  
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Create Group - Classroom Pivot Table
 CREATE TABLE `event_has_recurrent`  (
@@ -140,7 +140,7 @@ CREATE TABLE `event_has_recurrent`  (
   REFERENCES `event`(id)
   ON DELETE CASCADE  
   ON UPDATE CASCADE  
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO `aule_web`.`equipment`(`name`) VALUES("Proiettore");
 INSERT INTO `aule_web`.`equipment`(`name`) VALUES("Schermo Motorizzato");
@@ -150,4 +150,5 @@ INSERT INTO `aule_web`.`equipment`(`name`) VALUES("PC Fisso");
 INSERT INTO `aule_web`.`equipment`(`name`) VALUES("Microfono Cablato");
 INSERT INTO `aule_web`.`equipment`(`name`) VALUES("Microfono Wireless");
 INSERT INTO `aule_web`.`equipment`(`name`) VALUES("WIFI");
+INSERT INTO `user` (`id`, `email`, `password`) VALUES (1, 'admin@gmail.com', 'password'); 
 
