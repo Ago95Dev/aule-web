@@ -11,6 +11,7 @@ import org.univaq.swa.exceptions.AppExceptionMapper;
 import org.univaq.swa.framework.security.CORSFilter;
 import org.univaq.swa.resources.SimpleRes;
 import org.univaq.swa.framework.security.AuthLoggedFilter;
+import org.univaq.swa.framework.security.AuthenticationRes;
 import org.univaq.swa.exceptions.JacksonExceptionMapper;
 import org.univaq.swa.resources.Home;
 
@@ -29,6 +30,7 @@ public class RESTApp extends Application {
         //con l'annotazione Path) che vogliamo pubblicare
         c.add(SimpleRes.class);
         c.add(Home.class);
+        c.add(AuthenticationRes.class);
         //c.add(AuthenticationRes.class);
 
         //aggiungiamo il provider Jackson per poter

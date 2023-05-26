@@ -88,6 +88,48 @@
                 </tr>
             </thead>
             <tbody>
+                <!--codice per test login-->
+                <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="z-index: 100; position: sticky; top: 0">
+                    <a class="navbar-brand" href="#">Aule Web</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <div class="navbar-nav mr-auto"></div>
+                        <div class="login-form" id="login">
+                            <div class="dropdown">
+                                <div class="nav-square-accedi">
+                                    <a class="bt-navbar-accedi" id="login-btn">Accedi</a>
+                                </div>
+                                <div class="dropdown-menu" id="login-form" style="margin-right: 3rem">
+                                    <div class="form-group" style="width: 100%; padding: 0">
+                                        <label for="username">Username</label>
+                                        <input class="" type="text" placeholder="Username" id="username" name="username"
+                                               style="width: 100%">
+                                        <label for="password" style="margin-top: 1rem">Password</label>
+                                        <input class="" type="password" placeholder="Password" id="password" name="password"
+                                               style="width: 100%">
+                                        <div style="text-align: center">
+                                            <button class="btn btn-success" id="login-send" style="margin-top: 1rem">Login</button>
+                                        </div>
+                                    </div>
+                
+                                </div>
+                            </div>
+                        </div>
+                        <div class="login-form" id="logout" style="display: none">
+                            <div class="nav-square-accedi">
+                                <a class="bt-navbar-accedi" id="logout-send">Logout</a>
+                            </div>
+                        </div>
+                        <div class="nav-square hidden aligned">
+                            <a class="bt-navbar-registrati hidden">Logout</a>
+                        </div>
+                    </div>
+                </nav>
+                 <!--fine aggiunta codice-->
                 <tr>
                     <td ><span data-rest-test-token  data-rest-test-url="rest/auth/login" data-rest-test-method="post" data-rest-test-status="200"
                                data-rest-test-content-type="application/x-www-form-urlencoded" data-rest-test-payload="username=u&password=p">/auth/login</span></td>
