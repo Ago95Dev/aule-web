@@ -4,16 +4,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.FormParam;
-import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
-import static jakarta.ws.rs.core.Response.Status.UNAUTHORIZED;
 
 import java.sql.*;
 import java.util.UUID;
@@ -22,16 +19,13 @@ import java.util.logging.Logger;
 import org.univaq.swa.exceptions.CustomException;
 
 import jakarta.ws.rs.core.UriInfo;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.Executor;
 
 /**
  * @author Ago95Dev
  */
 
 @Path("auth")
-public class AuthenticationRes extends DBConnection {   
+public class AuthenticationRes {   
     private static Connection con ;
     public AuthenticationRes() throws SQLException, CustomException {
         con = DBConnection.getConnection();
