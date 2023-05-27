@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -73,8 +74,8 @@ public class ClassroomResource {
                             @Context SecurityContext securityContext) {
         String addClassQuery = "INSERT INTO classroom (name, position_id, capacity, email, number_socket, number_ethernet, note) VALUES (?, ?, ?, ?, ?, ?, ?);";
         String addEquipment = "INSERT INTO classroom_has_equipment(classroom_id,equipment_id) VALUES(?,?);";
-                System.out.println("Qui");
         Classroom classroom = new Classroom();
+        
         try{
             classroom =new ObjectMapper().readValue(json, Classroom.class);
         } catch(JsonProcessingException e){
@@ -104,6 +105,64 @@ public class ClassroomResource {
                 }
             URI uri = uriinfo.getBaseUriBuilder().path("classroom/" + id_classroom ).build();
             return Response.created(uri).build();
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            Logger.getLogger(ClassroomResource.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    @PUT
+    @Logged
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/updateClassroom/{classroom_id}")
+    public Response updateClassroom(@Context UriInfo uriinfo,
+                            //un altro modo per ricevere e iniettare i parametri con JAX-RS...
+                            @PathParam("classroom_id") Integer classroom_id,
+                            String json,
+                            @Context SecurityContext securityContext) {
+        String updateClassQuery = "UPDATE classroom SET name = ?, position_id = ?, capacity = ?, email = ?, number_socket =?, number_ethernet = ? , note =? WHERE id = ?;";
+        String addEquipment = "INSERT INTO classroom_has_equipment(classroom_id,equipment_id) VALUES(?,?);";
+        String cleanEquipment = "DELETE FROM classroom_has_equipment WHERE classroom_id = ?;";
+        System.out.println("Qui modifica");
+        Classroom classroom = new Classroom();
+        
+        try{
+            classroom =new ObjectMapper().readValue(json, Classroom.class);
+        } catch(JsonProcessingException e){
+            e.printStackTrace();
+        } 
+
+        try(PreparedStatement ps = con.prepareStatement(updateClassQuery)){
+            ps.setString(1, classroom.getName() );
+            ps.setInt(2, classroom.getPositionID());
+            ps.setInt(3, classroom.getCapacity());
+            ps.setString(4, classroom.getEmail());
+            ps.setInt(5, classroom.getNumberOfSockets());
+            ps.setInt(6, classroom.getNumberOfEthernet());
+            ps.setString(7, classroom.getNote());
+            ps.setInt(8,classroom_id);
+            ps.executeUpdate();
+
+            try {
+                PreparedStatement ps2 = con.prepareStatement(cleanEquipment);
+                ps2.setInt(1, classroom_id);
+                ps2.execute();
+                        
+                for(Integer equipmentId : classroom.getEquipmentsId()){
+                    try (PreparedStatement ps3 = con.prepareStatement(addEquipment)) {
+                        ps3.setInt(1, classroom_id);
+                        ps3.setInt(2, equipmentId);
+                        ps3.executeUpdate();
+                    }
+                }
+            URI uri = uriinfo.getBaseUriBuilder().path("classroom/" + classroom_id ).build();
+            return Response.created(uri).build();
+            }catch (SQLException ex) {
+                ex.printStackTrace();
+                Logger.getLogger(ClassroomResource.class.getName()).log(Level.SEVERE, null, ex);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
