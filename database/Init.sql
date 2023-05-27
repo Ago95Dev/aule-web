@@ -150,5 +150,19 @@ INSERT INTO `aule_web`.`equipment`(`name`) VALUES("PC Fisso");
 INSERT INTO `aule_web`.`equipment`(`name`) VALUES("Microfono Cablato");
 INSERT INTO `aule_web`.`equipment`(`name`) VALUES("Microfono Wireless");
 INSERT INTO `aule_web`.`equipment`(`name`) VALUES("WIFI");
-INSERT INTO `user` (`id`, `email`, `password`) VALUES (1, 'admin@gmail.com', 'password'); 
 
+INSERT INTO `user` ( `email`, `password`) VALUES ( 'admin@gmail.com', 'password');
+INSERT INTO `user` (`email`, `password`) VALUES ( 'gianluca@email.com', 'password');  
+
+INSERT INTO `position`(`location`,`building`,`floor`) VALUES('Coppito','0','0'); 
+INSERT INTO `position`(`location`,`building`,`floor`) VALUES('Coppito','0','1'); 
+INSERT INTO `position`(`location`,`building`,`floor`) VALUES('Coppito','0','2'); 
+INSERT INTO `position`(`location`,`building`,`floor`) VALUES('Coppito','1','0'); 
+INSERT INTO `position`(`location`,`building`,`floor`) VALUES('Coppito','1','1'); 
+INSERT INTO `position`(`location`,`building`,`floor`) VALUES('Coppito','1','2'); 
+INSERT INTO `position`(`location`,`building`,`floor`) VALUES('Coppito','2','0'); 
+INSERT INTO `position`(`location`,`building`,`floor`) VALUES('Coppito','2','1'); 
+INSERT INTO `position`(`location`,`building`,`floor`) VALUES('Roio','A','2'); 
+INSERT INTO `position`(`location`,`building`,`floor`) VALUES('Roio','A','1'); 
+INSERT INTO `position`(`location`,`building`,`floor`) VALUES('Roio','B','0'); 
+INSERT INTO `position`(`location`,`building`,`floor`) VALUES('Roio','B','1'); 

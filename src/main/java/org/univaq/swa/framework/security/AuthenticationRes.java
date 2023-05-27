@@ -22,6 +22,9 @@ import java.util.logging.Logger;
 import org.univaq.swa.exceptions.CustomException;
 
 import jakarta.ws.rs.core.UriInfo;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.Executor;
 
 /**
  * @author Ago95Dev
@@ -29,14 +32,9 @@ import jakarta.ws.rs.core.UriInfo;
 
 @Path("auth")
 public class AuthenticationRes extends DBConnection {   
-    private static Connection con;
+    private static Connection con ;
     public AuthenticationRes() throws SQLException, CustomException {
-        try {
-            con = DriverManager.getConnection(CONNECTION_STRING, DB_USER, DB_PASSWORD);
-        }
-         catch (SQLException e) {
-            throw new CustomException("Errore di connessione");
-              }
+        con = DBConnection.getConnection();
     }
     
     @POST
@@ -44,13 +42,13 @@ public class AuthenticationRes extends DBConnection {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response doLogin(@Context UriInfo uriinfo,
                             //un altro modo per ricevere e iniettare i parametri con JAX-RS...
-                            @FormParam("username") String username,
+                            @FormParam("email") String email,
                             @FormParam("password") String password) {
         try {
-            int utente_id = authenticate(username, password);
+            int utente_id = authenticate(email, password);
+            System.out.println(utente_id);
             if (utente_id > 0) {
-
-                String authToken = issueToken(uriinfo, username);
+                String authToken = issueToken(uriinfo, email);
                 try (PreparedStatement stmt = con.prepareStatement("UPDATE user SET token = ? WHERE id = ?")) {
                     stmt.setString(1, authToken);
                     stmt.setInt(2, utente_id);
@@ -83,20 +81,23 @@ public class AuthenticationRes extends DBConnection {
         }
     }
 
-    private int authenticate(String username, String password) {
-        try (PreparedStatement stmt = con.prepareStatement("SELECT id FROM user WHERE username = ? AND password = ?")) {
-            stmt.setString(1, username);
-            stmt.setString(2, Encryption.encryptPassword(password));
+    private int authenticate(String email, String password) {
+        try (PreparedStatement stmt = con.prepareStatement("SELECT id FROM user WHERE email = ? AND password = ?;")) {
+            stmt.setString(1, email);
+            
+          //  stmt.setString(2, Encryption.encryptPassword(password));
+            stmt.setString(2,password);
             try (ResultSet rs = stmt.executeQuery()) {
                 rs.next();
                 return rs.getInt(1);
             }
         } catch (SQLException e) {
-            return 0;
+             e.printStackTrace();
         }
+        return 0;
     }
 
-    private String issueToken(UriInfo context, String username) {
+    private String issueToken(UriInfo context, String email) {
         /* registrare il token e associarlo all'utenza */
         return UUID.randomUUID().toString();
     }
