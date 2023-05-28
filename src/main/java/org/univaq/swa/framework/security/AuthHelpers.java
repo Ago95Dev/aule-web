@@ -22,7 +22,7 @@ public class AuthHelpers {
     }
 
     public int authenticate(String email, String password) {
-        /*try (PreparedStatement stmt = con.prepareStatement("SELECT id FROM user WHERE email = ? AND password = ?;")) {
+        try (PreparedStatement stmt = con.prepareStatement("SELECT id FROM user WHERE email = ? AND password = ?;")) {
             stmt.setString(1, email);
             
           //  stmt.setString(2, Encryption.encryptPassword(password));
@@ -33,7 +33,7 @@ public class AuthHelpers {
             }
         } catch (SQLException e) {
              e.printStackTrace();
-        } */
+        } 
         return 0;
     }
 
