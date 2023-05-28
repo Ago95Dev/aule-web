@@ -4,8 +4,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.FormParam;
+import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
@@ -49,7 +51,7 @@ public class AuthenticationRes {
                     stmt.executeUpdate();
                 }
                 return Response.ok(authToken)
-                        .cookie(new NewCookie("token", authToken))
+                        .cookie(new NewCookie.Builder("token").value(authToken).build())
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + authToken).build();
             } else {
                 return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -73,6 +75,19 @@ public class AuthenticationRes {
         } catch (Exception e) {
             return Response.serverError().build();
         }
+    }
+
+    @GET
+    @Path("refresh")
+    @Logged
+    public Response refresh(@Context ContainerRequestContext req, @Context UriInfo uriinfo) {
+        //proprietà iniettata nella request dal filtro di autenticazione
+        String email = (String) req.getProperty("email-field");
+        String newtoken = issueToken(uriinfo, email);
+        return Response.ok(newtoken)
+                .cookie(new NewCookie.Builder("token").value(newtoken).build())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + newtoken).build();
+        
     }
 
     private int authenticate(String email, String password) {
