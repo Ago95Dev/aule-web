@@ -166,3 +166,29 @@ INSERT INTO `position`(`location`,`building`,`floor`) VALUES('Roio','A','2');
 INSERT INTO `position`(`location`,`building`,`floor`) VALUES('Roio','A','1'); 
 INSERT INTO `position`(`location`,`building`,`floor`) VALUES('Roio','B','0'); 
 INSERT INTO `position`(`location`,`building`,`floor`) VALUES('Roio','B','1'); 
+
+INSERT INTO `aule_web`.`classroom`(`name`,`position_id`,`capacity`,`email`,`number_socket`,`number_ethernet`,`note`) VALUES("A 0.1",1,40,"segreteria@email.com",6,2,"");
+INSERT INTO `aule_web`.`classroom`(`name`,`position_id`,`capacity`,`email`,`number_socket`,`number_ethernet`,`note`) VALUES("A 0.2",1,50,"segreteria@email.com",6,2,"");
+INSERT INTO `aule_web`.`classroom`(`name`,`position_id`,`capacity`,`email`,`number_socket`,`number_ethernet`,`note`) VALUES("A 1.3",2,60,"segreteria@email.com",10,2,"Una piccola descrizione");
+
+INSERT INTO `aule_web`.`group`(`name`,`description`)VALUES("DICEA","Dipartimento di Ingegneria civile, edile - architettura e ambientale");
+INSERT INTO `aule_web`.`group`(`name`,`description`)VALUES("DISIM","Dipartimento di Ingegneria e scienze dell'informazione e matematica");
+INSERT INTO `aule_web`.`group`(`name`,`description`)VALUES("DIIIE","Dipartimento di Ingegneria industriale e dell'informazione e di economia");
+INSERT INTO `aule_web`.`group`(`name`,`description`)VALUES("MESVA","Dipartimento di Medicina clinica, sanità pubblica, scienze della vita e dell'ambiente");
+INSERT INTO `aule_web`.`group`(`name`,`description`)VALUES("DISCAB","Dipartimento di Scienze cliniche applicate e biotecnologiche");
+INSERT INTO `aule_web`.`group`(`name`,`description`)VALUES("DSFC","Dipartimento di Scienze fisiche e chimiche");
+INSERT INTO `aule_web`.`group`(`name`,`description`)VALUES("DSU","Dipartimento di Scienze umane");
+
+INSERT INTO `aule_web`.`classroom_has_equipment`(`classroom_id`,`equipment_id`)VALUES(1,1);
+INSERT INTO `aule_web`.`classroom_has_equipment`(`classroom_id`,`equipment_id`)VALUES(1,3);
+INSERT INTO `aule_web`.`classroom_has_equipment`(`classroom_id`,`equipment_id`)VALUES(1,4);
+INSERT INTO `aule_web`.`classroom_has_equipment`(`classroom_id`,`equipment_id`)VALUES(1,5);
+INSERT INTO `aule_web`.`classroom_has_equipment`(`classroom_id`,`equipment_id`)VALUES(2,1);
+INSERT INTO `aule_web`.`classroom_has_equipment`(`classroom_id`,`equipment_id`)VALUES(2,4);
+INSERT INTO `aule_web`.`classroom_has_equipment`(`classroom_id`,`equipment_id`)VALUES(2,5);
+INSERT INTO `aule_web`.`classroom_has_equipment`(`classroom_id`,`equipment_id`)VALUES(3,1);
+INSERT INTO `aule_web`.`classroom_has_equipment`(`classroom_id`,`equipment_id`)VALUES(3,2);
+
+INSERT INTO `aule_web`.`group_has_classroom`(`group_id`,`classroom_id`)VALUES(2,1);
+INSERT INTO `aule_web`.`group_has_classroom`(`group_id`,`classroom_id`)VALUES(2,2);
+INSERT INTO `aule_web`.`group_has_classroom`(`group_id`,`classroom_id`)VALUES(6,3);
