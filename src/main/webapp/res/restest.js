@@ -164,7 +164,7 @@ function Restest(testall = true) {
     /////////////////////
 
     let handleLoginButton = function () {
-        let u = document.getElementById("username-field").value;
+        let u = document.getElementById("email-field").value;
         let p = document.getElementById("password-field").value;
         sendRestRequest(
                 "post", "rest/auth/login",
@@ -176,7 +176,7 @@ function Restest(testall = true) {
                     }
                 },
                 null,
-                "username=" + u + "&password=" + p, "application/x-www-form-urlencoded",
+                "email=" + u + "&password=" + p, "application/x-www-form-urlencoded",
                 null);
 
     };
