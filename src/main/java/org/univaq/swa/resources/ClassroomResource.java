@@ -3,9 +3,9 @@ package org.univaq.swa.resources;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opencsv.CSVReader;
-import com.opencsv.exceptions.CsvValidationException;
+import com.opencsv.CSVWriter;
+import com.opencsv.CSVWriterBuilder;
 import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
@@ -17,12 +17,13 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import jakarta.ws.rs.core.UriInfo;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -30,7 +31,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,6 +43,7 @@ import org.univaq.swa.framework.security.DBConnection;
 import org.univaq.swa.framework.security.Logged;
 import org.univaq.swa.model.Classroom;
 import org.univaq.swa.model.Group;
+import org.univaq.swa.model.Position;
 
 
 
@@ -316,8 +317,8 @@ public class ClassroomResource {
     @Logged
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/csv/addClassCsv")
-    public Response addClassroomCsv(@Context UriInfo uriinfo,
+    @Path("/csv/importCsv")
+    public Response importCsv(@Context UriInfo uriinfo,
                     @FormDataParam("csvInputFile") InputStream fileInputStream,
                     @FormDataParam("csvInputFile") FormDataContentDisposition fileMetaData ,
                     @Context SecurityContext securityContext) {
@@ -329,6 +330,7 @@ public class ClassroomResource {
             CSVReader reader = new CSVReader(new InputStreamReader(fileInputStream, "UTF-8"));
            String[] record = null;
            while((record = reader.readNext()) != null){
+               System.out.println(record[0]);
                 try(PreparedStatement ps1 = con.prepareStatement(selectPositionIDQuery)){
                     ps1.setString(1, record[1] );
                     ps1.setString(2, record[2] );
@@ -358,6 +360,71 @@ public class ClassroomResource {
         } catch (IOException ex) {
             Logger.getLogger(ClassroomResource.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
+            Logger.getLogger(ClassroomResource.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return Response.accepted().build();
+    }
+    
+    
+    @GET
+    @Logged
+    @Produces("text/csv")
+    @Path("/csv/export")
+    public Response exportCsv(@Context UriInfo uriinfo,
+                    @Context SecurityContext securityContext) {
+        
+        String getClassroomQuery = "SELECT * FROM classroom ";
+        String selectPositionIDQuery = "SELECT * FROM position WHERE id = ?";
+        File file = new File("untitled.csv");
+        try{
+            FileWriter outputFile = new FileWriter(file);
+            CSVWriter writer = new CSVWriter(outputFile , ',', CSVWriter.NO_QUOTE_CHARACTER,CSVWriter.DEFAULT_ESCAPE_CHARACTER,CSVWriter.DEFAULT_LINE_END);
+            ArrayList<Classroom> classrooms = new ArrayList<Classroom>();
+            String[] entries = new String[9];
+            try(PreparedStatement ps1 = con.prepareStatement(getClassroomQuery)){
+                    ResultSet rs1 = ps1.executeQuery();
+                    while(rs1.next()){
+                        Classroom tClassroom= new Classroom();
+                        tClassroom.setId(rs1.getInt("id"));
+                        tClassroom.setName(rs1.getString("name"));
+                        tClassroom.setPositionID(rs1.getInt("position_id"));
+                        tClassroom.setCapacity(rs1.getInt("capacity"));
+                        tClassroom.setEmail(rs1.getString("email"));
+                        tClassroom.setNumberOfSockets(rs1.getInt("number_socket"));
+                        tClassroom.setNumberOfEthernet(rs1.getInt("number_ethernet"));
+                        tClassroom.setNote(rs1.getString("note"));
+                        classrooms.add(tClassroom);
+                }                
+            }
+            
+            for(Classroom classroom : classrooms){
+                Position position = new Position();
+                try(PreparedStatement ps2 = con.prepareStatement(selectPositionIDQuery)){
+                    ps2.setInt(1, classroom.getPositionID());
+                    ResultSet rs2 = ps2.executeQuery();
+                    if(rs2.next()){
+                       position.setId(classroom.getPositionID());
+                       position.setBuilding(rs2.getString("building"));
+                       position.setLocation(rs2.getString("location"));
+                       position.setFloor(rs2.getString("floor"));
+                    }                
+                }
+                entries[0] = classroom.getName();
+                entries[1] = position.getLocation();
+                entries[2] = position.getBuilding();
+                entries[3] = position.getFloor();
+                entries[4] = String.valueOf(classroom.getCapacity());
+                entries[5] = classroom.getEmail();
+                entries[6] = String.valueOf(classroom.getNumberOfSockets());
+                entries[7] = String.valueOf(classroom.getNumberOfEthernet());
+                entries[8] = classroom.getNote();
+                writer.writeNext(entries);
+            }
+            writer.close();
+            return Response.ok(file).build();
+        } catch (IOException e){
+            e.printStackTrace();
+        }  catch (SQLException ex) {
             Logger.getLogger(ClassroomResource.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;

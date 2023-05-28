@@ -55,6 +55,7 @@ CREATE TABLE IF NOT EXISTS `classroom`(
     `number_socket` smallint,
     `number_ethernet` smallint,
     `note`varchar(255),
+    UNIQUE KEY `name_classroom_UNIQUE` (`name`),
 	PRIMARY KEY(`id`),
     CONSTRAINT fk_position FOREIGN KEY (position_id)
     REFERENCES `position`(id)
@@ -152,7 +153,8 @@ INSERT INTO `aule_web`.`equipment`(`name`) VALUES("Microfono Wireless");
 INSERT INTO `aule_web`.`equipment`(`name`) VALUES("WIFI");
 
 INSERT INTO `user` ( `email`, `password`) VALUES ( 'admin@gmail.com', 'password');
-INSERT INTO `user` (`email`, `password`) VALUES ( 'gianluca@email.com', 'password');  
+-- WITH TOKEN FOR POSTMAN TESTING
+INSERT INTO `user` (`email`, `password`,`token`) VALUES ( 'gianluca@email.com', 'password','83e31cea-d651-4deb-a90a-8a68be156c73');  
 
 INSERT INTO `position`(`location`,`building`,`floor`) VALUES('Coppito','0','0'); 
 INSERT INTO `position`(`location`,`building`,`floor`) VALUES('Coppito','0','1'); 
