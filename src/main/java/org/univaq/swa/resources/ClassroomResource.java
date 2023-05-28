@@ -2,6 +2,8 @@ package org.univaq.swa.resources;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvValidationException;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.GET;
@@ -15,6 +17,10 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import jakarta.ws.rs.core.UriInfo;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.sql.Array;
 import java.sql.Connection;
@@ -28,6 +34,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+
 import org.univaq.swa.exceptions.CustomException;
 import org.univaq.swa.exceptions.RESTWebApplicationException;
 import org.univaq.swa.framework.security.DBConnection;
@@ -301,6 +310,57 @@ public class ClassroomResource {
             Logger.getLogger(ClassroomResource.class.getName()).log(Level.SEVERE, null, ex);
             throw new RESTWebApplicationException(ex);
         }
+    }
+    
+    @POST
+    @Logged
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/csv/addClassCsv")
+    public Response addClassroomCsv(@Context UriInfo uriinfo,
+                    @FormDataParam("csvInputFile") InputStream fileInputStream,
+                    @FormDataParam("csvInputFile") FormDataContentDisposition fileMetaData ,
+                    @Context SecurityContext securityContext) {
+        
+        String insertClassroomQuery = "INSERT INTO classroom (name, position_id, capacity, email, number_socket, number_ethernet, note) VALUES (?, ?, ?, ?, ?, ?, ?);";
+        String selectPositionIDQuery = "SELECT id FROM position WHERE location = ? AND building = ? AND floor =?;";
+        int position_id = 0;
+        try{   
+            CSVReader reader = new CSVReader(new InputStreamReader(fileInputStream, "UTF-8"));
+           String[] record = null;
+           while((record = reader.readNext()) != null){
+                try(PreparedStatement ps1 = con.prepareStatement(selectPositionIDQuery)){
+                    ps1.setString(1, record[1] );
+                    ps1.setString(2, record[2] );
+                    ps1.setString(3, record[3] );
+                    ResultSet rs2 = ps1.executeQuery();
+                    while(rs2.next()){
+                        position_id = rs2.getInt("id");
+                    }                
+                }
+                try(PreparedStatement ps2 = con.prepareStatement(insertClassroomQuery)){
+                    ps2.setString(1, record[0]);
+                    ps2.setInt(2, position_id);
+                    ps2.setInt(3, Integer.parseInt(record[4]));
+                    ps2.setString(4, record[5]);
+                    ps2.setInt(5, Integer.parseInt(record[6]));
+                    ps2.setInt(6, Integer.parseInt(record[7]));
+                    ps2.setString(7, record[8]);
+                    ps2.executeUpdate();
+                }
+           }
+        } catch (SQLException ex) {
+            Logger.getLogger(ClassroomResource.class.getName()).log(Level.SEVERE, null, ex);
+            throw new RESTWebApplicationException(ex);
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(ClassroomResource.class.getName()).log(Level.SEVERE, null, ex);
+            throw new RESTWebApplicationException(ex);
+        } catch (IOException ex) {
+            Logger.getLogger(ClassroomResource.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(ClassroomResource.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
     
 }

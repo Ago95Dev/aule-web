@@ -32,7 +32,12 @@
             <groupId>org.glassfish.jersey.inject</groupId>
             <artifactId>jersey-hk2</artifactId>
             <version>3.1.1</version>
-        </dependency>            
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-multipart</artifactId>
+            <version>3.1.1</version>
+        </dependency>     
         <!-- per la serializzazione JSON in JAX-RS -->
         <dependency>
             <groupId>com.fasterxml.jackson.jakarta.rs</groupId>
@@ -57,6 +62,13 @@
             <version>8.0.33</version>
             <type>jar</type>
         </dependency>
+        <!-- opencsv -->
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>5.7.1</version>
+        </dependency>
+
     </dependencies>
 
     <build>
