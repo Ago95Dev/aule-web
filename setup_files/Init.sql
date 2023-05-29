@@ -1,196 +1,484 @@
--- Database creation
-DROP DATABASE IF EXISTS aule_web;
-CREATE DATABASE IF NOT EXISTS aule_web;
-USE aule_web;
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: May 29, 2023 at 11:20 AM
+-- Server version: 10.4.28-MariaDB
+-- PHP Version: 8.2.4
 
--- Create Position Table
-CREATE TABLE IF NOT EXISTS `user`(
-	`id` int NOT NULL AUTO_INCREMENT,
-	`email` varchar(255) NOT NULL,
-    `password` varchar(255) NOT NULL,
-    `token` varchar(255),
-	PRIMARY KEY(`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
 
--- Create Position Table
-CREATE TABLE IF NOT EXISTS `position`(
-	`id` int NOT NULL AUTO_INCREMENT,
-	`location` varchar(255) NOT NULL,
-    `building` varchar(255) NOT NULL,
-    `floor` varchar(255) NOT NULL,
-	PRIMARY KEY(`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Create Group Table
-CREATE TABLE IF NOT EXISTS `group`(
-	`id` int NOT NULL AUTO_INCREMENT,
-	`name` varchar(255) NOT NULL,
-	`description` varchar(255) NOT NULL,
-	PRIMARY KEY(`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
--- Create Event Coordinator Group Table
-CREATE TABLE IF NOT EXISTS `event_cordinator`(
-	`id` int NOT NULL AUTO_INCREMENT,
-	`email` varchar(255) NOT NULL,
-	UNIQUE KEY `email_event_coordinator_UNIQUE` (`email`),
-	PRIMARY KEY(`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+--
+-- Database: `aule_web`
+--
 
--- Create Course Coordinator Group Table
-CREATE TABLE IF NOT EXISTS `course`(
-	`id` int NOT NULL AUTO_INCREMENT,
-	`name` varchar(255) NOT NULL,
-	UNIQUE KEY `name_course_UNIQUE` (`name`),
-	PRIMARY KEY(`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- --------------------------------------------------------
 
--- Create Classroom Table
-CREATE TABLE IF NOT EXISTS `classroom`(
-	`id` int NOT NULL AUTO_INCREMENT,
-	`name` varchar(255) NOT NULL,
-    `position_id` int NOT NULL,
-    `capacity` smallint,
-    `email` varchar(255) NOT NULL,
-    `number_socket` smallint,
-    `number_ethernet` smallint,
-    `note`varchar(255),
-    UNIQUE KEY `name_classroom_UNIQUE` (`name`),
-	PRIMARY KEY(`id`),
-    CONSTRAINT fk_position FOREIGN KEY (position_id)
-    REFERENCES `position`(id)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+--
+-- Table structure for table `classroom`
+--
 
--- Create Equipment Table
-CREATE TABLE IF NOT EXISTS `equipment`(
-	`id` int NOT NULL AUTO_INCREMENT,
-	`name` varchar(255) NOT NULL,
-	PRIMARY KEY(`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+CREATE TABLE `classroom` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `position_id` int(11) NOT NULL,
+  `capacity` smallint(6) DEFAULT NULL,
+  `email` varchar(255) NOT NULL,
+  `number_socket` smallint(6) DEFAULT NULL,
+  `number_ethernet` smallint(6) DEFAULT NULL,
+  `note` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Create Recurrent Table 
-CREATE TABLE IF NOT EXISTS `recurrent`(
-	`id` int NOT NULL AUTO_INCREMENT,
-    `until_date` date NOT NULL,
-    `typeOfRecurrency`enum("DAILY, WEEKLEY, MONTHLY"),
-	 PRIMARY KEY(`id`)
-);
+--
+-- Dumping data for table `classroom`
+--
 
--- Create Event Table
-CREATE TABLE IF NOT EXISTS `event`(
-	`id` int NOT NULL AUTO_INCREMENT,
-	`name` varchar(255) NOT NULL,
-    `date` date NOT NULL,
-    `start_time` time NOT NULL,
-	`end_time` time NOT NULL,
-    `description` varchar(255),
-	`type` enum('LEZIONE','SEMINARIO','PARZIALE','RIUNIONE','LAUREE','ALTRO') NOT NULL,
-	`event_cordinator_id` int NOT NULL,
-	`course_id` int,
-	PRIMARY KEY(`id`),
-    CONSTRAINT fk_event_cordinator FOREIGN KEY (event_cordinator_id)
-    REFERENCES `event_cordinator`(id),
-	CONSTRAINT fk_course FOREIGN KEY (course_id)
-    REFERENCES `course`(id)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+INSERT INTO `classroom` (`id`, `name`, `position_id`, `capacity`, `email`, `number_socket`, `number_ethernet`, `note`) VALUES
+(1, 'A 0.1', 1, 40, 'segreteria@email.com', 6, 2, ''),
+(2, 'A 0.2', 1, 50, 'segreteria@email.com', 6, 2, ''),
+(3, 'A 1.3', 2, 60, 'segreteria@email.com', 10, 2, 'Una piccola descrizione');
 
--- Create Classroom - Equipment Table
-CREATE TABLE `classroom_has_equipment`  (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `classroom_id` int NOT NULL,
-  `equipment_id` int NOT NULL,
-  PRIMARY KEY (`id`),
-  INDEX par_ind (classroom_id),  
-  CONSTRAINT fk_classroom_equipment FOREIGN KEY (classroom_id)
-  REFERENCES classroom(id),
-  CONSTRAINT fk_equipment FOREIGN KEY (equipment_id)  
-  REFERENCES equipment(id)  
-  ON DELETE CASCADE  
-  ON UPDATE CASCADE  
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- --------------------------------------------------------
 
--- Create Group - Classroom Pivot Table
-CREATE TABLE `group_has_classroom`  (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `group_id` int NOT NULL,
-  `classroom_id` int NOT NULL,
-  PRIMARY KEY (`id`),
-  INDEX par_ind (group_id),  
-  CONSTRAINT fk_group FOREIGN KEY (group_id)  
-  REFERENCES `group`(id)
-  ON DELETE CASCADE  
-  ON UPDATE CASCADE ,
-  CONSTRAINT fk_classroom_group FOREIGN KEY (classroom_id)
-  REFERENCES classroom(id)
-  ON DELETE CASCADE  
-  ON UPDATE CASCADE  
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+--
+-- Table structure for table `classroom_has_equipment`
+--
 
--- Create Group - Classroom Pivot Table
-CREATE TABLE `event_has_recurrent`  (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `recurrent_id` int NOT NULL,
-  `event_id` int NOT NULL,
-  PRIMARY KEY (`id`),
-  INDEX par_ind (recurrent_id),  
-  CONSTRAINT fk_recurrent FOREIGN KEY (recurrent_id)  
-  REFERENCES `recurrent`(id)
-  ON DELETE CASCADE  
-  ON UPDATE CASCADE ,
-  CONSTRAINT fk_event_recurrent FOREIGN KEY (event_id)
-  REFERENCES `event`(id)
-  ON DELETE CASCADE  
-  ON UPDATE CASCADE  
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+CREATE TABLE `classroom_has_equipment` (
+  `id` int(11) NOT NULL,
+  `classroom_id` int(11) NOT NULL,
+  `equipment_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-INSERT INTO `aule_web`.`equipment`(`name`) VALUES("Proiettore");
-INSERT INTO `aule_web`.`equipment`(`name`) VALUES("Schermo Motorizzato");
-INSERT INTO `aule_web`.`equipment`(`name`) VALUES("Schermo Manuale");
-INSERT INTO `aule_web`.`equipment`(`name`) VALUES("Impianto Audio");
-INSERT INTO `aule_web`.`equipment`(`name`) VALUES("PC Fisso");
-INSERT INTO `aule_web`.`equipment`(`name`) VALUES("Microfono Cablato");
-INSERT INTO `aule_web`.`equipment`(`name`) VALUES("Microfono Wireless");
-INSERT INTO `aule_web`.`equipment`(`name`) VALUES("WIFI");
+--
+-- Dumping data for table `classroom_has_equipment`
+--
 
-INSERT INTO `user` ( `email`, `password`) VALUES ( 'admin@gmail.com', 'password');
--- WITH TOKEN FOR POSTMAN TESTING
-INSERT INTO `user` (`email`, `password`,`token`) VALUES ( 'gianluca@email.com', 'password','83e31cea-d651-4deb-a90a-8a68be156c73');  
+INSERT INTO `classroom_has_equipment` (`id`, `classroom_id`, `equipment_id`) VALUES
+(1, 1, 1),
+(2, 1, 3),
+(3, 1, 4),
+(4, 1, 5),
+(5, 2, 1),
+(6, 2, 4),
+(7, 2, 5),
+(8, 3, 1),
+(9, 3, 2);
 
-INSERT INTO `position`(`location`,`building`,`floor`) VALUES('Coppito','0','0'); 
-INSERT INTO `position`(`location`,`building`,`floor`) VALUES('Coppito','0','1'); 
-INSERT INTO `position`(`location`,`building`,`floor`) VALUES('Coppito','0','2'); 
-INSERT INTO `position`(`location`,`building`,`floor`) VALUES('Coppito','1','0'); 
-INSERT INTO `position`(`location`,`building`,`floor`) VALUES('Coppito','1','1'); 
-INSERT INTO `position`(`location`,`building`,`floor`) VALUES('Coppito','1','2'); 
-INSERT INTO `position`(`location`,`building`,`floor`) VALUES('Coppito','2','0'); 
-INSERT INTO `position`(`location`,`building`,`floor`) VALUES('Coppito','2','1'); 
-INSERT INTO `position`(`location`,`building`,`floor`) VALUES('Roio','A','2'); 
-INSERT INTO `position`(`location`,`building`,`floor`) VALUES('Roio','A','1'); 
-INSERT INTO `position`(`location`,`building`,`floor`) VALUES('Roio','B','0'); 
-INSERT INTO `position`(`location`,`building`,`floor`) VALUES('Roio','B','1'); 
+-- --------------------------------------------------------
 
-INSERT INTO `aule_web`.`classroom`(`name`,`position_id`,`capacity`,`email`,`number_socket`,`number_ethernet`,`note`) VALUES("A 0.1",1,40,"segreteria@email.com",6,2,"");
-INSERT INTO `aule_web`.`classroom`(`name`,`position_id`,`capacity`,`email`,`number_socket`,`number_ethernet`,`note`) VALUES("A 0.2",1,50,"segreteria@email.com",6,2,"");
-INSERT INTO `aule_web`.`classroom`(`name`,`position_id`,`capacity`,`email`,`number_socket`,`number_ethernet`,`note`) VALUES("A 1.3",2,60,"segreteria@email.com",10,2,"Una piccola descrizione");
+--
+-- Table structure for table `course`
+--
 
-INSERT INTO `aule_web`.`group`(`name`,`description`)VALUES("DICEA","Dipartimento di Ingegneria civile, edile - architettura e ambientale");
-INSERT INTO `aule_web`.`group`(`name`,`description`)VALUES("DISIM","Dipartimento di Ingegneria e scienze dell'informazione e matematica");
-INSERT INTO `aule_web`.`group`(`name`,`description`)VALUES("DIIIE","Dipartimento di Ingegneria industriale e dell'informazione e di economia");
-INSERT INTO `aule_web`.`group`(`name`,`description`)VALUES("MESVA","Dipartimento di Medicina clinica, sanità pubblica, scienze della vita e dell'ambiente");
-INSERT INTO `aule_web`.`group`(`name`,`description`)VALUES("DISCAB","Dipartimento di Scienze cliniche applicate e biotecnologiche");
-INSERT INTO `aule_web`.`group`(`name`,`description`)VALUES("DSFC","Dipartimento di Scienze fisiche e chimiche");
-INSERT INTO `aule_web`.`group`(`name`,`description`)VALUES("DSU","Dipartimento di Scienze umane");
+CREATE TABLE `course` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-INSERT INTO `aule_web`.`classroom_has_equipment`(`classroom_id`,`equipment_id`)VALUES(1,1);
-INSERT INTO `aule_web`.`classroom_has_equipment`(`classroom_id`,`equipment_id`)VALUES(1,3);
-INSERT INTO `aule_web`.`classroom_has_equipment`(`classroom_id`,`equipment_id`)VALUES(1,4);
-INSERT INTO `aule_web`.`classroom_has_equipment`(`classroom_id`,`equipment_id`)VALUES(1,5);
-INSERT INTO `aule_web`.`classroom_has_equipment`(`classroom_id`,`equipment_id`)VALUES(2,1);
-INSERT INTO `aule_web`.`classroom_has_equipment`(`classroom_id`,`equipment_id`)VALUES(2,4);
-INSERT INTO `aule_web`.`classroom_has_equipment`(`classroom_id`,`equipment_id`)VALUES(2,5);
-INSERT INTO `aule_web`.`classroom_has_equipment`(`classroom_id`,`equipment_id`)VALUES(3,1);
-INSERT INTO `aule_web`.`classroom_has_equipment`(`classroom_id`,`equipment_id`)VALUES(3,2);
+--
+-- Dumping data for table `course`
+--
 
-INSERT INTO `aule_web`.`group_has_classroom`(`group_id`,`classroom_id`)VALUES(2,1);
-INSERT INTO `aule_web`.`group_has_classroom`(`group_id`,`classroom_id`)VALUES(2,2);
-INSERT INTO `aule_web`.`group_has_classroom`(`group_id`,`classroom_id`)VALUES(6,3);
+INSERT INTO `course` (`id`, `name`) VALUES
+(1, 'Corso di sviluppo web');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `equipment`
+--
+
+CREATE TABLE `equipment` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `equipment`
+--
+
+INSERT INTO `equipment` (`id`, `name`) VALUES
+(1, 'Proiettore'),
+(2, 'Schermo Motorizzato'),
+(3, 'Schermo Manuale'),
+(4, 'Impianto Audio'),
+(5, 'PC Fisso'),
+(6, 'Microfono Cablato'),
+(7, 'Microfono Wireless'),
+(8, 'WIFI');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `event`
+--
+
+CREATE TABLE `event` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `date` date NOT NULL,
+  `start_time` time NOT NULL,
+  `end_time` time NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `type` enum('LEZIONE','SEMINARIO','PARZIALE','RIUNIONE','LAUREE','ALTRO') NOT NULL,
+  `event_cordinator_id` int(11) NOT NULL,
+  `course_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `event_cordinator`
+--
+
+CREATE TABLE `event_cordinator` (
+  `id` int(11) NOT NULL,
+  `email` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `event_cordinator`
+--
+
+INSERT INTO `event_cordinator` (`id`, `email`) VALUES
+(1, 'Agostino@gmail.com');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `event_has_recurrent`
+--
+
+CREATE TABLE `event_has_recurrent` (
+  `id` int(11) NOT NULL,
+  `recurrent_id` int(11) NOT NULL,
+  `event_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `group`
+--
+
+CREATE TABLE `group` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `group`
+--
+
+INSERT INTO `group` (`id`, `name`, `description`) VALUES
+(1, 'DICEA', 'Dipartimento di Ingegneria civile, edile - architettura e ambientale'),
+(2, 'DISIM', 'Dipartimento di Ingegneria e scienze dell\'informazione e matematica'),
+(3, 'DIIIE', 'Dipartimento di Ingegneria industriale e dell\'informazione e di economia'),
+(4, 'MESVA', 'Dipartimento di Medicina clinica, sanità pubblica, scienze della vita e dell\'ambiente'),
+(5, 'DISCAB', 'Dipartimento di Scienze cliniche applicate e biotecnologiche'),
+(6, 'DSFC', 'Dipartimento di Scienze fisiche e chimiche'),
+(7, 'DSU', 'Dipartimento di Scienze umane');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `group_has_classroom`
+--
+
+CREATE TABLE `group_has_classroom` (
+  `id` int(11) NOT NULL,
+  `group_id` int(11) NOT NULL,
+  `classroom_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `group_has_classroom`
+--
+
+INSERT INTO `group_has_classroom` (`id`, `group_id`, `classroom_id`) VALUES
+(1, 2, 1),
+(2, 2, 2),
+(3, 6, 3);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `position`
+--
+
+CREATE TABLE `position` (
+  `id` int(11) NOT NULL,
+  `location` varchar(255) NOT NULL,
+  `building` varchar(255) NOT NULL,
+  `floor` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `position`
+--
+
+INSERT INTO `position` (`id`, `location`, `building`, `floor`) VALUES
+(1, 'Coppito', '0', '0'),
+(2, 'Coppito', '0', '1'),
+(3, 'Coppito', '0', '2'),
+(4, 'Coppito', '1', '0'),
+(5, 'Coppito', '1', '1'),
+(6, 'Coppito', '1', '2'),
+(7, 'Coppito', '2', '0'),
+(8, 'Coppito', '2', '1'),
+(9, 'Roio', 'A', '2'),
+(10, 'Roio', 'A', '1'),
+(11, 'Roio', 'B', '0'),
+(12, 'Roio', 'B', '1');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `recurrent`
+--
+
+CREATE TABLE `recurrent` (
+  `id` int(11) NOT NULL,
+  `until_date` date NOT NULL,
+  `typeOfRecurrency` enum('DAILY, WEEKLEY, MONTHLY') DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user`
+--
+
+CREATE TABLE `user` (
+  `id` int(11) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `token` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`id`, `email`, `password`, `token`) VALUES
+(1, 'admin@gmail.com', 'password', NULL),
+(2, 'gianluca@email.com', 'password', NULL),
+(3, 'agostino@email.com', 'password', NULL);
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `classroom`
+--
+ALTER TABLE `classroom`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `name_classroom_UNIQUE` (`name`),
+  ADD KEY `fk_position` (`position_id`);
+
+--
+-- Indexes for table `classroom_has_equipment`
+--
+ALTER TABLE `classroom_has_equipment`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `par_ind` (`classroom_id`),
+  ADD KEY `fk_equipment` (`equipment_id`);
+
+--
+-- Indexes for table `course`
+--
+ALTER TABLE `course`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `name_course_UNIQUE` (`name`);
+
+--
+-- Indexes for table `equipment`
+--
+ALTER TABLE `equipment`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `event`
+--
+ALTER TABLE `event`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_event_cordinator` (`event_cordinator_id`),
+  ADD KEY `fk_course` (`course_id`);
+
+--
+-- Indexes for table `event_cordinator`
+--
+ALTER TABLE `event_cordinator`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email_event_coordinator_UNIQUE` (`email`);
+
+--
+-- Indexes for table `event_has_recurrent`
+--
+ALTER TABLE `event_has_recurrent`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `par_ind` (`recurrent_id`),
+  ADD KEY `fk_event_recurrent` (`event_id`);
+
+--
+-- Indexes for table `group`
+--
+ALTER TABLE `group`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `group_has_classroom`
+--
+ALTER TABLE `group_has_classroom`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `par_ind` (`group_id`),
+  ADD KEY `fk_classroom_group` (`classroom_id`);
+
+--
+-- Indexes for table `position`
+--
+ALTER TABLE `position`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `recurrent`
+--
+ALTER TABLE `recurrent`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `user`
+--
+ALTER TABLE `user`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `classroom`
+--
+ALTER TABLE `classroom`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `classroom_has_equipment`
+--
+ALTER TABLE `classroom_has_equipment`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT for table `course`
+--
+ALTER TABLE `course`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `equipment`
+--
+ALTER TABLE `equipment`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `event`
+--
+ALTER TABLE `event`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `event_cordinator`
+--
+ALTER TABLE `event_cordinator`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `event_has_recurrent`
+--
+ALTER TABLE `event_has_recurrent`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `group`
+--
+ALTER TABLE `group`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `group_has_classroom`
+--
+ALTER TABLE `group_has_classroom`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `position`
+--
+ALTER TABLE `position`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT for table `recurrent`
+--
+ALTER TABLE `recurrent`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `user`
+--
+ALTER TABLE `user`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `classroom`
+--
+ALTER TABLE `classroom`
+  ADD CONSTRAINT `fk_position` FOREIGN KEY (`position_id`) REFERENCES `position` (`id`);
+
+--
+-- Constraints for table `classroom_has_equipment`
+--
+ALTER TABLE `classroom_has_equipment`
+  ADD CONSTRAINT `fk_classroom_equipment` FOREIGN KEY (`classroom_id`) REFERENCES `classroom` (`id`),
+  ADD CONSTRAINT `fk_equipment` FOREIGN KEY (`equipment_id`) REFERENCES `equipment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `event`
+--
+ALTER TABLE `event`
+  ADD CONSTRAINT `fk_course` FOREIGN KEY (`course_id`) REFERENCES `course` (`id`),
+  ADD CONSTRAINT `fk_event_cordinator` FOREIGN KEY (`event_cordinator_id`) REFERENCES `event_cordinator` (`id`);
+
+--
+-- Constraints for table `event_has_recurrent`
+--
+ALTER TABLE `event_has_recurrent`
+  ADD CONSTRAINT `fk_event_recurrent` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_recurrent` FOREIGN KEY (`recurrent_id`) REFERENCES `recurrent` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `group_has_classroom`
+--
+ALTER TABLE `group_has_classroom`
+  ADD CONSTRAINT `fk_classroom_group` FOREIGN KEY (`classroom_id`) REFERENCES `classroom` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_group` FOREIGN KEY (`group_id`) REFERENCES `group` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

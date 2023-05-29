@@ -7,7 +7,6 @@
         <link rel="stylesheet" href="res/restest.css"/>
     </head>
     <body>
-
         <h2>Authentication</h2>
         <p>To test the login/logout resource <em>(AuthenticationRes)</em>, use the login form below. <strong>Links marked with &#x1f512; on this page call
                 restful endpoints requiring a bearer token and can be clicked only after a successful login.</strong></p>
@@ -44,6 +43,15 @@
                     <td></td>
                     <td></td>
                     <td>Bearer token</td>
+                </tr>
+                <!--Test addEvent -->
+                <tr>
+                    <td ><span data-rest-test-token  data-rest-test-url="rest/event/addEvent" data-rest-test-method="post"
+                               data-rest-test-content-type="application/x-www-form-urlencoded" data-rest-test-status="201">/rest/event/addEvent</span></td>
+                    <td>POST</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                 </tr>
             </tbody>
             <tfoot>
