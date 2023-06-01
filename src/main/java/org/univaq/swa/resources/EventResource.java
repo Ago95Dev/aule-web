@@ -1,41 +1,37 @@
 package org.univaq.swa.resources;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.json.Json;
 import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.FormParam;
+import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import jakarta.ws.rs.core.UriInfo;
-import java.net.URI;
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
+import org.json.JSONArray;
 import org.univaq.swa.exceptions.CustomException;
 import org.univaq.swa.exceptions.RESTWebApplicationException;
 import org.univaq.swa.framework.security.DBConnection;
-import org.univaq.swa.framework.security.Logged;
-import org.univaq.swa.model.Classroom;
 import org.univaq.swa.model.Event;
-import org.univaq.swa.model.TypeOfRecurrency;
+import org.univaq.swa.model.Type;
+import org.json.JSONObject;
 
 /**
  *
- * @author Ago95Dev
+ * @author Ago95Dev,gianlucarea
  */
 @Path("event")
 public class EventResource {
@@ -160,18 +156,68 @@ public class EventResource {
         }
         return Response.accepted().build();
     }
-    /* 
-    @PUT
-    @Logged
+    
+    @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/updateEvent/{event_id}")
-   /* public Response updateClassroom(@Context UriInfo uriinfo,
-                            @PathParam("event_id") Integer event_id,
-                            String json,
-                            @Context SecurityContext securityContext) {
-        String updateClassQuery = "UPDATE event SET id = ?, name = ?, date = ?, start_time = ?, end_time =?, description = ? , type =? , event_cordinator_id=? , course_id=? WHERE id = ?;";            
-      }
-     */
+    @Path("/now")
+    public Response getNowEvents(@Context UriInfo uriinfo){
+        
+        LocalDate today = LocalDate.now();
+        String getNowEventsQuery = "SELECT * FROM event WHERE date = ?;";
+        String getCourse = "SELECT name FROM course WHERE id= ?";
+        JSONArray jsonArray = new JSONArray();
+        Map<String, Map<String,Object>> responseMap = new LinkedHashMap<>();
+        try{
+            PreparedStatement ps = con.prepareStatement(getNowEventsQuery);
+            ps.setDate(1, Date.valueOf(today));
+           
+            ResultSet rs = ps.executeQuery();
+            int i = 0;
+            while(rs.next()){
+                LocalTime start =(LocalTime) rs.getTime("start_time").toLocalTime();
+                LocalTime end =  (LocalTime) rs.getTime("end_time").toLocalTime();
+                LocalTime now = LocalTime.now();
+                i++;
+                System.out.println(i);
+                if( (start.isBefore(now) && end.isAfter(now)) || 
+                        (start.isAfter(now) && start.isBefore(now.plusHours(3))) ) {
+                    
+                    Map<String,Object> x =  new LinkedHashMap<>();
+                    String id = String.valueOf(rs.getInt("id"));
+                    x.put("id",rs.getInt("id"));
+                    x.put("name",rs.getString("name"));
+                    x.put("description",rs.getString("description"));
+                    x.put("date", today.toString());
+                    x.put("start_time", start.toString());
+                    x.put("end_time",end.toString());
+                    x.put("email", rs.getString("email"));
+                    x.put("type", rs.getString("type"));
+                    if(rs.getInt("course_id") >= 0){
+                        
+                        try(PreparedStatement ps1 = con.prepareStatement(getCourse)){
+                            ps1.setInt(1, rs.getInt("course_id"));
+                            ResultSet rs1 = ps1.executeQuery();
+                            if(rs1.next()){
+                                x.put("course", rs1.getString("name"));
+                            }
+                        }                                           
+                    } 
+                    responseMap.put(id, x);
+                } 
+            }
+            
+            if(responseMap.isEmpty()){
+                System.out.println("EMPTY MAP");
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+
+            System.out.println("responseMap -> "+ responseMap);
+            return Response.ok(responseMap).build();
+        } catch (SQLException ex) {
+            Logger.getLogger(ClassroomResource.class.getName()).log(Level.SEVERE, null, ex);
+            throw new RESTWebApplicationException(ex);
+        }
+    }
 
 }
