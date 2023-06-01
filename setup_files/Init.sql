@@ -135,28 +135,10 @@ CREATE TABLE `event` (
   `end_time` time NOT NULL,
   `description` varchar(255) DEFAULT NULL,
   `type` enum('LEZIONE','SEMINARIO','PARZIALE','RIUNIONE','LAUREE','ALTRO') NOT NULL,
-  `event_cordinator_id` int(11) NOT NULL,
+  `email` varchar(255) NOT NULL,
   `course_id` int(11) DEFAULT NULL,
   `classroom_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `event_cordinator`
---
-
-CREATE TABLE `event_cordinator` (
-  `id` int(11) NOT NULL,
-  `email` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `event_cordinator`
---
-
-INSERT INTO `event_cordinator` (`id`, `email`) VALUES
-(1, 'Agostino@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -256,7 +238,7 @@ INSERT INTO `position` (`id`, `location`, `building`, `floor`) VALUES
 CREATE TABLE `recurrent` (
   `id` int(11) NOT NULL,
   `until_date` date NOT NULL,
-  `typeOfRecurrency` enum('DAILY, WEEKLEY, MONTHLY') DEFAULT NULL
+  `typeOfRecurrency` enum('DAILY', 'WEEKLY', 'MONTHLY') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -319,15 +301,8 @@ ALTER TABLE `equipment`
 --
 ALTER TABLE `event`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_event_cordinator` (`event_cordinator_id`),
   ADD KEY `fk_course` (`course_id`);
 
---
--- Indexes for table `event_cordinator`
---
-ALTER TABLE `event_cordinator`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `email_event_coordinator_UNIQUE` (`email`);
 
 --
 -- Indexes for table `event_has_recurrent`
@@ -403,11 +378,6 @@ ALTER TABLE `equipment`
 ALTER TABLE `event`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
---
--- AUTO_INCREMENT for table `event_cordinator`
---
-ALTER TABLE `event_cordinator`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `event_has_recurrent`
@@ -467,7 +437,6 @@ ALTER TABLE `classroom_has_equipment`
 --
 ALTER TABLE `event`
   ADD CONSTRAINT `fk_course` FOREIGN KEY (`course_id`) REFERENCES `course` (`id`),
-  ADD CONSTRAINT `fk_event_cordinator` FOREIGN KEY (`event_cordinator_id`) REFERENCES `event_cordinator` (`id`),
   ADD CONSTRAINT `fk_classroom` FOREIGN KEY (`classroom_id`) REFERENCES `classroom` (`id`);
   ;
 
