@@ -166,6 +166,66 @@ public class ClassroomResource {
     }
     
     /**
+     * Get all classrooms
+     * @param uriinfo
+     * @return 
+     */
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/all")
+    public Response getAllClassroom(@Context UriInfo uriinfo){
+        String getClassQuery = "SELECT id,name FROM classroom;";
+        
+        Map<String, Object> responseMap = new LinkedHashMap<>();
+        boolean flag = false;
+        try(PreparedStatement getClassPS = con.prepareStatement(getClassQuery)){
+            flag = true;
+            ResultSet rs = getClassPS.executeQuery();
+            
+            while(rs.next()){
+            responseMap.put(rs.getString("name"), rs.getInt("id") );
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ClassroomResource.class.getName()).log(Level.SEVERE, null, ex);
+            throw new RESTWebApplicationException(ex);
+        }
+        
+        if(flag){
+            return Response.ok(responseMap).build();
+        }else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+    
+     @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/group/all")
+    public Response getAllGroup(@Context UriInfo uriinfo){
+        String getClassQuery = "SELECT id,name FROM `group`;";
+        
+        Map<String, Object> responseMap = new LinkedHashMap<>();
+        boolean flag = false;
+        try(PreparedStatement getClassPS = con.prepareStatement(getClassQuery)){
+            flag = true;
+            ResultSet rs = getClassPS.executeQuery();
+            
+            while(rs.next()){
+            responseMap.put(rs.getString("name"), rs.getInt("id") );
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ClassroomResource.class.getName()).log(Level.SEVERE, null, ex);
+            throw new RESTWebApplicationException(ex);
+        }
+        
+        if(flag){
+            return Response.ok(responseMap).build();
+        }else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+    /**
      * Insert new classroom and manage equipment
      * @param uriinfo
      * @param json Collection of field to create new classroom
@@ -281,6 +341,8 @@ public class ClassroomResource {
         }
         return null;
     }
+    
+    
     
     /**
      * Insert new classroom into a group

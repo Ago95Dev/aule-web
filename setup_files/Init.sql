@@ -21,6 +21,10 @@ SET time_zone = "+00:00";
 -- Database: `aule_web`
 --
 
+-- Database creation
+DROP DATABASE IF EXISTS aule_web;
+CREATE DATABASE IF NOT EXISTS aule_web;
+USE aule_web;
 -- --------------------------------------------------------
 
 --
@@ -132,7 +136,8 @@ CREATE TABLE `event` (
   `description` varchar(255) DEFAULT NULL,
   `type` enum('LEZIONE','SEMINARIO','PARZIALE','RIUNIONE','LAUREE','ALTRO') NOT NULL,
   `event_cordinator_id` int(11) NOT NULL,
-  `course_id` int(11) DEFAULT NULL
+  `course_id` int(11) DEFAULT NULL,
+  `classroom_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -462,7 +467,9 @@ ALTER TABLE `classroom_has_equipment`
 --
 ALTER TABLE `event`
   ADD CONSTRAINT `fk_course` FOREIGN KEY (`course_id`) REFERENCES `course` (`id`),
-  ADD CONSTRAINT `fk_event_cordinator` FOREIGN KEY (`event_cordinator_id`) REFERENCES `event_cordinator` (`id`);
+  ADD CONSTRAINT `fk_event_cordinator` FOREIGN KEY (`event_cordinator_id`) REFERENCES `event_cordinator` (`id`),
+  ADD CONSTRAINT `fk_classroom` FOREIGN KEY (`classroom_id`) REFERENCES `classroom` (`id`);
+  ;
 
 --
 -- Constraints for table `event_has_recurrent`

@@ -79,7 +79,7 @@ public class EventResource {
             throw new RESTWebApplicationException(ex);
         }
     }
-
+/* 
     @PUT
     @Logged
     @Consumes(MediaType.APPLICATION_JSON)
