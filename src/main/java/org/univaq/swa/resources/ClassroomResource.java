@@ -379,7 +379,7 @@ public class ClassroomResource {
     @Logged
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/csv/importCsv")
+    @Path("/csv/import")
     public Response importCsv(@Context UriInfo uriinfo,
                     @FormDataParam("csvInputFile") InputStream fileInputStream,
                     @FormDataParam("csvInputFile") FormDataContentDisposition fileMetaData ,
@@ -387,32 +387,42 @@ public class ClassroomResource {
         
         String insertClassroomQuery = "INSERT INTO classroom (name, position_id, capacity, email, number_socket, number_ethernet, note) VALUES (?, ?, ?, ?, ?, ?, ?);";
         String selectPositionIDQuery = "SELECT id FROM position WHERE location = ? AND building = ? AND floor =?;";
+        String checkForDuplicateEntry = "SELECT id FROM classroom WHERE name=?;";
         int position_id = 0;
         try{   
-            CSVReader reader = new CSVReader(new InputStreamReader(fileInputStream, "UTF-8"));
+           CSVReader reader = new CSVReader(new InputStreamReader(fileInputStream, "UTF-8"));
            String[] record = null;
            while((record = reader.readNext()) != null){
-               System.out.println(record[0]);
-                try(PreparedStatement ps1 = con.prepareStatement(selectPositionIDQuery)){
-                    ps1.setString(1, record[1] );
-                    ps1.setString(2, record[2] );
-                    ps1.setString(3, record[3] );
-                    ResultSet rs2 = ps1.executeQuery();
-                    while(rs2.next()){
-                        position_id = rs2.getInt("id");
-                    }                
+                if(!record[0].isBlank()){
+                    try(PreparedStatement check = con.prepareStatement(checkForDuplicateEntry)){
+                        check.setString(1, record[0]);
+                        ResultSet rsd = check.executeQuery();
+                        if(rsd.next()){
+                            System.out.println("Aula " + record[0] + " Esistente");
+                        }else{
+                            try(PreparedStatement ps1 = con.prepareStatement(selectPositionIDQuery)){
+                            ps1.setString(1, record[1] );
+                            ps1.setString(2, record[2] );
+                            ps1.setString(3, record[3] );
+                            ResultSet rs2 = ps1.executeQuery();
+                            while(rs2.next()){
+                                position_id = rs2.getInt("id");
+                            }                
+                            }
+                            try(PreparedStatement ps2 = con.prepareStatement(insertClassroomQuery)){
+                                ps2.setString(1, record[0]);
+                                ps2.setInt(2, position_id);
+                                ps2.setInt(3, Integer.parseInt(record[4]));
+                                ps2.setString(4, record[5]);
+                                ps2.setInt(5, Integer.parseInt(record[6]));
+                                ps2.setInt(6, Integer.parseInt(record[7]));
+                                ps2.setString(7, record[8]);
+                                ps2.executeUpdate();
+                            }
+                        }                    
+                    }
                 }
-                try(PreparedStatement ps2 = con.prepareStatement(insertClassroomQuery)){
-                    ps2.setString(1, record[0]);
-                    ps2.setInt(2, position_id);
-                    ps2.setInt(3, Integer.parseInt(record[4]));
-                    ps2.setString(4, record[5]);
-                    ps2.setInt(5, Integer.parseInt(record[6]));
-                    ps2.setInt(6, Integer.parseInt(record[7]));
-                    ps2.setString(7, record[8]);
-                    ps2.executeUpdate();
-                }
-           }
+            }            
         } catch (SQLException ex) {
             Logger.getLogger(ClassroomResource.class.getName()).log(Level.SEVERE, null, ex);
             throw new RESTWebApplicationException(ex);
