@@ -13,9 +13,12 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import jakarta.ws.rs.core.UriInfo;
 import java.sql.*;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.Month;
 import java.time.Period;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -49,7 +52,7 @@ public class EventResource {
             if (rs.next()) {
                 event.put("id", rs.getInt("id"));
                 event.put("name", rs.getString("name"));
-                event.put("date", rs.getDate("date"));
+                event.put("date", rs.getDate("date").toString());
                 event.put("start_time", rs.getTime("start_time"));
                 event.put("end_time", rs.getTime("end_time"));
                 event.put("description", rs.getString("description"));
@@ -72,7 +75,7 @@ public class EventResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{event_id}")
-    public Response getClassroom(@Context UriInfo uriinfo, @PathParam("event_id") Integer event_id) {
+    public Response getEvent(@Context UriInfo uriinfo, @PathParam("event_id") Integer event_id) {
 
         String getEventQuery = "SELECT * FROM event WHERE id = ?;";
         String getClassNameQuery = "SELECT name FROM classroom WHERE id=?;";
@@ -235,20 +238,17 @@ public class EventResource {
         LocalDate today = LocalDate.now();
         String getNowEventsQuery = "SELECT * FROM event WHERE date = ?;";
         String getCourse = "SELECT name FROM course WHERE id= ?";
-        JSONArray jsonArray = new JSONArray();
+        String getClassNameQuery = "SELECT name FROM classroom WHERE id=?;";
         Map<String, Map<String, Object>> responseMap = new LinkedHashMap<>();
         try {
             PreparedStatement ps = con.prepareStatement(getNowEventsQuery);
             ps.setDate(1, Date.valueOf(today));
 
             ResultSet rs = ps.executeQuery();
-            int i = 0;
             while (rs.next()) {
                 LocalTime start = (LocalTime) rs.getTime("start_time").toLocalTime();
                 LocalTime end = (LocalTime) rs.getTime("end_time").toLocalTime();
                 LocalTime now = LocalTime.now();
-                i++;
-                System.out.println(i);
                 if ((start.isBefore(now) && end.isAfter(now))
                         || (start.isAfter(now) && start.isBefore(now.plusHours(3)))) {
 
@@ -262,8 +262,16 @@ public class EventResource {
                     x.put("end_time", end.toString());
                     x.put("email", rs.getString("email"));
                     x.put("type", rs.getString("type"));
-                    if (rs.getInt("course_id") >= 0) {
+                    x.put("classroom_id", rs.getInt("classroom_id"));
+                    try ( PreparedStatement ps2 = con.prepareStatement(getClassNameQuery)) {
+                        ps2.setInt(1, rs.getInt("classroom_id"));
+                        ResultSet rs1 = ps2.executeQuery();
+                        if (rs1.next()) {
+                            x.put("classroom", rs1.getString("name"));
+                        }
+                    }
 
+                    if (rs.getInt("course_id") >= 0) {
                         try ( PreparedStatement ps1 = con.prepareStatement(getCourse)) {
                             ps1.setInt(1, rs.getInt("course_id"));
                             ResultSet rs1 = ps1.executeQuery();
@@ -272,6 +280,7 @@ public class EventResource {
                             }
                         }
                     }
+
                     responseMap.put(id, x);
                 }
             }
@@ -287,4 +296,68 @@ public class EventResource {
         }
     }
 
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/week")
+    public Response getWeekEvents(@Context UriInfo uriinfo, Map<String, Object> info) {
+
+        String getNowEventsQuery = "SELECT * FROM event WHERE date BETWEEN ? AND ?;";
+        String getCourse = "SELECT name FROM course WHERE id= ?";
+        String getClassNameQuery = "SELECT name FROM classroom WHERE id=?;";
+        LocalDate choosenDate = LocalDate.parse(info.get("date_choosen").toString());
+        LocalDate start = YearMonth.of(choosenDate.getYear(), choosenDate.getMonth()).atDay(choosenDate.getDayOfMonth()).with(DayOfWeek.MONDAY);
+        LocalDate end = YearMonth.of(choosenDate.getYear(), choosenDate.getMonth()).atDay(choosenDate.getDayOfMonth()).with(DayOfWeek.SUNDAY);
+
+        Map<String, Map<String, Object>> responseMap = new LinkedHashMap<>();
+        try {
+            PreparedStatement ps = con.prepareStatement(getNowEventsQuery);
+            ps.setDate(1, Date.valueOf(start));
+            ps.setDate(2, Date.valueOf(end));
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+
+                Map<String, Object> x = new LinkedHashMap<>();
+                System.out.println(rs.getDate("date"));
+                String id = String.valueOf(rs.getInt("id"));
+                x.put("id", rs.getInt("id"));
+                x.put("name", rs.getString("name"));
+                x.put("description", rs.getString("description"));
+                x.put("date", rs.getDate("date").toString());
+                x.put("start_time", rs.getTime("start_time"));
+                x.put("end_time", rs.getTime("end_time"));
+                x.put("email", rs.getString("email"));
+                x.put("type", rs.getString("type"));
+                x.put("classroom_id", rs.getInt("classroom_id"));
+                try ( PreparedStatement ps2 = con.prepareStatement(getClassNameQuery)) {
+                    ps2.setInt(1, rs.getInt("classroom_id"));
+                    ResultSet rs1 = ps2.executeQuery();
+                    if (rs1.next()) {
+                        x.put("classroom", rs1.getString("name"));
+                    }
+                }
+                if (rs.getInt("course_id") >= 0) {
+                    try ( PreparedStatement ps1 = con.prepareStatement(getCourse)) {
+                        ps1.setInt(1, rs.getInt("course_id"));
+                        ResultSet rs1 = ps1.executeQuery();
+                        if (rs1.next()) {
+                            x.put("course", rs1.getString("name"));
+                        }
+                    }
+
+                    responseMap.put(id, x);
+                }
+            }
+
+            if (responseMap.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+
+            return Response.ok(responseMap).build();
+        } catch (SQLException ex) {
+            Logger.getLogger(ClassroomResource.class.getName()).log(Level.SEVERE, null, ex);
+            throw new RESTWebApplicationException(ex);
+        }
+    }
 }
