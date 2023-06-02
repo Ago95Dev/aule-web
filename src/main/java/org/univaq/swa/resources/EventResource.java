@@ -5,6 +5,7 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
@@ -40,6 +41,74 @@ public class EventResource {
 
     public EventResource() throws SQLException, CustomException {
         con = DBConnection.getConnection();
+    }
+
+    private Map<String, Object> createEvent(ResultSet rs) {
+        try {
+            Map<String, Object> event = new LinkedHashMap<>();
+            if (rs.next()) {
+                event.put("id", rs.getInt("id"));
+                event.put("name", rs.getString("name"));
+                event.put("date", rs.getDate("date"));
+                event.put("start_time", rs.getTime("start_time"));
+                event.put("end_time", rs.getTime("end_time"));
+                event.put("description", rs.getString("description"));
+                event.put("type", rs.getString("type"));
+                event.put("email", rs.getString("email"));
+                if (rs.getInt("course_id") > 0) {
+                    event.put("course_id", rs.getInt("course_id"));
+                } else {
+                    event.put("course_id", null);
+                }
+                event.put("classroom_id", rs.getInt("classroom_id"));
+            }
+            return event;
+        } catch (SQLException ex) {
+            throw new RESTWebApplicationException(ex);
+        }
+    }
+
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{event_id}")
+    public Response getClassroom(@Context UriInfo uriinfo, @PathParam("event_id") Integer event_id) {
+
+        String getEventQuery = "SELECT * FROM event WHERE id = ?;";
+        String getClassNameQuery = "SELECT name FROM classroom WHERE id=?;";
+        String getCourseNameQuery = "SELECT name FROM course WHERE id=?";
+
+        Map<String, Object> responseMap = new LinkedHashMap<>();
+
+        try ( PreparedStatement ps = con.prepareStatement(getEventQuery)) {
+            ps.setInt(1, event_id);
+            ResultSet rs = ps.executeQuery();
+            responseMap = createEvent(rs);
+            try ( PreparedStatement ps2 = con.prepareStatement(getClassNameQuery)) {
+                ps2.setInt(1, (int) responseMap.get("classroom_id"));
+                ResultSet rs1 = ps2.executeQuery();
+                if (rs1.next()) {
+                    responseMap.put("classroom", rs1.getString("name"));
+                }
+            }
+            if (responseMap.get("course_id") != null) {
+                try ( PreparedStatement ps3 = con.prepareStatement(getCourseNameQuery)) {
+                    ps3.setInt(1, (int) responseMap.get("course_id"));
+                    ResultSet rs1 = ps3.executeQuery();
+                    if (rs1.next()) {
+                        responseMap.put("course", rs1.getString("name"));
+                    }
+                }
+            }
+            if (responseMap.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+            return Response.ok(responseMap).build();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ClassroomResource.class.getName()).log(Level.SEVERE, null, ex);
+            throw new RESTWebApplicationException(ex);
+        }
     }
 
     @POST
@@ -109,7 +178,7 @@ public class EventResource {
                         ps2.setString(5, description);
                         ps2.setString(6, type);
                         ps2.setString(7, email);
-                        if(course_id != 0 ){
+                        if (course_id != 0) {
                             ps2.setInt(8, course_id);
                         } else {
                             ps2.setNull(8, java.sql.Types.INTEGER);
@@ -121,8 +190,8 @@ public class EventResource {
                             eventID = rs2.getInt(1);
                         }
                     }
-                    if(eventID != 0){
-                        try(PreparedStatement ps3 = con.prepareStatement(addEventAsRecurrent)){
+                    if (eventID != 0) {
+                        try ( PreparedStatement ps3 = con.prepareStatement(addEventAsRecurrent)) {
                             ps3.setInt(1, recurrent_id);
                             ps3.setInt(2, eventID);
                             ps3.executeUpdate();
@@ -136,83 +205,81 @@ public class EventResource {
         } else {
             try ( PreparedStatement ps4 = con.prepareStatement(addEvent)) {
 
-                        ps4.setString(1, (String) event.get("name"));
-                        ps4.setDate(2, Date.valueOf(startDate));
-                        ps4.setTime(3, Time.valueOf(startTime));
-                        ps4.setTime(4, Time.valueOf(endTime));
-                        ps4.setString(5, description);
-                        ps4.setString(6, type);
-                        ps4.setString(7, email);
-                        if(course_id != 0 ){
-                            ps4.setInt(8, course_id);
-                        } else {
-                            ps4.setNull(8, java.sql.Types.INTEGER);
-                        }
-                        ps4.setInt(9, classroom_id);
-                        ps4.executeUpdate();                           
-                    } catch (SQLException ex) {
+                ps4.setString(1, (String) event.get("name"));
+                ps4.setDate(2, Date.valueOf(startDate));
+                ps4.setTime(3, Time.valueOf(startTime));
+                ps4.setTime(4, Time.valueOf(endTime));
+                ps4.setString(5, description);
+                ps4.setString(6, type);
+                ps4.setString(7, email);
+                if (course_id != 0) {
+                    ps4.setInt(8, course_id);
+                } else {
+                    ps4.setNull(8, java.sql.Types.INTEGER);
+                }
+                ps4.setInt(9, classroom_id);
+                ps4.executeUpdate();
+            } catch (SQLException ex) {
                 Logger.getLogger(EventResource.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         return Response.accepted().build();
     }
-    
+
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/now")
-    public Response getNowEvents(@Context UriInfo uriinfo){
-        
+    public Response getNowEvents(@Context UriInfo uriinfo) {
+
         LocalDate today = LocalDate.now();
         String getNowEventsQuery = "SELECT * FROM event WHERE date = ?;";
         String getCourse = "SELECT name FROM course WHERE id= ?";
         JSONArray jsonArray = new JSONArray();
-        Map<String, Map<String,Object>> responseMap = new LinkedHashMap<>();
-        try{
+        Map<String, Map<String, Object>> responseMap = new LinkedHashMap<>();
+        try {
             PreparedStatement ps = con.prepareStatement(getNowEventsQuery);
             ps.setDate(1, Date.valueOf(today));
-           
+
             ResultSet rs = ps.executeQuery();
             int i = 0;
-            while(rs.next()){
-                LocalTime start =(LocalTime) rs.getTime("start_time").toLocalTime();
-                LocalTime end =  (LocalTime) rs.getTime("end_time").toLocalTime();
+            while (rs.next()) {
+                LocalTime start = (LocalTime) rs.getTime("start_time").toLocalTime();
+                LocalTime end = (LocalTime) rs.getTime("end_time").toLocalTime();
                 LocalTime now = LocalTime.now();
                 i++;
                 System.out.println(i);
-                if( (start.isBefore(now) && end.isAfter(now)) || 
-                        (start.isAfter(now) && start.isBefore(now.plusHours(3))) ) {
-                    
-                    Map<String,Object> x =  new LinkedHashMap<>();
+                if ((start.isBefore(now) && end.isAfter(now))
+                        || (start.isAfter(now) && start.isBefore(now.plusHours(3)))) {
+
+                    Map<String, Object> x = new LinkedHashMap<>();
                     String id = String.valueOf(rs.getInt("id"));
-                    x.put("id",rs.getInt("id"));
-                    x.put("name",rs.getString("name"));
-                    x.put("description",rs.getString("description"));
+                    x.put("id", rs.getInt("id"));
+                    x.put("name", rs.getString("name"));
+                    x.put("description", rs.getString("description"));
                     x.put("date", today.toString());
                     x.put("start_time", start.toString());
-                    x.put("end_time",end.toString());
+                    x.put("end_time", end.toString());
                     x.put("email", rs.getString("email"));
                     x.put("type", rs.getString("type"));
-                    if(rs.getInt("course_id") >= 0){
-                        
-                        try(PreparedStatement ps1 = con.prepareStatement(getCourse)){
+                    if (rs.getInt("course_id") >= 0) {
+
+                        try ( PreparedStatement ps1 = con.prepareStatement(getCourse)) {
                             ps1.setInt(1, rs.getInt("course_id"));
                             ResultSet rs1 = ps1.executeQuery();
-                            if(rs1.next()){
+                            if (rs1.next()) {
                                 x.put("course", rs1.getString("name"));
                             }
-                        }                                           
-                    } 
+                        }
+                    }
                     responseMap.put(id, x);
-                } 
+                }
             }
-            
-            if(responseMap.isEmpty()){
-                System.out.println("EMPTY MAP");
+
+            if (responseMap.isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
 
-            System.out.println("responseMap -> "+ responseMap);
             return Response.ok(responseMap).build();
         } catch (SQLException ex) {
             Logger.getLogger(ClassroomResource.class.getName()).log(Level.SEVERE, null, ex);

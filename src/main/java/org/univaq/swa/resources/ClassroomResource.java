@@ -150,15 +150,14 @@ public class ClassroomResource {
                 }
                 responseMap.put("Group", groupOfClassroom);
             }
+            if(responseMap.isEmpty()){
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+            return Response.ok(responseMap).build();
+
         } catch (SQLException ex) {
             Logger.getLogger(ClassroomResource.class.getName()).log(Level.SEVERE, null, ex);
             throw new RESTWebApplicationException(ex);
-        }
-
-        if (flag) {
-            return Response.ok(responseMap).build();
-        } else {
-            return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
 
