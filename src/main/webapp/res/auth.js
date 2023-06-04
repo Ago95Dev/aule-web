@@ -5,7 +5,7 @@ $(document).ready(function() {
       // valori campi del form
       var email = $('#exampleDropdownFormEmail2').val();
       var password = $('#exampleDropdownFormPassword2').val();
-      
+     
       
       //l'oggetto dati da inviare al server
       var formData = {
@@ -20,6 +20,9 @@ $(document).ready(function() {
         data: formData,
         success: function(response) {
           $('#dropdownMenuButton1').hide();
+          var authToken = response.token; // Salva il token dalla risposta
+        // salvataggio del token in una variabile
+        localStorage.setItem('authToken', authToken);
           console.log('Autenticazione riuscita');
         },
         error: function() {

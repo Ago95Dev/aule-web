@@ -1,6 +1,9 @@
 // da sistemare, chiamate ajax non funzionano
 
 $(document).ready(function() {
+
+  var authToken = localStorage.getItem('authToken'); // Recupera il token salvato
+
     function hideClassroomButtons() {
       $('#aule .btn').hide();
     }
@@ -42,11 +45,15 @@ $('#addAulaForm').submit(function(event) {
         equipmentsId: $('#equipmentsId').val()
       };
       console.log(formData);
+      
     
       $.ajax({
         url: 'rest/classroom/addClassroom',
         type: 'POST',
         contentType: 'application/json',
+        headers: {
+          'Authorization': 'Bearer ' + authToken 
+        },
         data: JSON.stringify(formData),
         success: function() {
             message("Aula inserita", "success");
@@ -62,6 +69,9 @@ $('#addAulaForm').submit(function(event) {
       $.ajax({
         url: '/rest/classroom/all', 
         type: 'GET', 
+        headers: {
+          'Authorization': 'Bearer ' + authToken 
+        },
         success: function(response) {
           var classroomNames = Object.keys(response); //array di nomi delle aule
   
@@ -81,6 +91,9 @@ $('#addAulaForm').submit(function(event) {
       $.ajax({
         url: '/rest/group/all', 
         type: 'GET',
+        headers: {
+          'Authorization': 'Bearer ' + authToken 
+        },
         success: function(response) {
           var groupNames = Object.keys(response); // array nomi dei gruppi
   
@@ -116,6 +129,9 @@ $('#addAulaForm').submit(function(event) {
       url: '/rest/classroom/{classroomId}/group/{groupId}', 
       type: 'POST', 
       contentType: 'application/json',
+      headers: {
+        'Authorization': 'Bearer ' + authToken 
+      },
       data: JSON.stringify(formData),
       success: function(response) {
         console.log('Aula aggiunta al gruppo con successo');
@@ -129,6 +145,9 @@ $('#addAulaForm').submit(function(event) {
     $.ajax({
       url: '/rest/classroom/all', 
       type: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + authToken 
+      },
       success: function(response) {
         //rimozione righe statiche
         $('#table-body').empty();
