@@ -1,7 +1,21 @@
+/******************************************
+/* CSS
+/*******************************************/
+
 body {
     font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 10pt;
+    background-color: #0F2027;
 }
+
+nav {
+    color: red; 
+}
+
+/* Box Model Hack */
+*{
+    box-sizing: border-box;
+  }
 
 .rest-test-ok {
     color: green;
