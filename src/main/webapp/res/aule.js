@@ -55,7 +55,7 @@ $('#addAulaForm').submit(function(event) {
           'Authorization': 'Bearer ' + authToken 
         },
         data: JSON.stringify(formData),
-        success: function() {
+        created: function() {
             message("Aula inserita", "success");
         },
         error: function() {
@@ -69,10 +69,7 @@ $('#addAulaForm').submit(function(event) {
       $.ajax({
         url: '/rest/classroom/all', 
         type: 'GET', 
-        headers: {
-          'Authorization': 'Bearer ' + authToken 
-        },
-        success: function(response) {
+        ok: function(response) {
           var classroomNames = Object.keys(response); //array di nomi delle aule
   
           // choice box con nomi delle aule
@@ -91,10 +88,7 @@ $('#addAulaForm').submit(function(event) {
       $.ajax({
         url: '/rest/group/all', 
         type: 'GET',
-        headers: {
-          'Authorization': 'Bearer ' + authToken 
-        },
-        success: function(response) {
+        ok: function(response) {
           var groupNames = Object.keys(response); // array nomi dei gruppi
   
           var groupSelect = $('#groupName');
