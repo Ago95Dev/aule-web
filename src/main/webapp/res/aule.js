@@ -115,30 +115,26 @@ $('#addAulaForm').submit(function(event) {
     
     function populateTable() {
         $.ajax({
-            url: 'rest/classroom/all', 
+            url: 'rest/classroom/display/all', 
             type: 'GET',
 
             success: function(response) {
               //rimozione righe statiche
               $('#table-body').empty();
-
-              response.forEach(function(data) {
-
+              console.log(response);
+              
+              Object.keys(response).forEach(key =>{
+                  
                 var row = '<tr>' +
-                  '<td><input class="form-check-input m-0 align-middle" type="checkbox" aria-label="Select invoice"></td>' +
-                  '<td><span class="text-muted">' + data.id + '</span></td>' +
-                  '<td><a href="invoice.html" class="text-reset" tabindex="-1">' + data.nome + '</a></td>' +
-                  '<td>' + data.idPosizione + '</td>' +
-                  '<td>' + data.capacita + '</td>' +
-                  '<td>' + data.email + '</td>' +
-                  '<td><span class="badge bg-success me-1"></span>' + data.attrezzature + '</td>' +
-                  '<td>' + data.caviEthernet + '</td>' +
+                  '<td><a href="invoice.html" class="text-reset" tabindex="-1">' + key + '</a></td>' +
+                  '<td>' + response[key]["email"] + '</td>' +
+                  '<td>' + response[key]["capacity"] + '</td>' +
+                  '<td>' + response[key]["note"] + '</td>' +
                   '<td class="text-end"></td>' +
                   '</tr>';
-
-
                 $('#table-body').append(row);
               });
+            
             },
             error: function() {
               console.log('Errore durante il recupero dei dati dal database');

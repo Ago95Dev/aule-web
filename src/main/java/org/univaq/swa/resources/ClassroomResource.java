@@ -496,5 +496,35 @@ public class ClassroomResource {
         }
         return null;
     }
+    
+        @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/display/all")
+    public Response getAllClassroomComplete(@Context UriInfo uriinfo) {
+        String getClassQuery = "SELECT * FROM classroom;";
+
+        Map<String, Object> responseMap = new LinkedHashMap<>();
+        try {
+            PreparedStatement getClassPS = con.prepareStatement(getClassQuery);
+            ResultSet rs = getClassPS.executeQuery();
+
+            while (rs.next()) {
+                Classroom classroom = new Classroom();
+                classroom.setCapacity(rs.getInt("capacity"));
+                classroom.setEmail(rs.getString("email"));
+                classroom.setNote(rs.getString("note"));
+                responseMap.put(rs.getString("name"), classroom);
+            }
+
+            if (responseMap.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+            return Response.ok(responseMap).build();
+        } catch (SQLException ex) {
+            Logger.getLogger(ClassroomResource.class.getName()).log(Level.SEVERE, null, ex);
+            throw new RESTWebApplicationException(ex);
+        }
+    }
 
 }
