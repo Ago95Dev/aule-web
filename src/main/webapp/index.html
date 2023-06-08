@@ -63,7 +63,6 @@
                   <div class="tab-pane fade show active" id="aule" role="tabpanel" aria-labelledby="auleTab">
                     <button class="btn btn-success btn-auth mb-2" data-bs-toggle="modal" data-bs-target="#addAulaModal"><i class="fa-solid fa-plus"></i> Inserisci Aula</button>
                     <button class="btn btn-success btn-auth mb-2" data-bs-toggle="modal" data-bs-target="#assegnaAulaModal"><i class="fa-solid fa-users-viewfinder"></i> Assegna Aula a Gruppo</button>
-                    <button class="btn btn-danger mb-2" data-bs-toggle="modal" data-bs-target="#infoAulaModal"><i class="fa-solid fa-circle-info"></i> Informazioni Aula</button>
                     <button class="btn btn-danger mb-2" data-bs-toggle="modal" data-bs-target="#attrezzatureAulaModal"><i class="fa-solid fa-print"></i> Attrezzature Aula</button>
                   </div>
                   <div>
@@ -71,7 +70,6 @@
                     <div class="tab-pane fade show active" id="eventi" role="tabpanel" aria-labelledby="auleTab">
                       <button class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#addAulaModal"><i class="fa-solid fa-check"></i> Prova</button>
                       <button class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#assegnaAulaModal"><i class="fa-solid fa-cloud"></i> Prova</button>
-                      <button class="btn btn-danger mb-2" data-bs-toggle="modal" data-bs-target="#infoAulaModal"><i class="fa-solid fa-circle-info"></i> Prova</button>
                       <button class="btn btn-danger mb-2" data-bs-toggle="modal" data-bs-target="#attrezzatureAulaModal"><i class="fa-solid fa-file"></i> Prova</button>
                     </div>
                     
@@ -176,11 +174,10 @@
                       <h5 class="modal-title" id="infoAulaModalLabel">Informazioni Aula</h5>
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
-                      <!-- Form per visualizzare le informazioni dell'aula -->
-                      
-                      <!-- Campi del form -->
-                    </div>
+                    <table class="table card-table table-vcenter text-nowrap datatable">
+                      <!--Riga dinamica da riempire-->
+                      <tbody id="table-body-info"></tbody>
+                    </table>
                     <div class="modal-footer">
                      
                     </div>

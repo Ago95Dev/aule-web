@@ -511,6 +511,7 @@ public class ClassroomResource {
 
             while (rs.next()) {
                 Classroom classroom = new Classroom();
+                classroom.setId(rs.getInt("id"));
                 classroom.setCapacity(rs.getInt("capacity"));
                 classroom.setEmail(rs.getString("email"));
                 classroom.setNote(rs.getString("note"));

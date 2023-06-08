@@ -120,13 +120,11 @@ $('#addAulaForm').submit(function(event) {
 
             success: function(response) {
               //rimozione righe statiche
-              $('#table-body').empty();
-              console.log(response);
-              
+              $('#table-body').empty();              
               Object.keys(response).forEach(key =>{
                   
                 var row = '<tr>' +
-                  '<td><a href="invoice.html" class="text-reset" tabindex="-1">' + key + '</a></td>' +
+                  '<td><a href="#" onClick="getInformazioniAula('+ response[key]["id"] +')" data-bs-toggle="modal" data-bs-target="#infoAulaModal" class="text-reset" tabindex="-1">' + key + '</a></td>' +
                   '<td>' + response[key]["email"] + '</td>' +
                   '<td>' + response[key]["capacity"] + '</td>' +
                   '<td>' + response[key]["note"] + '</td>' +
@@ -149,14 +147,50 @@ $('#addAulaForm').submit(function(event) {
     populateTable();
   });
   
+  
+  function getInformazioniAula(classroom_id){
+      console.log(classroom_id);
+      $.ajax({
+            url: 'rest/classroom/' +classroom_id, 
+            type: 'GET',
+
+            success: function(response) {
+              //rimozione righe statiche
+              $('#table-body-info').empty();
+                
+                var equipment = "";
+                var name = "Non assegnato"; 
+                response["Equipments"].forEach(element => equipment = equipment +""+ element+" - ");
+                equipment = equipment.slice(0, -2);
+                if(typeof response["Group"][0] !== "undefined"){
+                    name = response["Group"][0]["name"];
+                }
+              
+                var view =  
+                  '<tr>' +'<td>' + 'Nome ' + '</td>' + '<td>' + response["name"] + '</td>' + '</tr>' + 
+                  '<tr>' +'<td>' + 'Location ' + '</td>' + '<td>' + response["location"] + " " + response["building"] + " Piano " +response["floor"] + '</td>' + '</tr>' +
+                  '<tr>' +'<td>' + 'Referente ' + '</td>' + '<td>' + response["email"] + '</td>' + '</tr>' +
+                  '<tr>' +'<td>' + 'Capacità ' + '</td>' + '<td>' + response["capacity"] + '</td>' + '</tr>' + 
+                  '<tr>' +'<td>' + 'Note ' + '</td>' + '<td>' + response["note"] + '</td>' + '</tr>'+ 
+                  '<tr>' +'<td>' + 'Prese Elettriche ' + '</td>' + '<td>' + response["numberOfSockets"] + '</td>' + '</tr>' +
+                  '<tr>' +'<td>' + 'Prese Ethernet ' + '</td>' + '<td>' + response["numberOfEthernet"] + '</td>' + '</tr>'+
+                  '<tr>' +'<td>' + 'Dipartimento  ' + '</td>' + '<td>' + name + '</td>' + '</tr>'+
+                  '<tr>' +'<td>' + 'Attrezzature  ' + '</td>' + '<td style="white-space:pre-wrap; word-wrap:break-word">' + equipment + '</td>' + '</tr>';
+                $('#table-body-info').append(view);
+
+            },
+            error: function() {
+              console.log('Errore durante il recupero dei dati dal database');
+            }
+        });
+  }
+  
   // 
   $('#addClassroomToGroupForm').submit(function(event) {
     event.preventDefault();
     var classroomId = $('#classroomName').val();
     var groupId = $('#groupName').val();
-    
-    console.log(classroomId);
-    console.log(groupId);
+
     var formData = {
       classroom_id: classroomId,
       group_id: groupId
