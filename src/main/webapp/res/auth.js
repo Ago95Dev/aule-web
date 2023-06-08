@@ -3,10 +3,9 @@ $(document).ready(function() {
       event.preventDefault();
       
       // valori campi del form
-      var email = $('#exampleDropdownFormEmail2').val();
-      var password = $('#exampleDropdownFormPassword2').val();
+      var email = $('#emailDropdown').val();
+      var password = $('#passwordDropdown').val();
      
-      
       //l'oggetto dati da inviare al server
       var formData = {
         email: email,
@@ -19,10 +18,11 @@ $(document).ready(function() {
         contentType: 'application/x-www-form-urlencoded',
         data: formData,
         success: function(response) {
-          $('#dropdownMenuButton1').hide();
-          var authToken = response.token; // Salva il token dalla risposta
-        // salvataggio del token in una variabile
-        localStorage.setItem('authToken', authToken);
+          $('#loginButton').hide();
+          var authToken = response; // Salva il token dalla risposta
+
+          document.cookie = "token=" + response;
+          sessionStorage.setItem('authToken', response);
           console.log('Autenticazione riuscita');
         },
         error: function() {

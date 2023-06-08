@@ -35,17 +35,17 @@
                 
                 <div class="text-end">
                     
-                    <button class="btn btn-secondary " type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn btn-secondary " type="button" id="loginButton" data-bs-toggle="dropdown" aria-expanded="false">
                         Login
                       </button>
                   <form class="dropdown-menu p-4">
                     <div class="mb-3">
-                      <label for="exampleDropdownFormEmail2" class="form-label">Email address</label>
-                      <input type="email" class="form-control" id="exampleDropdownFormEmail2">
+                      <label for="emailDropdown" class="form-label">Email address</label>
+                      <input type="email" class="form-control" id="emailDropdown">
                     </div>
                     <div class="mb-3">
-                      <label for="exampleDropdownFormPassword2" class="form-label">Password</label>
-                      <input type="password" class="form-control" id="exampleDropdownFormPassword2">
+                      <label for="passwordDropdown" class="form-label">Password</label>
+                      <input type="password" class="form-control" id="passwordDropdown">
                     </div>
                     <div class="mb-3">
                     </div>
@@ -61,8 +61,8 @@
                 
                 <div class="tab-content my-3" id="tabContent">
                   <div class="tab-pane fade show active" id="aule" role="tabpanel" aria-labelledby="auleTab">
-                    <button class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#addAulaModal"><i class="fa-solid fa-plus"></i> Inserisci Aula</button>
-                    <button class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#assegnaAulaModal"><i class="fa-solid fa-users-viewfinder"></i> Assegna Aula a Gruppo</button>
+                    <button class="btn btn-success btn-auth mb-2" data-bs-toggle="modal" data-bs-target="#addAulaModal"><i class="fa-solid fa-plus"></i> Inserisci Aula</button>
+                    <button class="btn btn-success btn-auth mb-2" data-bs-toggle="modal" data-bs-target="#assegnaAulaModal"><i class="fa-solid fa-users-viewfinder"></i> Assegna Aula a Gruppo</button>
                     <button class="btn btn-danger mb-2" data-bs-toggle="modal" data-bs-target="#infoAulaModal"><i class="fa-solid fa-circle-info"></i> Informazioni Aula</button>
                     <button class="btn btn-danger mb-2" data-bs-toggle="modal" data-bs-target="#attrezzatureAulaModal"><i class="fa-solid fa-print"></i> Attrezzature Aula</button>
                   </div>
@@ -157,11 +157,13 @@
                           <label for="groupName" class="form-label">Nome Gruppo</label>
                           <select class="form-control" id="groupName" required></select>
                         </div>
-                      </form>                      
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Aggiungi Aula al Gruppo</button>
+                        </div>
+                      </form> 
+                      
                     </div>
-                    <div class="modal-footer">
-                      <button type="submit" class="btn btn-primary">Aggiungi Aula al Gruppo</button>
-                    </div>
+
                   </div>
                 </div>
               </div>
@@ -262,7 +264,7 @@
           </table>
         </div>
         <div class="card-footer d-flex align-items-center">
-          <p class="m-0 text-muted">Showing <span>1</span> to <span>8</span> of <span>16</span> entries</p>
+          <p class="m-0 text-muted">Showing <span>1</span> to <span>1</span> of <span>1</span> entries</p>
           <ul class="pagination m-0 ms-auto">
             <li class="page-item disabled">
               <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
@@ -272,10 +274,6 @@
               </a>
             </li>
             <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item active"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item"><a class="page-link" href="#">4</a></li>
-            <li class="page-item"><a class="page-link" href="#">5</a></li>
             <li class="page-item">
               <a class="page-link" href="#">
                 next <!-- Download SVG icon from http://tabler-icons.io/i/chevron-right -->

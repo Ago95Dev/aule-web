@@ -42,7 +42,6 @@ public class AuthenticationRes {
                             @FormParam("password") String password) {
         try {
             int utente_id = authenticate(email, password);
-            System.out.println(utente_id);
             if (utente_id > 0) {
                 String authToken = issueToken(uriinfo, email);
                 try (PreparedStatement stmt = con.prepareStatement("UPDATE user SET token = ? WHERE id = ?")) {
