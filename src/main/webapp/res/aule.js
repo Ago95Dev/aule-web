@@ -31,9 +31,9 @@ $(document).ready(function() {
     
     function removeNotAuthorizedButton(){
        console.log(authToken);
-      if(authToken === "undefined"){
+      if(authToken === "undefined" || authToken === null){
         $('#aule .btn-auth').hide();
-        $('#loginButton').hide();
+        $('#loginButton').show();
        } else {
         $('#aule .btn-auth').show();
         $('#loginButton').hide();
@@ -67,8 +67,16 @@ $('#addAulaForm').submit(function(event) {
           'Authorization': 'Bearer ' + authToken 
         },
         data: JSON.stringify(formData),
-        created: function() {
-            message("Aula inserita", "success");
+        success: function() {
+            $('#name').val(""),
+            $('#positionID').val(""),
+            $('#capacity').val(""),
+            $('#email').val(""),
+            $('#numberOfEthernet').val(""),
+            $('#numberOfSockets').val(""),
+            $('#note').val(""),
+            $('#equipmentsId').val(""),
+            alert('Aula Inserita con Successo');
         },
         error: function() {
           console.log(JSON.stringify(formData));
@@ -95,7 +103,26 @@ $('#addAulaForm').submit(function(event) {
         }
       });
     }
-  
+    
+      function populateClassroomNames() {
+      $.ajax({
+        url: 'rest/classroom/all', 
+        type: 'GET', 
+        success: function(response) {
+          var classroomNames = Object.keys(response); //array di nomi delle aule
+
+          // choice box con nomi delle aule
+          var classroomSelect = $('#classroomName');
+          classroomNames.forEach(function(className) {
+            classroomSelect.append('<option value="' + response[className] + '">' + className + '</option>');
+          });
+        },
+        error: function() {
+          console.log('Errore durante il recupero dei nomi delle aule');
+        }
+      });
+    }
+
     function populateGroupNames() {
       $.ajax({
         url: 'rest/classroom/group/all', 
@@ -109,6 +136,43 @@ $('#addAulaForm').submit(function(event) {
         },
         error: function() {
           console.log('Errore durante il recupero dei nomi dei gruppi');
+        }
+      });
+    }
+    
+    function populatePosition() {
+      $.ajax({
+        url: 'rest/classroom/position/all', 
+        type: 'GET',
+        success: function(response) {
+          console.log(response);
+         
+          var positionNames = Object.keys(response); // array nomi dei gruppi
+          var positionSelect = $('#positionID');
+          positionNames.forEach(function(positionName) {
+            positionSelect.append('<option value="' + response[positionName] + '">' + positionName + '</option>');
+          });
+        },
+        error: function() {
+          console.log('Errore durante il recupero delle posizione');
+        }
+      });
+    }
+
+    function populateEquipmentIDs() {
+      $.ajax({
+        url: 'rest/classroom/equipment/all', 
+        type: 'GET',
+        success: function(response) {
+            
+          var equipmentNames = Object.keys(response); // array nomi dei gruppi
+          var equipmentSelect = $('#equipmentsId');
+          equipmentNames.forEach(function(equipmentName) {
+            equipmentSelect.append('<option value="' + response[equipmentName] + '">' + equipmentName + '</option>');
+          });
+        },
+        error: function() {
+          console.log('Errore durante il recupero delle posizione');
         }
       });
     }
@@ -140,8 +204,11 @@ $('#addAulaForm').submit(function(event) {
         });
     }
   
+  
     removeNotAuthorizedButton();
     //choicebox dei nomi delle aule e dei gruppi
+    populatePosition();
+    populateEquipmentIDs();
     populateClassroomNames();
     populateGroupNames();
     populateTable();

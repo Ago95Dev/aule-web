@@ -15,6 +15,10 @@
         <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
         <!-- icone -->
         <script src="https://kit.fontawesome.com/98e77ba19b.js" crossorigin="anonymous"></script>
+        
+        <script src="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.jquery.min.js"></script>
+        <link href="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.min.css" rel="stylesheet"/>
+
 	
 
     </head>
@@ -95,8 +99,8 @@
                           <input type="text" class="form-control" id="name" required>
                         </div>
                         <div class="mb-3">
-                          <label for="positionID" class="form-label">ID Posizione</label>
-                          <input type="number" class="form-control" id="positionID" required>
+                          <label for="positionID" class="form-label">Posizione</label>
+                          <select class="form-control" id="positionID" required></select>
                         </div>
                         <div class="mb-3">
                           <label for="capacity" class="form-label">Capacità</label>
@@ -119,19 +123,15 @@
                           <textarea class="form-control" id="note"></textarea>
                         </div>
                         <div class="mb-3">
-                          <label for="equipmentsId" class="form-label">ID delle Attrezzature</label>
-                          <input type="text" class="form-control" id="equipmentsId" required>
+                          <label for="equipmentsId" class="form-label">Attrezzature</label>
+                          <select class="form-control choosen-select" id="equipmentsId" multiple></select>
                         </div>
                         <div class="modal-footer">
                           <button type="submit" class="btn btn-primary">Invia</button>
                         </div>
                       </form> 
                     </div>
-                    <form>
-                    <div class="modal-footer">
-                      <button type="submit" class="btn btn-primary">Invia</button>
-                    </div>
-                  </form>
+
                   </div>
                 </div>
               </div>

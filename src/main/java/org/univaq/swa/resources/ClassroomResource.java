@@ -35,6 +35,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import org.univaq.swa.exceptions.CustomException;
@@ -194,6 +195,72 @@ public class ClassroomResource {
         }
     }
 
+        /**
+     * Get all classrooms
+     *
+     * @param uriinfo
+     * @return
+     */
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/position/all")
+    public Response getAllPosition(@Context UriInfo uriinfo) {
+        String getPositionQuery = "SELECT * FROM position;";
+
+        Map<String, Object> responseMap = new LinkedHashMap<>();
+        try {
+            PreparedStatement getPositionPS = con.prepareStatement(getPositionQuery);
+            ResultSet rs = getPositionPS.executeQuery();
+
+            while (rs.next()) {
+                String key = rs.getString("location") + " " + rs.getString("building") + " Piano " + rs.getString("floor");
+                                System.out.print("X " + key);
+                responseMap.put(key, rs.getInt("id"));
+            }
+            if (responseMap.isEmpty()) {
+                
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+            return Response.ok(responseMap).build();
+        } catch (SQLException ex) {
+            Logger.getLogger(ClassroomResource.class.getName()).log(Level.SEVERE, null, ex);
+            throw new RESTWebApplicationException(ex);
+        }
+    }
+    
+    /**
+     * Get all classrooms
+     *
+     * @param uriinfo
+     * @return
+     */
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/equipment/all")
+    public Response getAllEquipments(@Context UriInfo uriinfo) {
+        String getEquipmentQuery = "SELECT * FROM equipment;";
+
+        Map<String, Object> responseMap = new LinkedHashMap<>();
+        try {
+            PreparedStatement getEquipmentPS = con.prepareStatement(getEquipmentQuery);
+            ResultSet rs = getEquipmentPS.executeQuery();
+
+            while (rs.next()) {
+                responseMap.put(rs.getString("name"), rs.getInt("id"));
+            }
+            if (responseMap.isEmpty()) {
+                
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+            return Response.ok(responseMap).build();
+        } catch (SQLException ex) {
+            Logger.getLogger(ClassroomResource.class.getName()).log(Level.SEVERE, null, ex);
+            throw new RESTWebApplicationException(ex);
+        }
+    }
+    
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -256,16 +323,15 @@ public class ClassroomResource {
             try ( ResultSet rs = ps.getGeneratedKeys()) {
                 rs.next();
                 int id_classroom = rs.getInt(1);
-
-                String stringArrayToSplit = (String) json.get("equipmentsId");
-                String[] stringArray = stringArrayToSplit.split(",");
+                ArrayList<String> stringArray;
+                stringArray = (ArrayList<String>) json.get("equipmentsId");
                 for (String equipmentId : stringArray) {
                     try ( PreparedStatement ps2 = con.prepareStatement(addEquipment)) {
                         ps2.setInt(1, id_classroom);
                         ps2.setInt(2, Integer.parseInt(equipmentId));
                         ps2.executeUpdate();
                     }
-                }
+                } 
                 URI uri = uriinfo.getBaseUriBuilder().path("classroom/" + id_classroom).build();
                 return Response.created(uri).build();
             }
