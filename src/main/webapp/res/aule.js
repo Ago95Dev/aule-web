@@ -22,11 +22,14 @@ $(document).ready(function() {
     $('#nav-eventi').click(function() {
       hideClassroomButtons();
       showEventButtons();
+      removeNotAuthorizedButton();
     });
+    
     // Al click sulla navbar "Aule"
     $('#nav-aule').click(function() {
       hideEventButtons();
       showClassroomButtons();
+      removeNotAuthorizedButton();
     });
     
     function removeNotAuthorizedButton(){
@@ -41,9 +44,7 @@ $(document).ready(function() {
         $('#logoutButton').show();
       }
     }
-
-
-
+    
 // id addAula on submit function 
 $('#addAulaForm').submit(function(event) {
        event.preventDefault(); 
@@ -60,7 +61,6 @@ $('#addAulaForm').submit(function(event) {
       };
       console.log(formData);
       
-    
       $.ajax({
         url: 'rest/classroom/addClassroom',
         type: 'POST',
@@ -85,7 +85,7 @@ $('#addAulaForm').submit(function(event) {
           alert('Errore inserimento aula.');
         } 
       });
-});
+    });
 
   function populateClassroomNames() {
       $.ajax({
@@ -107,7 +107,7 @@ $('#addAulaForm').submit(function(event) {
     }
     
       function populateClassroomNames() {
-      $.ajax({
+      $.ajax({ 
         url: 'rest/classroom/all', 
         type: 'GET', 
         success: function(response) {
