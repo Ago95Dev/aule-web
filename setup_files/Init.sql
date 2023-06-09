@@ -326,6 +326,10 @@ ALTER TABLE `group_has_classroom`
   ADD KEY `par_ind` (`group_id`),
   ADD KEY `fk_classroom_group` (`classroom_id`);
 
+
+ALTER TABLE `group_has_classroom`
+    ADD CONSTRAINT CK_Row_Group_Has_Classroom_Unique UNIQUE (`group_id`,`classroom_id`)
+;
 --
 -- Indexes for table `position`
 --
