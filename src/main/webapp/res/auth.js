@@ -1,4 +1,7 @@
 $(document).ready(function() {
+    
+    const logout_send = $('#logoutButton');
+
     $('.dropdown-menu').submit(function(event) {
       event.preventDefault();
       
@@ -23,12 +26,32 @@ $(document).ready(function() {
 
           document.cookie = "token=" + response;
           sessionStorage.setItem('authToken', response);
-          console.log('Autenticazione riuscita');
+          location.reload();
+
         },
         error: function() {
           alert('Errore durante l\'autenticazione. Riprova.');
         } 
       });
     });
+    
+    // Send logout request
+    logout_send.click(function () {
+        $.ajax({
+            url: 'rest/auth/logout',
+            type: 'DELETE',
+            success: function () {
+                // noinspection JSUnresolvedFunction
+                sessionStorage.removeItem("authToken");
+                document.cookie = "token=";
+                alert('Logout effettuato con successo.');
+                location.reload();
+            },
+            error: function (request, status, error) {
+                handleError(request, status, error, "", "Errore in fase di logout.");
+            },
+            cache: false,
+        });
+    });
+    
   });
-  

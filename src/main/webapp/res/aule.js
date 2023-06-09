@@ -34,9 +34,11 @@ $(document).ready(function() {
       if(authToken === "undefined" || authToken === null){
         $('#aule .btn-auth').hide();
         $('#loginButton').show();
+        $('#logoutButton').hide();
        } else {
         $('#aule .btn-auth').show();
         $('#loginButton').hide();
+        $('#logoutButton').show();
       }
     }
 
