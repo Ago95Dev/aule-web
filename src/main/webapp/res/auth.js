@@ -22,6 +22,7 @@ $(document).ready(function() {
         data: formData,
         success: function(response) {
           $('#loginButton').hide();
+          $('#logoutButton').show();
           var authToken = response; // Salva il token dalla risposta
 
           document.cookie = "token=" + response;

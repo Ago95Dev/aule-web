@@ -1,4 +1,3 @@
-// da sistemare, chiamate ajax non funzionano
 
 $(document).ready(function() {
 
@@ -190,7 +189,7 @@ $('#addAulaForm').submit(function(event) {
               Object.keys(response).forEach(key =>{
                   
                 var row = '<tr>' +
-                  '<td><a href="#" onClick="getInformazioniAula('+ response[key]["id"] +')" data-bs-toggle="modal" data-bs-target="#infoAulaModal" class="text-reset" tabindex="-1">' + key + '</a></td>' +
+                  '<td><a href="#" onClick="getInformazioniAula('+ response[key]["id"] +')" data-bs-toggle="modal" data-bs-target="#infoAulaModal" class="text-reset" tabindex="-1"><i class="fa-solid fa-circle-info"></i>' + key + '</a></td>' +
                   '<td>' + response[key]["email"] + '</td>' +
                   '<td>' + response[key]["capacity"] + '</td>' +
                   '<td>' + response[key]["note"] + '</td>' +
@@ -245,7 +244,7 @@ $('#addAulaForm').submit(function(event) {
                   '<tr>' +'<td>' + 'Prese Ethernet ' + '</td>' + '<td>' + response["numberOfEthernet"] + '</td>' + '</tr>'+
                   '<tr>' +'<td>' + 'Dipartimento  ' + '</td>' + '<td>' + name + '</td>' + '</tr>'+
                   '<tr>' +'<td>' + 'Attrezzature  ' + '</td>' + '<td style="white-space:pre-wrap; word-wrap:break-word">' + equipment + '</td>' + '</tr>';
-                $('#table-body-info').append(view);
+                  $('#table-body-info').append(view);
 
             },
             error: function() {
@@ -277,8 +276,39 @@ $('#addAulaForm').submit(function(event) {
         console.log('Errore durante l\'aggiunta dell\'aula al gruppo');
       }
     });
-
-    // Righe dinamiche per la tabella (WIP)
+   
+    $('#updateAulaForm').submit(function(event) {
+      event.preventDefault();
+    
+      var classroomId = $('#classroomId').val();
+    
+      var formData = {
+        name: $('#name').val(),
+        positionID: $('#positionID').val(),
+        capacity: $('#capacity').val(),
+        email: $('#email').val(),
+        numberOfEthernet: $('#numberOfEthernet').val(),
+        numberOfSockets: $('#numberOfSockets').val(),
+        note: $('#note').val(),
+        equipmentsId: $('#equipmentsId').val()
+      };
+    
+      console.log(formData);
+    
+      $.ajax({
+        url: 'rest/classroom/updateClassroom/' + classroomId,
+        type: 'PUT',
+        contentType: 'application/json',
+        data: JSON.stringify(formData),
+        success: function() {
+          alert('Aula aggiornata');
+        },
+        error: function() {
+          console.log(JSON.stringify(formData));
+          alert('Errore durante aggiornamento');
+        }
+      });
+    });
 
   });
 

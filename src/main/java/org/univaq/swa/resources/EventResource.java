@@ -134,10 +134,10 @@ public class EventResource {
         String firstOccurenceDate = (String) event.get("date");
         LocalDate startDate = LocalDate.parse(firstOccurenceDate);
 
-        int classroom_id = (int) event.get("classroom_id");
+        int classroom_id = Integer.parseInt((String)event.get("classroom_id"));
         int course_id = 0;
         if (event.containsKey("course_id")) {
-            course_id = (int) event.get("course_id");
+            course_id = Integer.parseInt((String)event.get("course_id"));
         }
         if (event.containsKey("until_date")) {
             try ( PreparedStatement ps1 = con.prepareStatement(addRecurrent, Statement.RETURN_GENERATED_KEYS)) {
@@ -223,6 +223,7 @@ public class EventResource {
                 ps4.setInt(9, classroom_id);
                 ps4.executeUpdate();
             } catch (SQLException ex) {
+                ex.printStackTrace();
                 Logger.getLogger(EventResource.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -295,7 +296,7 @@ public class EventResource {
             throw new RESTWebApplicationException(ex);
         }
     }
-
+    //WARNING terminale: GET ClassroomResource.getClassroom, should not consume any entity.
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
