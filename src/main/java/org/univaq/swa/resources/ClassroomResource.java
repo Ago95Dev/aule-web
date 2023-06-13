@@ -215,7 +215,6 @@ public class ClassroomResource {
 
             while (rs.next()) {
                 String key = rs.getString("location") + " " + rs.getString("building") + " Piano " + rs.getString("floor");
-                                System.out.print("X " + key);
                 responseMap.put(key, rs.getInt("id"));
             }
             if (responseMap.isEmpty()) {

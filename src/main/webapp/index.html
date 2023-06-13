@@ -15,381 +15,393 @@
         <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
         <!-- icone -->
         <script src="https://kit.fontawesome.com/98e77ba19b.js" crossorigin="anonymous"></script>
-        
+
         <script src="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.jquery.min.js"></script>
         <link href="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.min.css" rel="stylesheet"/>
 
-	
+
 
     </head>
     <body>
         <header class="p-3 bg-dark text-white">
             <div class="container">
-              <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-                <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-                  <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"/></svg>
-                </a>
-               
-                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-          
-                <li><a href="#" class="nav-link px-2 text-white" id="nav-aule"> <i class="fa-solid fa-users-between-lines"></i> Aule</a></li>
-                <li><a href="#" class="nav-link px-2 text-white" id="nav-eventi"> <i class="fa-regular fa-calendar-days"></i> Eventi</a></li>
-                
-                </ul>
-                
-                <div class="text-end">
-                    
-                    <button class="btn btn-secondary " type="button" id="loginButton" data-bs-toggle="dropdown" aria-expanded="false">
-                        Login
-                    </button>
-                    <button class="btn btn-secondary " type="button" id="logoutButton">
-                        Logout
-                    </button>
-                  <form class="dropdown-menu p-4">
-                    <div class="mb-3">
-                      <label for="emailDropdown" class="form-label">Email address</label>
-                      <input type="email" class="form-control" id="emailDropdown">
-                    </div>
-                    <div class="mb-3">
-                      <label for="passwordDropdown" class="form-label">Password</label>
-                      <input type="password" class="form-control" id="passwordDropdown">
-                    </div>
-                    <div class="mb-3">
-                    </div>
-                    <button type="submit" class="btn btn-secondary">Sign in</button>
-                  </form>
-                </div>
+                <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                    <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                        <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"/></svg>
+                    </a>
 
-              </div>
+                    <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+
+                        <li><a href="#" class="nav-link px-2 text-white" id="nav-aule"> <i class="fa-solid fa-users-between-lines"></i> Aule</a></li>
+                        <li><a href="#" class="nav-link px-2 text-white" id="nav-eventi"> <i class="fa-regular fa-calendar-days"></i> Eventi</a></li>
+
+                    </ul>
+
+                    <div class="text-end">
+
+                        <button class="btn btn-secondary " type="button" id="loginButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            Login
+                        </button>
+                        <button class="btn btn-secondary " type="button" id="logoutButton">
+                            Logout
+                        </button>
+                        <form class="dropdown-menu p-4">
+                            <div class="mb-3">
+                                <label for="emailDropdown" class="form-label">Email address</label>
+                                <input type="email" class="form-control" id="emailDropdown">
+                            </div>
+                            <div class="mb-3">
+                                <label for="passwordDropdown" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="passwordDropdown">
+                            </div>
+                            <div class="mb-3">
+                            </div>
+                            <button type="submit" class="btn btn-secondary">Sign in</button>
+                        </form>
+                    </div>
+
+                </div>
             </div>
-          </header>
-          <section>
-            <div class="container">
-                
-                <div class="tab-content my-3" id="tabContent">
-                  <div class="tab-pane fade show active" id="aule" role="tabpanel" aria-labelledby="auleTab">
-                    <button class="btn btn-success btn-auth mb-2" data-bs-toggle="modal" data-bs-target="#addAulaModal"><i class="fa-solid fa-plus"></i> Inserisci Aula</button>
-                    <button class="btn btn-success btn-auth mb-2" data-bs-toggle="modal" data-bs-target="#assegnaAulaModal"><i class="fa-solid fa-users-viewfinder"></i> Assegna Aula a Gruppo</button>
-                     <!--Da spostare nella tabella (?)-->
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#csvModal">  Carica CSV</button>
-                    <!--Da spostare nella singola riga dell'aula-->
-                    <button class="btn btn-success btn-auth mb-2" onclick="aggiornaAula()">
-                      <i class="fa-solid fa-sync"></i> Aggiorna Aula
-                    </button>                    
-                  </div>
-                  <div>
-                    <!--Da aggiungere pannello eventi -->
-                    <div class="tab-pane fade show active" id="eventi" role="tabpanel" aria-labelledby="auleTab">
-                      <button class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#addEventModal"><i class="fa-solid fa-check"></i> Inserisci Evento</button>                
-                      <!--Da spostare nella riga dell'evento-->
-                      <button class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#assegnaAulaModal"><i class="fa-solid fa-cloud"></i> Aggiorna Evento</button>
-                      <button class="btn btn-danger mb-2" data-bs-toggle="modal" data-bs-target="#attrezzatureAulaModal"><i class="fa-solid fa-file"></i> Prova</button>
-                    </div>
-                    
-                  </div>
-                </div>
-              </div>
-              
-              <!-- Modali per i form -->
-              <!-- Modale Inserisci Aula -->
-              <div class="modal fade" id="addAulaModal" tabindex="-1" aria-labelledby="addAulaModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="addAulaModalLabel">Inserisci Aula</h5>
-                      <!--inserimento labels form-->
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                      <!-- Form per l'inserimento dell'aula -->
-                      <form id="addAulaForm">
-                        <div class="mb-3">
-                          <label for="name" class="form-label">Nome</label>
-                          <input type="text" class="form-control" id="name" required>
-                        </div>
-                        <div class="mb-3">
-                          <label for="positionID" class="form-label">Posizione</label>
-                          <select class="form-control" id="positionID" required></select>
-                        </div>
-                        <div class="mb-3">
-                          <label for="capacity" class="form-label">Capacità</label>
-                          <input type="number" class="form-control" id="capacity" required>
-                        </div>
-                        <div class="mb-3">
-                          <label for="email" class="form-label">Email</label>
-                          <input type="email" class="form-control" id="email" required>
-                        </div>
-                        <div class="mb-3">
-                          <label for="numberOfEthernet" class="form-label">Numero di Ethernet</label>
-                          <input type="number" class="form-control" id="numberOfEthernet" required>
-                        </div>
-                        <div class="mb-3">
-                          <label for="numberOfSockets" class="form-label">Numero di Prese</label>
-                          <input type="number" class="form-control" id="numberOfSockets" required>
-                        </div>
-                        <div class="mb-3">
-                          <label for="note" class="form-label">Note</label>
-                          <textarea class="form-control" id="note"></textarea>
-                        </div>
-                        <div class="mb-3">
-                          <label for="equipmentsId" class="form-label">Attrezzature</label>
-                          <select class="form-control choosen-select" id="equipmentsId" multiple></select>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="submit" class="btn btn-primary">Invia</button>
-                        </div>
-                      </form> 
-                    </div>
-
-                  </div>
-                </div>
-              </div>
-              
-              <!-- Modale Assegna Aula a Gruppo -->
-              <div class="modal fade" id="assegnaAulaModal" tabindex="-1" aria-labelledby="assegnaAulaModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="assegnaAulaModalLabel">Assegna Aula a Gruppo</h5>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                      <!-- Form per l'assegnazione dell'aula a un gruppo -->
-                      <form id="addClassroomToGroupForm">
-                        <div class="mb-3">
-                          <label for="classroomName" class="form-label">Nome Aula</label>
-                          <select class="form-control" id="classroomName" required></select>
-                        </div>
-                        <div class="mb-3">
-                          <label for="groupName" class="form-label">Nome Gruppo</label>
-                          <select class="form-control" id="groupName" required></select>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">Aggiungi Aula al Gruppo</button>
-                        </div>
-                      </form> 
-                      
-                    </div>
-
-                  </div>
-                </div>
-              </div>
-              
-              <!-- Modale Informazioni Aula -->
-              <div class="modal fade" id="infoAulaModal" tabindex="-1" aria-labelledby="infoAulaModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="infoAulaModalLabel">Informazioni Aula</h5>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <table class="table card-table table-vcenter text-nowrap datatable">
-                      <!--Riga dinamica da riempire-->
-                      <tbody id="table-body-info"></tbody>
-                    </table>
-                    <div class="modal-footer">
-                     
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- Modale Attrezzature Aula -->
-              <div class="modal fade" id="attrezzatureAulaModal" tabindex="-1" aria-labelledby="attrezzatureAulaModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="attrezzatureAulaModalLabel">Attrezzature Aula</h5>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                      <!-- Form per visualizzare le attrezzature dell'aula -->
-                      <!-- Campi del form -->
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-                <!--Carica CSV Form-->
-
-                <!--Update Aula Form-->
-                <!-- Modale Aggiorna Aula -->
-<div class="modal fade" id="updateAulaModal" tabindex="-1" aria-labelledby="updateAulaModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="updateAulaModalLabel">Aggiorna Aula</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <!-- Form per l'aggiornamento dell'aula -->
-        <form id="updateAulaForm">
-          <input type="hidden" id="classroomId" value="">
-          <div class="mb-3">
-            <label for="name" class="form-label">Nome</label>
-            <input type="text" class="form-control" id="name" required>
-          </div>
-          <div class="mb-3">
-            <label for="positionID" class="form-label">Posizione</label>
-            <select class="form-control" id="positionID" required></select>
-          </div>
-          <div class="mb-3">
-            <label for="capacity" class="form-label">Capacità</label>
-            <input type="number" class="form-control" id="capacity" required>
-          </div>
-          <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" class="form-control" id="email" required>
-          </div>
-          <div class="mb-3">
-            <label for="numberOfEthernet" class="form-label">Numero di Ethernet</label>
-            <input type="number" class="form-control" id="numberOfEthernet" required>
-          </div>
-          <div class="mb-3">
-            <label for="numberOfSockets" class="form-label">Numero di Prese</label>
-            <input type="number" class="form-control" id="numberOfSockets" required>
-          </div>
-          <div class="mb-3">
-            <label for="note" class="form-label">Note</label>
-            <textarea class="form-control" id="note"></textarea>
-          </div>
-          <div class="mb-3">
-            <label for="equipmentsId" class="form-label">Attrezzature</label>
-            <select class="form-control choosen-select" id="equipmentsId" multiple></select>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Aggiorna</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-                <!-- Modal per inserire un evento -->
-<div class="modal fade" id="addEventModal" tabindex="-1" aria-labelledby="addEventModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="addEventModalLabel">Inserisci Evento</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <!-- Form per inserire un evento -->
-        <form id="addEventForm">
-          <div class="mb-3">
-            <label for="eventName" class="form-label">Nome Evento</label>
-            <input type="text" class="form-control" id="eventName" required>
-          </div>
-          <div class="mb-3">
-            <label for="eventDate" class="form-label">Data</label>
-            <input type="date" class="form-control" id="eventDate" required>
-          </div>
-          <div class="mb-3">
-            <label for="startTime" class="form-label">Ora di inizio</label>
-            <input type="time" class="form-control" id="startTime" required>
-          </div>
-          <div class="mb-3">
-            <label for="endTime" class="form-label">Ora di fine</label>
-            <input type="time" class="form-control" id="endTime" required>
-          </div>
-          <div class="mb-3">
-            <label for="eventDescription" class="form-label">Descrizione</label>
-            <textarea class="form-control" id="eventDescription" rows="3" required></textarea>
-          </div>
-          <div class="mb-3">
-            <label for="eventType" class="form-label">Tipo</label>
-            <input type="text" class="form-control" id="eventType" required>
-          </div>
-          <div class="mb-3">
-            <label for="eventEmail" class="form-label">Email</label>
-            <input type="email" class="form-control" id="eventEmail" required>
-          </div>
-          <div class="mb-3">
-            <label for="classroomId" class="form-label">ID Aula</label>
-            <input type="number" class="form-control" id="classroomId" required>
-          </div>
-          <div class="mb-3">
-            <label for="courseId" class="form-label">ID Corso</label>
-            <input type="number" class="form-control" id="courseId" required>
-          </div>
-          <div class="mb-3">
-            <label for="untilDate" class="form-label">Data di scadenza</label>
-            <input type="date" class="form-control" id="untilDate">
-          </div>
-          <div class="mb-3">
-            <label for="recurrencyType" class="form-label">Tipo di ricorrenza</label>
-            <select class="form-select" id="recurrencyType">
-              <option value="DAILY">Giornaliera</option>
-              <option value="WEEKLY">Settimanale</option>
-              <option value="MONTHLY">Mensile</option>
-            </select>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
-        <button type="submit" class="btn btn-primary" form="addEventForm">Inserisci</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-              
-        </section>
-          
-          
+        </header>
         <section>
-       <!--tabella classroom-->
-       
-       <div class="card mx-3">
-        <div class="card-header">
-          <h3 class="card-title">Aule</h3>
-        </div>
-        
-        <div class="table-responsive">
-          <table class="table card-table table-vcenter text-nowrap datatable">
-            <thead>
-              <tr>
-                <th>Nome</th>           
-                <th>Email</th>
-                <th>Capacità</th>
-                <th>Note</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-            </tbody>
-            <!--Riga dinamica da riempire-->
-            <tbody id="table-body"></tbody>
-          </table>
-        </div>
-        <div class="card-footer d-flex align-items-center">
-          <p class="m-0 text-muted">Showing <span>1</span> to <span>1</span> of <span>1</span> entries</p>
-          <ul class="pagination m-0 ms-auto">
-            <li class="page-item disabled">
-              <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
-                <!-- Download SVG icon from http://tabler-icons.io/i/chevron-left -->
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M15 6l-6 6l6 6"></path></svg>
-                prev
-              </a>
-            </li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item">
-              <a class="page-link" href="#">
-                next <!-- Download SVG icon from http://tabler-icons.io/i/chevron-right -->
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M9 6l6 6l-6 6"></path></svg>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-      </section>
-      
+            <div class="container">
+
+                <div class="tab-content my-3" id="tabContent">
+                    <div class="tab-pane fade show active" id="aule" role="tabpanel" aria-labelledby="auleTab">
+                        <button class="btn btn-success btn-auth mb-2" data-bs-toggle="modal" data-bs-target="#addAulaModal"><i class="fa-solid fa-plus"></i> Inserisci Aula</button>
+                        <button class="btn btn-success btn-auth mb-2" data-bs-toggle="modal" data-bs-target="#assegnaAulaModal"><i class="fa-solid fa-users-viewfinder"></i> Assegna Aula a Gruppo</button>
+                        <!--Da spostare nella tabella (?)-->
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#csvModal">  Carica CSV</button>
+                        <!--Da spostare nella singola riga dell'aula-->
+                        <button class="btn btn-success btn-auth mb-2" onclick="aggiornaAula()">
+                            <i class="fa-solid fa-sync"></i> Aggiorna Aula
+                        </button>                    
+                    </div>
+                    <div>
+                        <!--Da aggiungere pannello eventi -->
+                        <div class="tab-pane fade show active" id="eventi" role="tabpanel" aria-labelledby="auleTab">
+                            <button class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#addEventModal"><i class="fa-solid fa-check"></i> Inserisci Evento</button>                
+                            <!--Da spostare nella riga dell'evento-->
+                            <button class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#assegnaAulaModal"><i class="fa-solid fa-cloud"></i> Aggiorna Evento</button>
+                            <button class="btn btn-danger mb-2" data-bs-toggle="modal" data-bs-target="#attrezzatureAulaModal"><i class="fa-solid fa-file"></i> Prova</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modali per i form -->
+            <!-- Modale Inserisci Aula -->
+            <div class="modal fade" id="addAulaModal" tabindex="-1" aria-labelledby="addAulaModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addAulaModalLabel">Inserisci Aula</h5>
+                            <!--inserimento labels form-->
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Form per l'inserimento dell'aula -->
+                            <form id="addAulaForm">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Nome</label>
+                                    <input type="text" class="form-control" id="name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="positionID" class="form-label">Posizione</label>
+                                    <select class="form-control" id="positionID" required></select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="capacity" class="form-label">Capacità</label>
+                                    <input type="number" class="form-control" id="capacity" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="numberOfEthernet" class="form-label">Numero di Ethernet</label>
+                                    <input type="number" class="form-control" id="numberOfEthernet" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="numberOfSockets" class="form-label">Numero di Prese</label>
+                                    <input type="number" class="form-control" id="numberOfSockets" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="note" class="form-label">Note</label>
+                                    <textarea class="form-control" id="note"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="equipmentsId" class="form-label">Attrezzature</label>
+                                    <select class="form-control choosen-select" id="equipmentsId" multiple></select>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Invia</button>
+                                </div>
+                            </form> 
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modale Assegna Aula a Gruppo -->
+            <div class="modal fade" id="assegnaAulaModal" tabindex="-1" aria-labelledby="assegnaAulaModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="assegnaAulaModalLabel">Assegna Aula a Gruppo</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Form per l'assegnazione dell'aula a un gruppo -->
+                            <form id="addClassroomToGroupForm">
+                                <div class="mb-3">
+                                    <label for="classroomName" class="form-label">Nome Aula</label>
+                                    <select class="form-control" id="classroomName" required></select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="groupName" class="form-label">Nome Gruppo</label>
+                                    <select class="form-control" id="groupName" required></select>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Aggiungi Aula al Gruppo</button>
+                                </div>
+                            </form> 
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modale Informazioni Aula -->
+            <div class="modal fade" id="infoAulaModal" tabindex="-1" aria-labelledby="infoAulaModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="infoAulaModalLabel">Informazioni Aula</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <table class="table card-table table-vcenter text-nowrap datatable">
+                            <!--Riga dinamica da riempire-->
+                            <tbody id="table-body-info"></tbody>
+                        </table>
+                        <div class="modal-footer">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modale Attrezzature Aula -->
+            <div class="modal fade" id="attrezzatureAulaModal" tabindex="-1" aria-labelledby="attrezzatureAulaModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="attrezzatureAulaModalLabel">Attrezzature Aula</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Form per visualizzare le attrezzature dell'aula -->
+                            <!-- Campi del form -->
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Carica CSV Form-->
+
+            <!--Update Aula Form-->
+            <!-- Modale Aggiorna Aula -->
+            <div class="modal fade" id="updateAulaModal" tabindex="-1" aria-labelledby="updateAulaModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="updateAulaModalLabel">Aggiorna Aula</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Form per l'aggiornamento dell'aula -->
+                            <form id="updateAulaForm">
+                                <input type="hidden" id="classroomId" value="">
+                                <div class="mb-3">
+                                    <label for="nameUpdateRoom" class="form-label">Nome</label>
+                                    <input type="text" class="form-control" id="nameUpdateRoom" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="positionIDUpdateRoom" class="form-label">Posizione</label>
+                                    <select class="form-control" id="positionIDUpdateRoom" required></select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="capacityUpdateRoom" class="form-label">Capacità</label>
+                                    <input type="number" class="form-control" id="capacityUpdateRoom" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="emailUpdateRoom" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="emailUpdateRoom" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="numberOfEthernetUpdateRoom" class="form-label">Numero di Ethernet</label>
+                                    <input type="number" class="form-control" id="numberOfEthernetUpdateRoom" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="numberOfSocketsUpdateRoom" class="form-label">Numero di Prese</label>
+                                    <input type="number" class="form-control" id="numberOfSocketsUpdateRoom" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="noteUpdateRoom" class="form-label">Note</label>
+                                    <textarea class="form-control" id="noteUpdateRoom"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="equipmentsIdUpdateRoom" class="form-label">Attrezzature</label>
+                                    <select class="form-control choosen-select" id="equipmentsIdUpdateRoom" multiple></select>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Aggiorna</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Modal per inserire un evento -->
+            <div class="modal fade" id="addEventModal" tabindex="-1" aria-labelledby="addEventModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addEventModalLabel">Inserisci Evento</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Form per inserire un evento -->
+                            <form id="addEventForm">
+                                <div class="mb-3">
+                                    <label for="eventName" class="form-label">Nome Evento</label>
+                                    <input type="text" class="form-control" id="eventName" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="eventDate" class="form-label">Data</label>
+                                    <input type="date" class="form-control" id="eventDate" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="startTime" class="form-label">Ora di inizio</label>
+                                    <input type="time" class="form-control" id="startTime" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="endTime" class="form-label">Ora di fine</label>
+                                    <input type="time" class="form-control" id="endTime" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="eventDescription" class="form-label">Descrizione</label>
+                                    <textarea class="form-control" id="eventDescription" rows="3" required></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="eventType" class="form-label">Tipo</label>
+                                    <select class="form-select" id="eventType">
+                                        <option value="LEZIONE" selected="selected">LEZIONE</option>
+                                        <option value="SEMINARIO">SEMINARIO</option>
+                                        <option value="PARZIALE">PARZIALE</option>
+                                        <option value="RIUNIONE">RIUNIONE</option>
+                                        <option value="ESAME">ESAME</option>
+                                        <option value="LAUREA">LAUREA</option>
+                                        <option value="ALTRO">ALTRO</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="eventEmail" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="eventEmail" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="classroomIdEvent" class="form-label">Nome Aula</label>
+                                    <select class="form-control" id="classroomIdEvent" required></select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="courseIdEvent" class="form-label">ID Corso</label>
+                                    <select class="form-control" id="courseIdEvent" required></select>
+
+                                </div>
+                                <div class="mb-3">
+                                    <input type="checkbox" id="recurrentCheckbox" name="recurrentCheckbox" value="recurrent">
+                                    <label for="recurrentCheckbox">Evento Ricorrente</label><br>                                </div>
+                                <div class="mb-3 recurrentEventDiv" >
+                                    <label for="untilDate" class="form-label">Data di scadenza</label>
+                                    <input type="date" class="form-control" id="untilDate">
+                                </div>
+                                <div class="mb-3 recurrentEventDiv">
+                                    <label for="recurrencyType" class="form-label">Tipo di ricorrenza</label>
+                                    <select class="form-select" id="recurrencyType">
+                                        <option value="DAILY">Giornaliera</option>
+                                        <option value="WEEKLY">Settimanale</option>
+                                        <option value="MONTHLY">Mensile</option>
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                            <button type="submit" class="btn btn-primary" form="addEventForm">Inserisci</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </section>
+
+
+        <section>
+            <!--tabella classroom-->
+
+            <div class="card mx-3">
+                <div class="card-header">
+                    <h3 class="card-title">Aule</h3>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table card-table table-vcenter text-nowrap datatable">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>           
+                                <th>Email</th>
+                                <th>Capacità</th>
+                                <th>Note</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                        <!--Riga dinamica da riempire-->
+                        <tbody id="table-body"></tbody>
+                    </table>
+                </div>
+                <div class="card-footer d-flex align-items-center">
+                    <p class="m-0 text-muted">Showing <span>1</span> to <span>1</span> of <span>1</span> entries</p>
+                    <ul class="pagination m-0 ms-auto">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                                <!-- Download SVG icon from http://tabler-icons.io/i/chevron-left -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M15 6l-6 6l6 6"></path></svg>
+                                prev
+                            </a>
+                        </li>
+                        <li class="page-item"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">
+                                next <!-- Download SVG icon from http://tabler-icons.io/i/chevron-right -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M9 6l6 6l-6 6"></path></svg>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
         <!-- SCRIPTS AUTH -->
         <script src="res/auth.js"></script>
         <!-- SCRIPTS PER LE AULE -->

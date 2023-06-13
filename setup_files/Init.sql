@@ -134,7 +134,7 @@ CREATE TABLE `event` (
   `start_time` time NOT NULL,
   `end_time` time NOT NULL,
   `description` varchar(255) DEFAULT NULL,
-  `type` enum('LEZIONE','SEMINARIO','PARZIALE','RIUNIONE','LAUREE','ALTRO') NOT NULL,
+  `type` enum('LEZIONE','SEMINARIO','PARZIALE','RIUNIONE','ESAME','LAUREA','ALTRO') NOT NULL,
   `email` varchar(255) NOT NULL,
   `course_id` int(11) DEFAULT NULL,
   `classroom_id` int(11) NOT NULL

@@ -132,14 +132,16 @@ public class EventResource {
         String type = (String) event.get("type");
         String email = (String) event.get("email");
         String firstOccurenceDate = (String) event.get("date");
+        String clasroomStringID = (String) event.get("classroom_id");
         LocalDate startDate = LocalDate.parse(firstOccurenceDate);
+        String courseIdFromJSON = (String) event.get("course_id");
 
-        int classroom_id = Integer.parseInt((String)event.get("classroom_id"));
+        int classroom_id = Integer.parseInt(clasroomStringID);
         int course_id = 0;
-        if (event.containsKey("course_id")) {
-            course_id = Integer.parseInt((String)event.get("course_id"));
+        if (courseIdFromJSON != null) {
+            course_id = Integer.parseInt((String) event.get("course_id"));
         }
-        if (event.containsKey("until_date")) {
+        if (event.get("until_date") != "") {
             try ( PreparedStatement ps1 = con.prepareStatement(addRecurrent, Statement.RETURN_GENERATED_KEYS)) {
 
                 String dateAsString = (String) event.get("until_date");
@@ -176,8 +178,9 @@ public class EventResource {
 
                         ps2.setString(1, (String) event.get("name"));
                         ps2.setDate(2, Date.valueOf(date));
-                        ps2.setTime(3, Time.valueOf(startTime));
-                        ps2.setTime(4, Time.valueOf(endTime));
+
+                        ps2.setTime(3, Time.valueOf(startTime + ":00"));
+                        ps2.setTime(4, Time.valueOf(endTime + ":00"));
                         ps2.setString(5, description);
                         ps2.setString(6, type);
                         ps2.setString(7, email);
@@ -210,8 +213,8 @@ public class EventResource {
 
                 ps4.setString(1, (String) event.get("name"));
                 ps4.setDate(2, Date.valueOf(startDate));
-                ps4.setTime(3, Time.valueOf(startTime));
-                ps4.setTime(4, Time.valueOf(endTime));
+                ps4.setTime(3, Time.valueOf(startTime + ":00"));
+                ps4.setTime(4, Time.valueOf(endTime + ":00"));
                 ps4.setString(5, description);
                 ps4.setString(6, type);
                 ps4.setString(7, email);
@@ -296,6 +299,7 @@ public class EventResource {
             throw new RESTWebApplicationException(ex);
         }
     }
+
     //WARNING terminale: GET ClassroomResource.getClassroom, should not consume any entity.
     @GET
     @Consumes(MediaType.APPLICATION_JSON)

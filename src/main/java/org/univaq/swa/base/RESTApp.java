@@ -13,6 +13,7 @@ import org.univaq.swa.framework.security.AuthLoggedFilter;
 import org.univaq.swa.framework.security.AuthenticationRes;
 import org.univaq.swa.exceptions.JacksonExceptionMapper;
 import org.univaq.swa.resources.ClassroomResource;
+import org.univaq.swa.resources.CourseResource;
 import org.univaq.swa.resources.EventResource;
 
 /**
@@ -31,6 +32,8 @@ public class RESTApp extends Application {
         c.add(ClassroomResource.class);
 
         c.add(EventResource.class);
+        
+        c.add(CourseResource.class);
 
         c.add(AuthenticationRes.class);
         
