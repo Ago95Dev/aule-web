@@ -22,6 +22,8 @@ $(document).ready(function() {
       hideClassroomButtons();
       showEventButtons();
       removeNotAuthorizedButton();
+      $("#aulaTabSection").hide();
+      $("#eventTabSection").show();
     });
     
     // Al click sulla navbar "Aule"
@@ -29,6 +31,8 @@ $(document).ready(function() {
       hideEventButtons();
       showClassroomButtons();
       removeNotAuthorizedButton();
+      $("#eventTabSection").hide();
+      $("#aulaTabSection").show();
     });
     
     function removeNotAuthorizedButton(){
@@ -43,6 +47,44 @@ $(document).ready(function() {
         $('#logoutButton').show();
       }
     }
+
+    $('#importCSVForm').submit(function(event) {
+      event.preventDefault();
+    
+      var formData = new FormData(this);
+    
+      $.ajax({
+        url: 'rest/classroom/csv/import',
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function() {
+          alert('Importazione CSV completata');
+        },
+        error: function() {
+          alert('Errore durante l\'importazione CSV');
+        }
+      });
+    });
+
+    $('#exportCSVButton').click(function() {
+      $.ajax({
+        url: 'rest/classroom/csv/export',
+        type: 'GET',
+        success: function(data) {
+          var blob = new Blob([data]);
+          var link = document.createElement('a');
+          link.href = window.URL.createObjectURL(blob);
+          link.download = 'aule_export.csv';
+          link.click();
+        },
+        error: function() {
+          alert('Errore durante l\'esportazione CSV');
+        }
+      });
+    });
+    
     
 // id addAula on submit function 
 $('#addAulaForm').submit(function(event) {
@@ -189,10 +231,12 @@ $('#addAulaForm').submit(function(event) {
               Object.keys(response).forEach(key =>{
                   
                 var row = '<tr>' +
-                  '<td><a href="#" onClick="getInformazioniAula('+ response[key]["id"] +')" data-bs-toggle="modal" data-bs-target="#infoAulaModal" class="text-reset" tabindex="-1"><i class="fa-solid fa-circle-info"></i>' + key + '</a></td>' +
-                  '<td>' + response[key]["email"] + '</td>' +
-                  '<td>' + response[key]["capacity"] + '</td>' +
-                  '<td>' + response[key]["note"] + '</td>' +
+                  '<td class="text-center"><a href="#" onClick="getInformazioniAula('+ response[key]["id"] +')" data-bs-toggle="modal" data-bs-target="#infoAulaModal" class="text-reset" tabindex="-1"><i class="fa-solid fa-circle-info"></i>' + key + '</a></td>' +
+                  '<td class="text-center">' + response[key]["email"] + '</td>' +
+                  '<td class="text-center">' + response[key]["capacity"] + '</td>' +
+                  '<td class="text-center">' + response[key]["note"] + '</td>' +
+                  '<td class="text-center"><button class="btn btn-warning"><i class="fa-solid fa-pen-to-square"></i></button>'+ " " 
+                  + '<i class="fa-solid fa-trash-can">Delete</i>'
                   '<td class="text-end"></td>' +
                   '</tr>';
                 $('#table-body').append(row);

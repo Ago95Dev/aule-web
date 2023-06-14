@@ -70,8 +70,8 @@
                     <div class="tab-pane fade show active" id="aule" role="tabpanel" aria-labelledby="auleTab">
                         <button class="btn btn-success btn-auth mb-2" data-bs-toggle="modal" data-bs-target="#addAulaModal"><i class="fa-solid fa-plus"></i> Inserisci Aula</button>
                         <button class="btn btn-success btn-auth mb-2" data-bs-toggle="modal" data-bs-target="#assegnaAulaModal"><i class="fa-solid fa-users-viewfinder"></i> Assegna Aula a Gruppo</button>
-                        <!--Da spostare nella tabella (?)-->
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#csvModal">  Carica CSV</button>
+                        <!-- Bottone Esporta CSV -->
+                        
                         <!--Da spostare nella singola riga dell'aula-->
                         <button class="btn btn-success btn-auth mb-2" onclick="aggiornaAula()">
                             <i class="fa-solid fa-sync"></i> Aggiorna Aula
@@ -91,6 +91,56 @@
             </div>
 
             <!-- Modali per i form -->
+            <div class="modal-body">
+            <!-- Modal per l'esportazione CSV -->
+            <!-- Modal per l'esportazione CSV -->
+<div class="modal fade" id="exportCSVModal" tabindex="-1" role="dialog" aria-labelledby="exportCSVModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exportCSVModalLabel">Esporta CSV</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Contenuto del modal -->
+          <p>Sei sicuro di voler esportare i dati in un file CSV?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+          <button id="exportCSVButton" class="btn btn-primary">Esporta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal per l'importazione CSV -->
+  <div class="modal fade" id="importAuleModal" tabindex="-1" role="dialog" aria-labelledby="importAuleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="importAuleModalLabel">Importa Aule da CSV</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Contenuto del modal -->
+          <form id="importCSVForm" enctype="multipart/form-data">
+            <div class="mb-3">
+              <label for="csvFile" class="form-label">Seleziona un file CSV</label>
+              <input type="file" class="form-control" id="csvFile" name="csvFile" accept=".csv" required>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+          <button type="submit" form="importCSVForm" class="btn btn-primary">Importa</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  
+        
             <!-- Modale Inserisci Aula -->
             <div class="modal fade" id="addAulaModal" tabindex="-1" aria-labelledby="addAulaModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -212,9 +262,6 @@
                     </div>
                 </div>
             </div>
-
-            <!--Carica CSV Form-->
-
             <!--Update Aula Form-->
             <!-- Modale Aggiorna Aula -->
             <div class="modal fade" id="updateAulaModal" tabindex="-1" aria-labelledby="updateAulaModalLabel" aria-hidden="true">
@@ -355,22 +402,31 @@
         </section>
 
 
-        <section>
+        <section id="aulaTabSection">
             <!--tabella classroom-->
 
             <div class="card mx-3">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between">
                     <h3 class="card-title">Aule</h3>
+                    <div>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exportCSVModal">
+                        <i class="fa-solid fa-file-download"></i> Esporta aule <i class="fa-solid fa-file-csv fa-lg"></i>
+                    </button>
+                    <button class="btn btn-success btn-auth" data-bs-toggle="modal" data-bs-target="#importAuleModal">
+                        <i class="fa-solid fa-upload"></i> Importa aule da <i class="fa-solid fa-file-csv fa-lg"></i>
+                      </button>                      
+                    </div>
                 </div>
+                
 
                 <div class="table-responsive">
                     <table class="table card-table table-vcenter text-nowrap datatable">
                         <thead>
                             <tr>
-                                <th>Nome</th>           
-                                <th>Email</th>
-                                <th>Capacità</th>
-                                <th>Note</th>
+                                <th class="text-center">Nome</th>           
+                                <th class="text-center">Email</th>
+                                <th class="text-center">Capacità</th>
+                                <th class="text-center">Note</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -378,6 +434,55 @@
                         </tbody>
                         <!--Riga dinamica da riempire-->
                         <tbody id="table-body"></tbody>
+                    </table>
+                </div>
+                <div class="card-footer d-flex align-items-center">
+                    <p class="m-0 text-muted">Showing <span>1</span> to <span>1</span> of <span>1</span> entries</p>
+                    <ul class="pagination m-0 ms-auto">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                                <!-- Download SVG icon from http://tabler-icons.io/i/chevron-left -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M15 6l-6 6l6 6"></path></svg>
+                                prev
+                            </a>
+                        </li>
+                        <li class="page-item"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">
+                                next <!-- Download SVG icon from http://tabler-icons.io/i/chevron-right -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M9 6l6 6l-6 6"></path></svg>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="eventTabSection">
+            <!--tabella events-->
+
+            <div class="card mx-3">
+                <div class="card-header">
+                    <h3 class="card-title">Eventi</h3>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table card-table table-vcenter text-nowrap datatable">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>           
+                                <th>Data</th>
+                                <th>Inizio</th>
+                                <th>Fine</th>
+                                <th>Descrizione</th>
+                                <th>Tipo</th>
+                                <th>Email</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                        <!--Riga dinamica da riempire-->
+                        <tbody id="e-table-body"></tbody>
                     </table>
                 </div>
                 <div class="card-footer d-flex align-items-center">

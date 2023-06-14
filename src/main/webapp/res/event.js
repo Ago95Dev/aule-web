@@ -42,9 +42,9 @@ $(document).ready(function () {
 
     populateClassroomNamesAddEvent();
     populateCourseNamesAddEvent();
-});
+    });
 
-$('#addEventForm').submit(function (event) {
+ $('#addEventForm').submit(function (event) {
     event.preventDefault();
 
     var formData = {
@@ -60,34 +60,37 @@ $('#addEventForm').submit(function (event) {
         until_date: $('#untilDate').val(),
         typeOfRecurrency: $('#recurrencyType').val()
     };
+    
+    function populateEventTable() {
+        $.ajax({
+          url: 'rest/event/now',
+          type: 'GET',
+          success: function(response) {
 
-    $.ajax({
-        url: 'rest/event/add',
-        type: 'POST',
-        contentType: 'application/json',
-        /* headers: {
-         'Authorization': 'Bearer ' + authToken
-         }, */
-        data: JSON.stringify(formData),
-        success: function (response) {
-            console.log('Evento inserito correttamente');
-            $('#eventName').val(""),
-            $('#eventDate').val(""),
-            $('#startTime').val(""),
-            $('#endTime').val(""),
-            $('#eventDescription').val(""),
-            $('#eventType').val(""),
-            $('#eventEmail').val(""),
-            $('#classroomIdEvent').val(""),
-            $('#courseIdEvent').val(""),
-            $('#untilDate').val(""),
-            $('#recurrencyType').val("")
-        },
-        error: function (xhr, textStatus, errorThrown) {
-            console.log(JSON.stringify(formData));
-            console.log('Errore durante l\'inserimento dell\'evento. Riprova.');
-        }
-    });
+            $('#e-table-body').empty();
+
+            Object.keys(response).forEach(function(key) {
+
+              var event = response[key];
+              var row = '<tr>' +
+                '<td>' + event["name"] + '</td>' +
+                '<td>' + event["date"] + '</td>' +
+                '<td>' + event["start_time"] + '</td>' +
+                '<td>' + event["end_time"] + '</td>' +
+                '<td>' + event["description"] + '</td>' +
+                '<td>' + event["type"] + '</td>' +
+                //'<td>' + event["email"] + '</td>' +
+                '</tr>';
+              $('#e-table-body').append(row);
+            });
+          },
+          error: function() {
+            alert('Errore durante il recupero degli eventi.');
+          }
+        });
+      }
+    
+      populateEventTable();
 });
 
 $('#eventType').change(function (event) {
