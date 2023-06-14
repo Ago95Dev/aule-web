@@ -2,7 +2,22 @@
 $(document).ready(function() {
 
     var authToken = sessionStorage.getItem('authToken'); // Recupera il token salvato
-    
+    // cursore 
+    $(".icon-button").on("mouseenter", function() {
+      var overlayText = $(this).data("overlay-text");
+      var position = $(this).offset();
+      var buttonWidth = $(this).outerWidth();
+      var buttonHeight = $(this).outerHeight();
+      
+      $(".overlay-notification").text(overlayText).css({
+        top: position.top + buttonHeight + 10,
+        left: position.left + buttonWidth / 2,
+        display: "block"
+      });
+    }).on("mouseleave", function() {
+      $(".overlay-notification").hide();
+    });
+
     function hideClassroomButtons() {
       $('#aule .btn').hide();
     }
@@ -231,12 +246,13 @@ $('#addAulaForm').submit(function(event) {
               Object.keys(response).forEach(key =>{
                   
                 var row = '<tr>' +
-                  '<td class="text-center"><a href="#" onClick="getInformazioniAula('+ response[key]["id"] +')" data-bs-toggle="modal" data-bs-target="#infoAulaModal" class="text-reset" tabindex="-1"><i class="fa-solid fa-circle-info"></i>' + key + '</a></td>' +
+                  '<td class="text-center"><a style="text-decoration: none;" href="#" onClick="getInformazioniAula('+ response[key]["id"] +')" data-bs-toggle="modal" data-bs-target="#infoAulaModal" class="text-reset" tabindex="-1">' + key + '</a></td>' +
                   '<td class="text-center">' + response[key]["email"] + '</td>' +
                   '<td class="text-center">' + response[key]["capacity"] + '</td>' +
                   '<td class="text-center">' + response[key]["note"] + '</td>' +
-                  '<td class="text-center"><button class="btn btn-warning"><i class="fa-solid fa-pen-to-square"></i></button>'+ " " 
-                  + '<i class="fa-solid fa-trash-can">Delete</i>'
+                  '<td class="text-center">' + '<a style="text-decoration: none;" href="#" onClick="getInformazioniAula('+ response[key]["id"] +')" data-bs-toggle="modal" data-bs-target="#infoAulaModal" class="text-reset" tabindex="-1"><button class="btn btn-secondary"><i class="fa-solid fa-circle-info fa-lg"></i></button>' + ' ' 
+                  + '<button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updateAulaModal"><i class="fa-solid fa-pen-to-square"></i></button>'+ " " 
+                  + '<button class="btn btn-danger"><i class="fa-solid fa-trash-can"></i> </button>'
                   '<td class="text-end"></td>' +
                   '</tr>';
                 $('#table-body').append(row);

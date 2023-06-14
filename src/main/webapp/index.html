@@ -32,13 +32,12 @@
 
                     <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
 
-                        <li><a href="#" class="nav-link px-2 text-white" id="nav-aule"> <i class="fa-solid fa-users-between-lines"></i> Aule</a></li>
-                        <li><a href="#" class="nav-link px-2 text-white" id="nav-eventi"> <i class="fa-regular fa-calendar-days"></i> Eventi</a></li>
-
+                        <li><a href="#" class="nav-link px-2 text-white" id="nav-aule"> <i class="fa-solid fa-users-between-lines fa-lg"></i> Aule</a></li>
+                        <li><a href="#" class="nav-link px-2 text-white" id="nav-eventi"> <i class="fa-regular fa-calendar-days fa-lg"></i></i> Eventi</a></li>
+                   
                     </ul>
 
                     <div class="text-end">
-
                         <button class="btn btn-secondary " type="button" id="loginButton" data-bs-toggle="dropdown" aria-expanded="false">
                             Login
                         </button>
@@ -83,7 +82,7 @@
                             <button class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#addEventModal"><i class="fa-solid fa-check"></i> Inserisci Evento</button>                
                             <!--Da spostare nella riga dell'evento-->
                             <button class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#assegnaAulaModal"><i class="fa-solid fa-cloud"></i> Aggiorna Evento</button>
-                            <button class="btn btn-danger mb-2" data-bs-toggle="modal" data-bs-target="#attrezzatureAulaModal"><i class="fa-solid fa-file"></i> Prova</button>
+                            <button class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#cercaEventiModal"><i class="fa-solid fa-magnifying-glass"></i> Cerca Eventi</button>
                         </div>
 
                     </div>
@@ -398,7 +397,39 @@
                 </div>
             </div>
 
-
+            <!-- Modale Cerca Eventi Settimanali-->
+            <div class="modal fade" id="cercaEventiModal" tabindex="-1" aria-labelledby="cercaEventiModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="cercaEventiModalLabel">Cerca Eventi</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <form>
+                        <div class="mb-3">
+                          <label for="aulaChoice" class="form-label">Aula</label>
+                          <select class="form-select" id="aulaChoice">
+                            <option value="">Seleziona un'aula</option>
+                            
+                            <option value="aula1">Aula 1</option>
+                            <option value="aula2">Aula 2</option>
+                            <option value="aula3">Aula 3</option>
+                          </select>
+                        </div>
+                        <div class="mb-3">
+                          <label for="settimanaPicker" class="form-label">Settimana</label>
+                          <input type="date" class="form-control" id="settimanaPicker">
+                        </div>
+                      </form>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                      <button type="button" class="btn btn-primary">Cerca</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
         </section>
 
 
@@ -427,7 +458,7 @@
                                 <th class="text-center">Email</th>
                                 <th class="text-center">Capacità</th>
                                 <th class="text-center">Note</th>
-                                <th></th>
+                                <th class="text-center">Azioni</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -462,8 +493,15 @@
             <!--tabella events-->
 
             <div class="card mx-3">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between">
                     <h3 class="card-title">Eventi</h3>
+                    <div>
+                    <button class="btn btn-warning mb-2" onclick="toggleRecentEvents()">
+                        Eventi Recenti
+                        <input type="checkbox" id="recentEventsCheckbox">
+                    </button>
+                    <button class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#cercaEventiModal"><i class="fa-solid fa-magnifying-glass"></i> Cerca Eventi</button>
+                    </div>
                 </div>
 
                 <div class="table-responsive">
