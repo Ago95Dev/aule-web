@@ -162,22 +162,22 @@ $('#addAulaForm').submit(function(event) {
       });
     }
     
-      function populateClassroomNames() {
+      function populateClassroomNames(label_Id) {
       $.ajax({ 
         url: 'rest/classroom/all', 
         type: 'GET', 
         success: function(response) {
           var classroomNames = Object.keys(response); //array di nomi delle aule
-
           // choice box con nomi delle aule
-          var classroomSelect = $('#classroomName');
+          var classroomSelect = $('#' + label_Id);
+          //var classroomSelect = $('#classroomName');
           classroomNames.forEach(function(className) {
             classroomSelect.append('<option value="' + response[className] + '">' + className + '</option>');
           });
         },
         error: function() {
           console.log('Errore durante il recupero dei nomi delle aule');
-        }
+          }
       });
     }
 
@@ -268,9 +268,13 @@ $('#addAulaForm').submit(function(event) {
   
     removeNotAuthorizedButton();
     //choicebox dei nomi delle aule e dei gruppi
+    populateClassroomNames('classroomName');
+    populateClassroomNames('classroomIdEvent');
+    populateClassroomNames('eventClassroomName');
+    
     populatePosition();
     populateEquipmentIDs();
-    populateClassroomNames();
+    //populateClassroomNames();
     populateGroupNames();
     populateTable();
   });

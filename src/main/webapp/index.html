@@ -81,7 +81,7 @@
                         <div class="tab-pane fade show active" id="eventi" role="tabpanel" aria-labelledby="auleTab">
                             <button class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#addEventModal"><i class="fa-solid fa-check"></i> Inserisci Evento</button>                
                             <!--Da spostare nella riga dell'evento-->
-                            <button class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#assegnaAulaModal"><i class="fa-solid fa-cloud"></i> Aggiorna Evento</button>
+                            <button class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#updateEventModal"><i class="fa-solid fa-cloud"></i> Aggiorna Evento</button>
                             <button class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#cercaEventiModal"><i class="fa-solid fa-magnifying-glass"></i> Cerca Eventi</button>
                         </div>
 
@@ -397,6 +397,89 @@
                 </div>
             </div>
 
+            <!-- Modal per aggiornare un evento -->
+            <div class="modal fade" id="updateEventModal" tabindex="-1" aria-labelledby="updateEventModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateEventModalLabel">Aggiorna Evento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Form per aggiornare un evento -->
+                <form id="updateEventForm">
+                    <input type="hidden" id="eventId" value="">
+                    <div class="mb-3">
+                        <label for="eventNameUpdate" class="form-label">Nome Evento</label>
+                        <input type="text" class="form-control" id="eventNameUpdate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="eventDateUpdate" class="form-label">Data</label>
+                        <input type="date" class="form-control" id="eventDateUpdate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="startTimeUpdate" class="form-label">Ora di inizio</label>
+                        <input type="time" class="form-control" id="startTimeUpdate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="endTimeUpdate" class="form-label">Ora di fine</label>
+                        <input type="time" class="form-control" id="endTimeUpdate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="eventDescriptionUpdate" class="form-label">Descrizione</label>
+                        <textarea class="form-control" id="eventDescriptionUpdate" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="eventTypeUpdate" class="form-label">Tipo</label>
+                        <select class="form-select" id="eventTypeUpdate">
+                            <option value="LEZIONE">LEZIONE</option>
+                            <option value="SEMINARIO">SEMINARIO</option>
+                            <option value="PARZIALE">PARZIALE</option>
+                            <option value="RIUNIONE">RIUNIONE</option>
+                            <option value="ESAME">ESAME</option>
+                            <option value="LAUREA">LAUREA</option>
+                            <option value="ALTRO">ALTRO</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="eventEmailUpdate" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="eventEmailUpdate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="classroomIdEventUpdate" class="form-label">Nome Aula</label>
+                        <select class="form-control" id="classroomIdEventUpdate" required></select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="courseIdEventUpdate" class="form-label">ID Corso</label>
+                        <select class="form-control" id="courseIdEventUpdate" required></select>
+                    </div>
+                    <div class="mb-3">
+                        <input type="checkbox" id="recurrentCheckboxUpdate" name="recurrentCheckboxUpdate" value="recurrent">
+                        <label for="recurrentCheckboxUpdate">Evento Ricorrente</label><br>
+                    </div>
+                    <div class="mb-3 recurrentEventDivUpdate">
+                        <label for="untilDateUpdate" class="form-label">Data di scadenza</label>
+                        <input type="date" class="form-control" id="untilDateUpdate">
+                    </div>
+                    <div class="mb-3 recurrentEventDivUpdate">
+                        <label for="recurrencyTypeUpdate" class="form-label">Tipo di ricorrenza</label>
+                        <select class="form-select" id="recurrencyTypeUpdate">
+                            <option value="DAILY">Giornaliera</option>
+                            <option value="WEEKLY">Settimanale</option>
+                            <option value="MONTHLY">Mensile</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                <button type="submit" class="btn btn-primary" form="updateEventForm">Aggiorna</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+  
             <!-- Modale Cerca Eventi Settimanali-->
             <div class="modal fade" id="cercaEventiModal" tabindex="-1" aria-labelledby="cercaEventiModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
@@ -408,14 +491,8 @@
                     <div class="modal-body">
                       <form>
                         <div class="mb-3">
-                          <label for="aulaChoice" class="form-label">Aula</label>
-                          <select class="form-select" id="aulaChoice">
-                            <option value="">Seleziona un'aula</option>
-                            
-                            <option value="aula1">Aula 1</option>
-                            <option value="aula2">Aula 2</option>
-                            <option value="aula3">Aula 3</option>
-                          </select>
+                                <label for="eventClassroomName" class="form-label">Aula</label>
+                                <select class="form-control" id="eventClassroomName" required></select>       
                         </div>
                         <div class="mb-3">
                           <label for="settimanaPicker" class="form-label">Settimana</label>
@@ -497,7 +574,7 @@
                     <h3 class="card-title">Eventi</h3>
                     <div>
                     <button class="btn btn-warning mb-2" onclick="toggleRecentEvents()">
-                        Eventi Recenti
+                        Solo Eventi Recenti
                         <input type="checkbox" id="recentEventsCheckbox">
                     </button>
                     <button class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#cercaEventiModal"><i class="fa-solid fa-magnifying-glass"></i> Cerca Eventi</button>

@@ -1,5 +1,6 @@
 $(document).ready(function () {
 
+
     function populateCourseNamesAddEvent() {
         $.ajax({
             url: 'rest/course/all',
@@ -18,6 +19,10 @@ $(document).ready(function () {
             }
         });
     }
+    $('.recurrentEventDiv').hide();
+    populateCourseNamesAddEvent();
+    
+ /* Spostato in aule.js riga 272
 
     function populateClassroomNamesAddEvent() {
         $.ajax({
@@ -38,10 +43,8 @@ $(document).ready(function () {
         });
     }
 
-    $('.recurrentEventDiv').hide();
-
     populateClassroomNamesAddEvent();
-    populateCourseNamesAddEvent();
+    */
     });
 
  $('#addEventForm').submit(function (event) {
@@ -60,6 +63,40 @@ $(document).ready(function () {
         until_date: $('#untilDate').val(),
         typeOfRecurrency: $('#recurrencyType').val()
     };
+
+    $('#updateEventForm').submit(function(event) {
+        event.preventDefault(); // Impedisce l'invio del form tramite il comportamento predefinito del browser
+
+        var eventId = $('#eventId').val();
+
+        var formData = {
+            eventName: $('#eventNameUpdate').val(),
+            eventDate: $('#eventDateUpdate').val(),
+            startTime: $('#startTimeUpdate').val(),
+            endTime: $('#endTimeUpdate').val(),
+            eventDescription: $('#eventDescriptionUpdate').val(),
+            eventType: $('#eventTypeUpdate').val(),
+            eventEmail: $('#eventEmailUpdate').val(),
+            classroomId: $('#classroomIdEventUpdate').val(),
+            courseId: $('#courseIdEventUpdate').val()
+        };
+
+        console.log(formData);
+
+        $.ajax({
+            url: 'rest/event/updateEvent/' + eventId,
+            type: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify(formData),
+            success: function() {
+                alert('Evento aggiornato');
+            },
+            error: function() {
+                console.log(JSON.stringify(formData));
+                alert('Errore durante l\'aggiornamento');
+            }
+        });
+    });
     
     function populateEventTable() {
         $.ajax({
