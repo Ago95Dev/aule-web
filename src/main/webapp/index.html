@@ -509,20 +509,20 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <form>
+                                <form id="searchByClassAndDate">
                                     <div class="mb-3">
                                         <label for="eventClassroomName" class="form-label">Aula</label>
                                         <select class="form-control" id="eventClassroomName" required></select>       
                                     </div>
                                     <div class="mb-3">
                                         <label for="settimanaPicker" class="form-label">Settimana</label>
-                                        <input type="date" class="form-control" id="settimanaPicker">
+                                        <input type="date" class="form-control" id="settimanaPickerForClassroom">
                                     </div>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Cerca</button>
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
-                                <button type="button" class="btn btn-primary">Cerca</button>
+                                </form>
+
+
                             </div>
                         </div>
                     </div>
