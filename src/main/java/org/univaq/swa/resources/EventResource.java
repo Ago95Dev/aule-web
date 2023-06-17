@@ -300,11 +300,76 @@ public class EventResource {
         }
     }
 
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/today")
+    public Response getTodayEvents(@Context UriInfo uriinfo) {
+
+        LocalDate today = LocalDate.now();
+        String getNowEventsQuery = "SELECT * FROM event WHERE date = ?;";
+        String getCourse = "SELECT name FROM course WHERE id= ?";
+        String getClassNameQuery = "SELECT name FROM classroom WHERE id=?;";
+        Map<String, Map<String, Object>> responseMap = new LinkedHashMap<>();
+        try {
+            PreparedStatement ps = con.prepareStatement(getNowEventsQuery);
+            ps.setDate(1, Date.valueOf(today));
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                LocalTime start = (LocalTime) rs.getTime("start_time").toLocalTime();
+                LocalTime end = (LocalTime) rs.getTime("end_time").toLocalTime();
+                LocalTime now = LocalTime.now();
+
+                Map<String, Object> x = new LinkedHashMap<>();
+                String id = String.valueOf(rs.getInt("id"));
+                x.put("id", rs.getInt("id"));
+                x.put("name", rs.getString("name"));
+                x.put("description", rs.getString("description"));
+                x.put("date", today.toString());
+                x.put("start_time", start.toString());
+                x.put("end_time", end.toString());
+                x.put("email", rs.getString("email"));
+                x.put("type", rs.getString("type"));
+                x.put("classroom_id", rs.getInt("classroom_id"));
+                try ( PreparedStatement ps2 = con.prepareStatement(getClassNameQuery)) {
+                    ps2.setInt(1, rs.getInt("classroom_id"));
+                    ResultSet rs1 = ps2.executeQuery();
+                    if (rs1.next()) {
+                        x.put("classroom", rs1.getString("name"));
+                    }
+                }
+
+                if (rs.getInt("course_id") >= 0) {
+                    try ( PreparedStatement ps1 = con.prepareStatement(getCourse)) {
+                        ps1.setInt(1, rs.getInt("course_id"));
+                        ResultSet rs1 = ps1.executeQuery();
+                        if (rs1.next()) {
+                            x.put("course", rs1.getString("name"));
+                        }
+                    }
+                }
+
+                responseMap.put(id, x);
+
+            }
+
+            if (responseMap.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+
+            return Response.ok(responseMap).build();
+        } catch (SQLException ex) {
+            Logger.getLogger(ClassroomResource.class.getName()).log(Level.SEVERE, null, ex);
+            throw new RESTWebApplicationException(ex);
+        }
+    }
+
     //WARNING terminale: GET ClassroomResource.getClassroom, should not consume any entity.
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{classroom_id}/week/{date}")
-    public Response getWeekEvents(@Context UriInfo uriinfo, @PathParam("classroom_id") Integer classroom_id, @PathParam("date") String date ) {
+    public Response getWeekEvents(@Context UriInfo uriinfo, @PathParam("classroom_id") Integer classroom_id, @PathParam("date") String date) {
 
         String getNowEventsQuery = "SELECT * FROM event WHERE (date BETWEEN ? AND ?) AND classroom_id = ?;";
         String getCourse = "SELECT name FROM course WHERE id= ?";
@@ -312,7 +377,7 @@ public class EventResource {
         LocalDate choosenDate = LocalDate.parse(date);
         LocalDate start = YearMonth.of(choosenDate.getYear(), choosenDate.getMonth()).atDay(choosenDate.getDayOfMonth()).with(DayOfWeek.MONDAY);
         LocalDate end = YearMonth.of(choosenDate.getYear(), choosenDate.getMonth()).atDay(choosenDate.getDayOfMonth()).with(DayOfWeek.SUNDAY);
-       
+
         Map<String, Map<String, Object>> responseMap = new LinkedHashMap<>();
         try {
             PreparedStatement ps = con.prepareStatement(getNowEventsQuery);

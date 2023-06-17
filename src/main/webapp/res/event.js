@@ -23,11 +23,9 @@ $(document).ready(function () {
 
     populateCourseNamesAddEvent();
 
-    function populateEventNowTable() {
-        console.log("YES");
-
+    function populateEventTodayTable() {
         $.ajax({
-            url: 'rest/event/now',
+            url: 'rest/event/today',
             type: 'GET',
             success: function (response) {
 
@@ -42,9 +40,6 @@ $(document).ready(function () {
                             '<td>' + event["end_time"] + '</td>' +
                             '<td>' + event["description"] + '</td>' +
                             '<td>' + event["type"] + '</td>' +
-                            //'<td>' + event["email"] + '</td>' +
-                            // Da fare getInformazioniEvento 
-                            // Da fare setUpdateEventoForm
                             '<td class="text-center">' + '<a style="text-decoration: none;" href="#" onClick="getInformazioniEvento(' + event["id"] + ')" data-bs-toggle="modal" data-bs-target="#infoEventoModal" class="text-reset" tabindex="-1"> <button class="btn btn-secondary"><i class="fa-solid fa-circle-info fa-lg"></i></button></a>' + ' '
                             + '<a style="text-decoration: none;" href="#" onClick="#updateEventForm(' + event["id"] + ')" data-bs-toggle="modal" data-bs-target="#updateEventModal" class="text-reset" tabindex="-1"><button class="btn btn-warning" data-bs-toggle="modal" id="updateButtonShow" data-bs-target="#updateAulaModal"><i class="fa-solid fa-pen-to-square"></i></button>' +
                             '</tr>' + '<td class="text-end"></td>';
@@ -56,7 +51,7 @@ $(document).ready(function () {
             }
         });
     }
-    populateEventNowTable();
+    populateEventTodayTable();
 
     
 
