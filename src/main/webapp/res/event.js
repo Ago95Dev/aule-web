@@ -48,6 +48,38 @@ $(document).ready(function () {
     });
 
  $('#addEventForm').submit(function (event) {
+
+    $.ajax({
+        url: 'rest/event/add',
+        type: 'POST',
+        contentType: 'application/json',
+        /* headers: {
+         'Authorization': 'Bearer ' + authToken
+         }, */
+        data: JSON.stringify(formData),
+        success: function (response) {
+            console.log('Evento inserito correttamente');
+            $('#eventName').val(""),
+            $('#eventDate').val(""),
+            $('#startTime').val(""),
+            $('#endTime').val(""),
+            $('#eventDescription').val(""),
+            $('#eventType').val(""),
+            $('#eventEmail').val(""),
+            $('#classroomIdEvent').val(""),
+            $('#courseIdEvent').val(""),
+            $('#untilDate').val(""),
+            $('#recurrencyType').val("")
+        },
+        error: function (xhr, textStatus, errorThrown) {
+            console.log(JSON.stringify(formData));
+            console.log('Errore durante l\'inserimento dell\'evento. Riprova.');
+        }
+    });
+
+
+
+
     event.preventDefault();
 
     var formData = {
@@ -98,7 +130,7 @@ $(document).ready(function () {
         });
     });
     
-    function populateEventTable() {
+    function populateNowEventTable() {
         $.ajax({
           url: 'rest/event/now',
           type: 'GET',
@@ -109,6 +141,7 @@ $(document).ready(function () {
             Object.keys(response).forEach(function(key) {
 
               var event = response[key];
+              console.log(event);
               var row = '<tr>' +
                 '<td>' + event["name"] + '</td>' +
                 '<td>' + event["date"] + '</td>' +
@@ -127,7 +160,7 @@ $(document).ready(function () {
         });
       }
     
-      populateEventTable();
+      populateNowEventTable();
 });
 
 $('#eventType').change(function (event) {

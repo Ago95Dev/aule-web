@@ -507,17 +507,50 @@
                   </div>
                 </div>
               </div>
-        </section>
 
+              
+            <!-- Modale Cerca Aule By Group -->
+            <div class="modal fade" id="cercaEventiModal" tabindex="-1" aria-labelledby="cercaEventiModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="filtroGruppiModalLabel">Filtra per gruppi</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <form>
+                        <div class="mb-3">
+                            <label for="groupName" class="form-label">Nome Gruppo</label>
+                            <select class="form-control" id="groupName" required></select>
+                        </div>
+                        <div class="mb-3">
+                          <label for="settimanaPicker" class="form-label">Settimana</label>
+                          <input type="date" class="form-control" id="settimanaPicker">
+                        </div>
+                      </form>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                      <button type="button" class="btn btn-primary">Cerca</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </section>
+  <!-- INIZIO TABELLA AULE-->
 
         <section id="aulaTabSection">
-            <!--tabella classroom-->
 
             <div class="card mx-3">
                 <div class="card-header d-flex justify-content-between">
                     <h3 class="card-title">Aule</h3>
                     <div>
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exportCSVModal">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cercaAuleByGroup"><i class="fa-solid fa-magnifying-glass"></i> Filtro gruppi</button>
+                    
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cp"><i class="fa-solid fa-magnifying-glass"></i> </button>
+                    
+
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exportCSVModal">
                         <i class="fa-solid fa-file-download"></i> Esporta aule <i class="fa-solid fa-file-csv fa-lg"></i>
                     </button>
                     <button class="btn btn-success btn-auth" data-bs-toggle="modal" data-bs-target="#importAuleModal">
@@ -566,18 +599,18 @@
             </div>
         </section>
 
+        <!--TABELLA EVENTI-->
         <section id="eventTabSection">
-            <!--tabella events-->
 
             <div class="card mx-3">
                 <div class="card-header d-flex justify-content-between">
                     <h3 class="card-title">Eventi</h3>
                     <div>
-                    <button class="btn btn-warning mb-2" onclick="toggleRecentEvents()">
+                    <button class="btn btn-warning" onclick="toggleRecentEvents()">
                         Solo Eventi Recenti
                         <input type="checkbox" id="recentEventsCheckbox">
                     </button>
-                    <button class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#cercaEventiModal"><i class="fa-solid fa-magnifying-glass"></i> Cerca Eventi</button>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cercaEventiModal"><i class="fa-solid fa-magnifying-glass"></i> Cerca Eventi</button>
                     </div>
                 </div>
 
