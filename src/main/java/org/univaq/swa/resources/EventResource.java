@@ -302,29 +302,27 @@ public class EventResource {
 
     //WARNING terminale: GET ClassroomResource.getClassroom, should not consume any entity.
     @GET
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/week")
-    public Response getWeekEvents(@Context UriInfo uriinfo, Map<String, Object> info) {
+    @Path("{classroom_id}/week/{date}")
+    public Response getWeekEvents(@Context UriInfo uriinfo, @PathParam("classroom_id") Integer classroom_id, @PathParam("date") String date ) {
 
-        String getNowEventsQuery = "SELECT * FROM event WHERE date BETWEEN ? AND ?;";
+        String getNowEventsQuery = "SELECT * FROM event WHERE (date BETWEEN ? AND ?) AND classroom_id = ?;";
         String getCourse = "SELECT name FROM course WHERE id= ?";
         String getClassNameQuery = "SELECT name FROM classroom WHERE id=?;";
-        LocalDate choosenDate = LocalDate.parse(info.get("date_choosen").toString());
+        LocalDate choosenDate = LocalDate.parse(date);
         LocalDate start = YearMonth.of(choosenDate.getYear(), choosenDate.getMonth()).atDay(choosenDate.getDayOfMonth()).with(DayOfWeek.MONDAY);
         LocalDate end = YearMonth.of(choosenDate.getYear(), choosenDate.getMonth()).atDay(choosenDate.getDayOfMonth()).with(DayOfWeek.SUNDAY);
-
+       
         Map<String, Map<String, Object>> responseMap = new LinkedHashMap<>();
         try {
             PreparedStatement ps = con.prepareStatement(getNowEventsQuery);
             ps.setDate(1, Date.valueOf(start));
             ps.setDate(2, Date.valueOf(end));
-
+            ps.setInt(3, classroom_id);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
 
                 Map<String, Object> x = new LinkedHashMap<>();
-                System.out.println(rs.getDate("date"));
                 String id = String.valueOf(rs.getInt("id"));
                 x.put("id", rs.getInt("id"));
                 x.put("name", rs.getString("name"));
@@ -358,7 +356,7 @@ public class EventResource {
             if (responseMap.isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
-
+            System.out.println("responseMap");
             return Response.ok(responseMap).build();
         } catch (SQLException ex) {
             Logger.getLogger(ClassroomResource.class.getName()).log(Level.SEVERE, null, ex);

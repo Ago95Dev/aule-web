@@ -74,7 +74,8 @@ $(document).ready(function () {
     $('#importCSVForm').submit(function (event) {
         event.preventDefault();
 
-        var formData = new FormData(this);
+        var formData = new FormData();
+        formData.set("csvInputFile", $('#csvFile')[0].files[0]);
 
         $.ajax({
             url: 'rest/classroom/csv/import',
