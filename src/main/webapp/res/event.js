@@ -53,7 +53,41 @@ $(document).ready(function () {
     }
     populateEventTodayTable();
 
-    
+    function populateEventNowTable() {
+        $.ajax({
+            url: 'rest/event/now',
+            type: 'GET',
+            success: function (response) {
+
+                $('#e-table-body').empty();
+                Object.keys(response).forEach(function (key) {
+                    var event = response[key];
+
+                    var row = '<tr>' +
+                            '<td>' + event["name"] + '</td>' +
+                            '<td>' + event["date"] + '</td>' +
+                            '<td>' + event["start_time"] + '</td>' +
+                            '<td>' + event["end_time"] + '</td>' +
+                            '<td>' + event["description"] + '</td>' +
+                            '<td>' + event["type"] + '</td>' +
+                            '<td class="text-center">' + '<a style="text-decoration: none;" href="#" onClick="getInformazioniEvento(' + event["id"] + ')" data-bs-toggle="modal" data-bs-target="#infoEventoModal" class="text-reset" tabindex="-1"> <button class="btn btn-secondary"><i class="fa-solid fa-circle-info fa-lg"></i></button></a>' + ' '
+                            + '<a style="text-decoration: none;" href="#" onClick="#updateEventForm(' + event["id"] + ')" data-bs-toggle="modal" data-bs-target="#updateEventModal" class="text-reset" tabindex="-1"><button class="btn btn-warning" data-bs-toggle="modal" id="updateButtonShow" data-bs-target="#updateAulaModal"><i class="fa-solid fa-pen-to-square"></i></button>' +
+                            '</tr>' + '<td class="text-end"></td>';
+                    $('#e-table-body').append(row);
+                });
+            },
+            error: function () {
+                alert('Errore durante il recupero degli eventi.');
+            }
+        });
+    }
+    $('#recentEventsCheckbox').change(function () {
+        if (this.checked) {
+            populateEventNowTable();
+        } else {
+            populateEventTodayTable();
+        }
+    });
 
 });
 

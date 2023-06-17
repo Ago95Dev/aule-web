@@ -92,12 +92,10 @@ public class ClassroomResource {
         String getEquipmentQuery = "SELECT * FROM equipment WHERE id=?;";
 
         Map<String, Object> responseMap = new LinkedHashMap<>();
-        boolean flag = false;
         try ( PreparedStatement getClassPS = con.prepareStatement(getClassQuery)) {
             getClassPS.setInt(1, classroom_id);
             ResultSet rs = getClassPS.executeQuery();
             responseMap = createClassroom(rs);
-            flag = true;
             try ( PreparedStatement getPositionPS = con.prepareStatement(getPositionQuery)) {
                 getPositionPS.setInt(1, (int) responseMap.get("positionID"));
                 ResultSet rs1 = getPositionPS.executeQuery();
@@ -153,7 +151,7 @@ public class ClassroomResource {
                 responseMap.put("Group", groupOfClassroom);
             }
             if (responseMap.isEmpty()) {
-                return Response.status(Response.Status.NOT_FOUND).build();
+                return Response.status(Response.Status.NO_CONTENT).build();
             }
             return Response.ok(responseMap).build();
 
@@ -186,7 +184,7 @@ public class ClassroomResource {
             }
 
             if (responseMap.isEmpty()) {
-                return Response.status(Response.Status.NOT_FOUND).build();
+                return Response.status(Response.Status.NO_CONTENT).build();
             }
             return Response.ok(responseMap).build();
         } catch (SQLException ex) {
@@ -219,7 +217,7 @@ public class ClassroomResource {
             }
             if (responseMap.isEmpty()) {
 
-                return Response.status(Response.Status.NOT_FOUND).build();
+                return Response.status(Response.Status.NO_CONTENT).build();
             }
             return Response.ok(responseMap).build();
         } catch (SQLException ex) {
@@ -251,7 +249,7 @@ public class ClassroomResource {
             }
             if (responseMap.isEmpty()) {
 
-                return Response.status(Response.Status.NOT_FOUND).build();
+                return Response.status(Response.Status.NO_CONTENT).build();
             }
             return Response.ok(responseMap).build();
         } catch (SQLException ex) {
@@ -277,7 +275,7 @@ public class ClassroomResource {
             }
 
             if (responseMap.isEmpty()) {
-                return Response.status(Response.Status.NOT_FOUND).build();
+                return Response.status(Response.Status.NO_CONTENT).build();
             }
             return Response.ok(responseMap).build();
 
@@ -580,13 +578,55 @@ public class ClassroomResource {
             }
 
             if (responseMap.isEmpty()) {
-                return Response.status(Response.Status.NOT_FOUND).build();
+                return Response.status(Response.Status.NO_CONTENT).build();
             }
             return Response.ok(responseMap).build();
         } catch (SQLException ex) {
             Logger.getLogger(ClassroomResource.class.getName()).log(Level.SEVERE, null, ex);
             throw new RESTWebApplicationException(ex);
         }
+    }
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/group/{group_id}")
+    public Response getEventsFromGroup(@Context UriInfo uriinfo, @PathParam("group_id") Integer group_id) {
+
+        String selectClassroomIDs = "SELECT classroom_id FROM group_has_classroom WHERE group_id = ?";
+        String selectClassrooms = "SELECT * FROM classroom WHERE id = ?";
+        
+        ArrayList<Integer> classroomIds = new ArrayList<Integer>();
+        Map<String, Map<String, Object>> responseMap = new LinkedHashMap<>();
+
+        try ( PreparedStatement ps = con.prepareStatement(selectClassroomIDs)) {
+            ps.setInt(1, group_id);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                classroomIds.add(rs.getInt("classroom_id"));
+            }
+            for (int classroom_id : classroomIds) {
+                try ( PreparedStatement ps1 = con.prepareStatement(selectClassrooms)) {
+                    ps1.setInt(1, classroom_id);
+                    ResultSet rs1 = ps1.executeQuery();
+                    while (rs1.next()) {
+                        
+                        if (rs1.getInt("course_id") >= 0) {
+                         
+
+                        }
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(EventResource.class.getName()).log(Level.SEVERE, null, ex);
+                };
+            }
+            if (responseMap.isEmpty()) {
+                return Response.status(Response.Status.NO_CONTENT).build();
+            }
+            return Response.ok(responseMap).build();
+        } catch (SQLException ex) {
+            Logger.getLogger(EventResource.class.getName()).log(Level.SEVERE, null, ex);
+        };
+        return null;
     }
 
 }
