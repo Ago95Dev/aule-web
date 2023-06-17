@@ -190,13 +190,14 @@ $(document).ready(function () {
         });
     }
 
-    function populateGroupNames() {
+    function populateGroupNames(label_Id) {
         $.ajax({
             url: 'rest/classroom/group/all',
             type: 'GET',
             success: function (response) {
                 var groupNames = Object.keys(response); // array nomi dei gruppi
-                var groupSelect = $('#groupName');
+                var groupSelect = $('#' + label_Id);
+                //var groupSelect = $('#groupName');
                 groupNames.forEach(function (groupName) {
                     groupSelect.append('<option value="' + response[groupName] + '">' + groupName + '</option>');
                 });
@@ -277,15 +278,27 @@ $(document).ready(function () {
 
 
     removeNotAuthorizedButton();
-    //choicebox dei nomi delle aule e dei gruppi
+    //Modifica populate per prendere label dal
+    //
     populateClassroomNames('classroomName');
+    // 
     populateClassroomNames('classroomIdEvent');
+    //Cerca Eventi settimanali
     populateClassroomNames('eventClassroomName');
+    //Aggiorna Aula 
+    populateClassroomNames('classroomIdEventUpdate');
 
     populatePosition();
     populateEquipmentIDs();
-    //populateClassroomNames();
-    populateGroupNames();
+    
+   populateGroupNames('groupName');
+   // Filtro nomi by gruppi 
+   populateGroupNames('groupNameAule');
+   // Filtro eventi by gruppi 
+   populateGroupNames('groupNameEvents');
+   // populateGroupNames(); 
+
+
     populateTable();
 });
 

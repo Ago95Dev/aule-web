@@ -77,14 +77,6 @@
                         </button>                    
                     </div>
                     <div>
-                        <!--Da aggiungere pannello eventi -->
-                        <div class="tab-pane fade show active" id="eventi" role="tabpanel" aria-labelledby="auleTab">
-                            <button class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#addEventModal"><i class="fa-solid fa-check"></i> Inserisci Evento</button>                
-                            <!--Da spostare nella riga dell'evento-->
-                            <button class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#updateEventModal"><i class="fa-solid fa-cloud"></i> Aggiorna Evento</button>
-                            <button class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#cercaEventiModal"><i class="fa-solid fa-magnifying-glass"></i> Cerca Eventi</button>
-                        </div>
-
                     </div>
                 </div>
             </div>
@@ -314,6 +306,37 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Modale Aule per Gruppo -->
+<div class="modal fade" id="auleByGroupModal" tabindex="-1" aria-labelledby="auleByGroupModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="auleByGroupModalLabel">Aule per Gruppo</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+                <div class="mb-3">
+                    <label for="groupNameAule" class="form-label">Nome Gruppo</label>
+                    <select class="form-control" id="groupNameAule" required></select>
+                </div>
+            </div>
+            
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+          <button type="button" class="btn btn-primary">Visualizza Aule</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
                  <!-- INIZIO MODALI EVENTO -->
                    
                  <!-- Modale Informazioni Evento  -->
@@ -473,10 +496,7 @@
                                         <label for="courseIdEventUpdate" class="form-label">ID Corso</label>
                                         <select class="form-control" id="courseIdEventUpdate" required></select>
                                     </div>
-                                    <div class="mb-3">
-                                        <input type="checkbox" id="recurrentCheckboxUpdate" name="recurrentCheckboxUpdate" value="recurrent">
-                                        <label for="recurrentCheckboxUpdate">Evento Ricorrente</label><br>
-                                    </div>
+                                    
                                     <div class="mb-3 recurrentEventDivUpdate">
                                         <label for="untilDateUpdate" class="form-label">Data di scadenza</label>
                                         <input type="date" class="form-control" id="untilDateUpdate">
@@ -527,7 +547,48 @@
                         </div>
                     </div>
                 </div>
+   <!-- Modal esportazione iCalendar -->
+   <div class="modal fade" id="exportICalModal" tabindex="-1" aria-labelledby="exportICalModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exportICalModalLabel">Esporta eventi in formato iCalendar</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Seleziona le opzioni desiderate per l'esportazione in formato iCalendar:</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+          <button type="button" class="btn btn-primary">Esporta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal per il filtraggio degli eventi per gruppo -->
+<div class="modal fade" id="filterEventsModal" tabindex="-1" aria-labelledby="filterEventsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="filterEventsModalLabel">Filtra Eventi per Gruppo</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="mb-3">
+                <label for="groupNameEvents" class="form-label">Nome Gruppo</label>
+                <select class="form-control" id="groupNameEvents" required></select>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+          <button type="button" class="btn btn-primary">Filtra</button>
+        </div>
+      </div>
+    </div>
+  </div>
         </section>
+       
   <!-- INIZIO TABELLA AULE-->
 
         <section id="aulaTabSection">
@@ -536,6 +597,9 @@
                 <div class="card-header d-flex justify-content-between">
                     <h3 class="card-title">Aule</h3>
                     <div>
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#auleByGroupModal">
+                            <i class="fa-solid fa-filter"></i> Aule per Gruppo
+                    </button>
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exportCSVModal">
                         <i class="fa-solid fa-file-download"></i> Esporta aule <i class="fa-solid fa-file-csv fa-lg"></i>
                     </button>
@@ -564,25 +628,10 @@
                     </table>
                 </div>
                 <div class="card-footer d-flex align-items-center">
-                    <p class="m-0 text-muted">Showing <span>1</span> to <span>1</span> of <span>1</span> entries</p>
-                    <ul class="pagination m-0 ms-auto">
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
-                                <!-- Download SVG icon from http://tabler-icons.io/i/chevron-left -->
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M15 6l-6 6l6 6"></path></svg>
-                                prev
-                            </a>
-                        </li>
-                        <li class="page-item"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">
-                                next <!-- Download SVG icon from http://tabler-icons.io/i/chevron-right -->
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M9 6l6 6l-6 6"></path></svg>
-                            </a>
-                        </li>
-                    </ul>
                 </div>
             </div>
+
+         
         </section>
 
         <!--TABELLA EVENTI-->
@@ -591,12 +640,20 @@
             <div class="card mx-3">
                 <div class="card-header d-flex justify-content-between">
                     <h3 class="card-title">Eventi</h3>
-                    <div>
-                    <button class="btn btn-warning mb-2">
-                        Solo Eventi Recenti
+                    <div id="eventi">
+                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addEventModal"><i class="fa-solid fa-check"></i> Inserisci Evento</button>                
+                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#filterEventsModal">
+                            <i class="fa-solid fa-filter"></i> Eventi per Gruppo
+                          </button>
+                          <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#cercaEventiModal"><i class="fa-solid fa-magnifying-glass"></i> Cerca Eventi</button>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exportICalModal">
+                            <i class="fa-solid fa-file-download"></i> Esporta eventi <i class="fa-solid fa-calendar-export fa-lg"></i>
+                          </button>
+                    <button class="btn btn-warning">
+                        Eventi ora
                         <input type="checkbox" id="recentEventsCheckbox">
                     </button>
-                    <button class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#cercaEventiModal"><i class="fa-solid fa-magnifying-glass"></i> Cerca Eventi</button>
+                   
                     </div>
                 </div>
 
@@ -620,23 +677,7 @@
                     </table>
                 </div>
                 <div class="card-footer d-flex align-items-center">
-                    <p class="m-0 text-muted">Showing <span>1</span> to <span>1</span> of <span>1</span> entries</p>
-                    <ul class="pagination m-0 ms-auto">
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
-                                <!-- Download SVG icon from http://tabler-icons.io/i/chevron-left -->
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M15 6l-6 6l6 6"></path></svg>
-                                prev
-                            </a>
-                        </li>
-                        <li class="page-item"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">
-                                next <!-- Download SVG icon from http://tabler-icons.io/i/chevron-right -->
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M9 6l6 6l-6 6"></path></svg>
-                            </a>
-                        </li>
-                    </ul>
+                   
                 </div>
             </div>
         </section>

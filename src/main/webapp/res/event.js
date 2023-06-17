@@ -1,7 +1,26 @@
 $(document).ready(function () {
 
+    
+    
+    
+    /*function populateGroupNamesEvents() {
+        $.ajax({
+            url: 'rest/classroom/group/all',
+            type: 'GET',
+            success: function (response) {
+                var groupNames = Object.keys(response); // array nomi dei gruppi
+                //var groupSelect = $('#' + label_Id);
+                var groupSelect = $('#groupNameEvents');
+                groupNames.forEach(function (groupName) {
+                    groupSelect.append('<option value="' + response[groupName] + '">' + groupName + '</option>');
+                });
+            },
+            error: function () {
+                console.log('Errore durante il recupero dei nomi dei gruppi');
+            }
+        }); 
 
-    function populateCourseNamesAddEvent() {
+        function populateCourseNamesAddEvent() {
         $.ajax({
             url: 'rest/course/all',
             type: 'GET',
@@ -19,9 +38,39 @@ $(document).ready(function () {
             }
         });
     }
+    populateCourseNamesAddEvent();
+
+       
+    } */
+
+
+    function populateCourseNames(label_Id) {
+        $.ajax({
+            url: 'rest/course/all',
+            type: 'GET',
+            success: function (response) {
+                var courseNames = Object.keys(response); //array di nomi delle aule
+
+                // choice box con nomi delle aule
+                var courseSelect = $('#' + label_Id);
+               // var courseSelect = $('#courseIdEvent');
+                courseNames.forEach(function (courseName) {
+                    courseSelect.append('<option value="' + response[courseName] + '">' + courseName + '</option>');
+                });
+            },
+            error: function () {
+                console.log('Errore durante il recupero dei nomi delle aule');
+            }
+        });
+    }
+
+
     $('.recurrentEventDiv').hide();
 
-    populateCourseNamesAddEvent();
+    // Id corso in add Event
+    populateCourseNames('courseIdEvent');
+    // Id corso in aggiorna aula 
+    populateCourseNames('courseIdEventUpdate');
 
     function populateEventTodayTable() {
         $.ajax({
@@ -41,7 +90,7 @@ $(document).ready(function () {
                             '<td>' + event["description"] + '</td>' +
                             '<td>' + event["type"] + '</td>' +
                             '<td class="text-center">' + '<a style="text-decoration: none;" href="#" onClick="getInformazioniEvento(' + event["id"] + ')" data-bs-toggle="modal" data-bs-target="#infoEventoModal" class="text-reset" tabindex="-1"> <button class="btn btn-secondary"><i class="fa-solid fa-circle-info fa-lg"></i></button></a>' + ' '
-                            + '<a style="text-decoration: none;" href="#" onClick="#updateEventForm(' + event["id"] + ')" data-bs-toggle="modal" data-bs-target="#updateEventModal" class="text-reset" tabindex="-1"><button class="btn btn-warning" data-bs-toggle="modal" id="updateButtonShow" data-bs-target="#updateAulaModal"><i class="fa-solid fa-pen-to-square"></i></button>' +
+                            + '<a style="text-decoration: none;" href="#" onClick="setUpdateEventForm(' + event["id"] + ')" data-bs-toggle="modal" data-bs-target="#setUpdateEventForm" class="text-reset" tabindex="-1"><button class="btn btn-warning" data-bs-toggle="modal" id="updateButtonShow" data-bs-target="#updateEventModal"><i class="fa-solid fa-pen-to-square"></i></button>' +
                             '</tr>' + '<td class="text-end"></td>';
                     $('#e-table-body').append(row);
                 });
@@ -125,6 +174,65 @@ $('#searchByClassAndDate').submit(function (event) {
     });
 });
 
+function setUpdateEventForm(event_id) {
+    $.ajax({
+        url: 'rest/event/' + event_id,
+        type: 'GET',
+
+        success: function (response) {
+            // Rimozione righe statiche
+            $('#e-table-body-info').empty();
+
+            // Altri aggiornamenti dei campi del form
+            $('#eventIdUpdate').val(event_id);
+            $('#eventNameUpdate').val(response["eventName"]);
+            $('#eventDateUpdate').val(response["eventDate"]);
+            $('#startTimeUpdate').val(response["startTime"]);
+            $('#endTimeUpdate').val(response["endTime"]);
+            $('#eventDescriptionUpdate').val(response["eventDescription"]);
+            $('#eventTypeUpdate').val(response["eventType"]);
+            $('#eventEmailUpdate').val(response["eventEmail"]);
+        },
+        error: function () {
+            console.log('Errore durante il recupero dei dati dal database');
+        }
+    });
+} 
+
+// Update Event 
+$('#updateEventForm').submit(function (event) {
+    event.preventDefault(); 
+    var eventId = $('#eventId').val();
+    console.log("prova" + eventId)
+    var formData = {
+        eventName: $('#eventNameUpdate').val(),
+        eventDate: $('#eventDateUpdate').val(),
+        startTime: $('#startTimeUpdate').val(),
+        endTime: $('#endTimeUpdate').val(),
+        eventDescription: $('#eventDescriptionUpdate').val(),
+        eventType: $('#eventTypeUpdate').val(),
+        eventEmail: $('#eventEmailUpdate').val(),
+        classroomId: $('#classroomIdEventUpdate').val(),
+        courseId: $('#courseIdEventUpdate').val()
+    };
+
+    console.log(formData);
+
+    $.ajax({
+        url: 'rest/event/updateEvent/' + eventId,
+        type: 'PUT',
+        contentType: 'application/json',
+        data: JSON.stringify(formData),
+        success: function () {
+            alert('Evento aggiornato');
+        },
+        error: function () {
+            console.log(JSON.stringify(formData));
+            alert('Errore durante l\'aggiornamento');
+        }
+    });
+});
+
 $('#addEventForm').submit(function (event) {
     event.preventDefault();
 
@@ -171,39 +279,6 @@ $('#addEventForm').submit(function (event) {
 
 });
 
-$('#updateEventForm').submit(function (event) {
-    event.preventDefault(); // Impedisce l'invio del form tramite il comportamento predefinito del browser
-
-    var eventId = $('#eventId').val();
-
-    var formData = {
-        eventName: $('#eventNameUpdate').val(),
-        eventDate: $('#eventDateUpdate').val(),
-        startTime: $('#startTimeUpdate').val(),
-        endTime: $('#endTimeUpdate').val(),
-        eventDescription: $('#eventDescriptionUpdate').val(),
-        eventType: $('#eventTypeUpdate').val(),
-        eventEmail: $('#eventEmailUpdate').val(),
-        classroomId: $('#classroomIdEventUpdate').val(),
-        courseId: $('#courseIdEventUpdate').val()
-    };
-
-    console.log(formData);
-
-    $.ajax({
-        url: 'rest/event/updateEvent/' + eventId,
-        type: 'PUT',
-        contentType: 'application/json',
-        data: JSON.stringify(formData),
-        success: function () {
-            alert('Evento aggiornato');
-        },
-        error: function () {
-            console.log(JSON.stringify(formData));
-            alert('Errore durante l\'aggiornamento');
-        }
-    });
-});
 
 
 $('#eventType').change(function (event) {
