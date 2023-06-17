@@ -20,8 +20,40 @@ $(document).ready(function () {
         });
     }
     $('.recurrentEventDiv').hide();
+    
     populateCourseNamesAddEvent();
     
+        function populateEventNowTable() {
+                        console.log("YES");
+
+        $.ajax({
+          url: 'rest/event/now',
+          type: 'GET',
+          success: function(response) {
+
+            $('#e-table-body').empty();
+            Object.keys(response).forEach(function(key) {
+
+              var event = response[key];
+              var row = '<tr>' +
+                '<td>' + event["name"] + '</td>' +
+                '<td>' + event["date"] + '</td>' +
+                '<td>' + event["start_time"] + '</td>' +
+                '<td>' + event["end_time"] + '</td>' +
+                '<td>' + event["description"] + '</td>' +
+                '<td>' + event["type"] + '</td>' +
+                //'<td>' + event["email"] + '</td>' +
+                '</tr>';
+              $('#e-table-body').append(row);
+            });
+          },
+          error: function() {
+            alert('Errore durante il recupero degli eventi.');
+          }
+        });
+      }
+      populateEventNowTable();
+
  /* Spostato in aule.js riga 272
 
     function populateClassroomNamesAddEvent() {
@@ -45,10 +77,25 @@ $(document).ready(function () {
 
     populateClassroomNamesAddEvent();
     */
+   
     });
 
  $('#addEventForm').submit(function (event) {
+    event.preventDefault();
 
+    var formData = {
+        name: $('#eventName').val(),
+        date: $('#eventDate').val(),
+        start_time: $('#startTime').val(),
+        end_time: $('#endTime').val(),
+        description: $('#eventDescription').val(),
+        type: $('#eventType').val(),
+        email: $('#eventEmail').val(),
+        classroom_id: $('#classroomIdEvent').val(),
+        course_id: $('#courseIdEvent').val(),
+        until_date: $('#untilDate').val(),
+        typeOfRecurrency: $('#recurrencyType').val()
+    };
     $.ajax({
         url: 'rest/event/add',
         type: 'POST',
@@ -77,24 +124,7 @@ $(document).ready(function () {
         }
     });
 
-
-
-
-    event.preventDefault();
-
-    var formData = {
-        name: $('#eventName').val(),
-        date: $('#eventDate').val(),
-        start_time: $('#startTime').val(),
-        end_time: $('#endTime').val(),
-        description: $('#eventDescription').val(),
-        type: $('#eventType').val(),
-        email: $('#eventEmail').val(),
-        classroom_id: $('#classroomIdEvent').val(),
-        course_id: $('#courseIdEvent').val(),
-        until_date: $('#untilDate').val(),
-        typeOfRecurrency: $('#recurrencyType').val()
-    };
+    });
 
     $('#updateEventForm').submit(function(event) {
         event.preventDefault(); // Impedisce l'invio del form tramite il comportamento predefinito del browser
@@ -130,38 +160,6 @@ $(document).ready(function () {
         });
     });
     
-    function populateNowEventTable() {
-        $.ajax({
-          url: 'rest/event/now',
-          type: 'GET',
-          success: function(response) {
-
-            $('#e-table-body').empty();
-
-            Object.keys(response).forEach(function(key) {
-
-              var event = response[key];
-              console.log(event);
-              var row = '<tr>' +
-                '<td>' + event["name"] + '</td>' +
-                '<td>' + event["date"] + '</td>' +
-                '<td>' + event["start_time"] + '</td>' +
-                '<td>' + event["end_time"] + '</td>' +
-                '<td>' + event["description"] + '</td>' +
-                '<td>' + event["type"] + '</td>' +
-                //'<td>' + event["email"] + '</td>' +
-                '</tr>';
-              $('#e-table-body').append(row);
-            });
-          },
-          error: function() {
-            alert('Errore durante il recupero degli eventi.');
-          }
-        });
-      }
-    
-      populateNowEventTable();
-});
 
 $('#eventType').change(function (event) {
     console.log("z");

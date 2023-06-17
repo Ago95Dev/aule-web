@@ -152,7 +152,7 @@ public class ClassroomResource {
                 }
                 responseMap.put("Group", groupOfClassroom);
             }
-            if(responseMap.isEmpty()){
+            if (responseMap.isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
             return Response.ok(responseMap).build();
@@ -195,7 +195,7 @@ public class ClassroomResource {
         }
     }
 
-        /**
+    /**
      * Get all classrooms
      *
      * @param uriinfo
@@ -218,7 +218,7 @@ public class ClassroomResource {
                 responseMap.put(key, rs.getInt("id"));
             }
             if (responseMap.isEmpty()) {
-                
+
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
             return Response.ok(responseMap).build();
@@ -227,7 +227,7 @@ public class ClassroomResource {
             throw new RESTWebApplicationException(ex);
         }
     }
-    
+
     /**
      * Get all classrooms
      *
@@ -250,7 +250,7 @@ public class ClassroomResource {
                 responseMap.put(rs.getString("name"), rs.getInt("id"));
             }
             if (responseMap.isEmpty()) {
-                
+
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
             return Response.ok(responseMap).build();
@@ -259,7 +259,7 @@ public class ClassroomResource {
             throw new RESTWebApplicationException(ex);
         }
     }
-    
+
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -307,15 +307,15 @@ public class ClassroomResource {
 
         try ( PreparedStatement ps = con.prepareStatement(addClassQuery, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, (String) json.get("name"));
-            ps.setInt(2, Integer.parseInt((String)json.get("positionID")));
+            ps.setInt(2, Integer.parseInt((String) json.get("positionID")));
             ps.setInt(3, Integer.parseInt((String) json.get("capacity")));
             ps.setString(4, (String) json.get("email"));
-            ps.setInt(5,Integer.parseInt((String) json.get("numberOfSockets")));
+            ps.setInt(5, Integer.parseInt((String) json.get("numberOfSockets")));
             ps.setInt(6, Integer.parseInt((String) json.get("numberOfEthernet")));
-            if(json.get("note") != null){
-                        ps.setString(7, (String) json.get("note"));
-            }else{
-                        ps.setString(7, "");
+            if (json.get("note") != null) {
+                ps.setString(7, (String) json.get("note"));
+            } else {
+                ps.setString(7, "");
             }
             ps.executeUpdate();
 
@@ -330,7 +330,7 @@ public class ClassroomResource {
                         ps2.setInt(2, Integer.parseInt(equipmentId));
                         ps2.executeUpdate();
                     }
-                } 
+                }
                 URI uri = uriinfo.getBaseUriBuilder().path("classroom/" + id_classroom).build();
                 return Response.created(uri).build();
             }
@@ -356,27 +356,20 @@ public class ClassroomResource {
     @Path("/updateClassroom/{classroom_id}")
     public Response updateClassroom(@Context UriInfo uriinfo,
             @PathParam("classroom_id") Integer classroom_id,
-            String json,
+            Map<String, Object> json,
             @Context SecurityContext securityContext) {
         String updateClassQuery = "UPDATE classroom SET name = ?, position_id = ?, capacity = ?, email = ?, number_socket =?, number_ethernet = ? , note =? WHERE id = ?;";
         String addEquipment = "INSERT INTO classroom_has_equipment(classroom_id,equipment_id) VALUES(?,?);";
         String cleanEquipment = "DELETE FROM classroom_has_equipment WHERE classroom_id = ?;";
-        Classroom classroom = new Classroom();
-
-        try {
-            classroom = new ObjectMapper().readValue(json, Classroom.class);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
 
         try ( PreparedStatement ps = con.prepareStatement(updateClassQuery)) {
-            ps.setString(1, classroom.getName());
-            ps.setInt(2, classroom.getPositionID());
-            ps.setInt(3, classroom.getCapacity());
-            ps.setString(4, classroom.getEmail());
-            ps.setInt(5, classroom.getNumberOfSockets());
-            ps.setInt(6, classroom.getNumberOfEthernet());
-            ps.setString(7, classroom.getNote());
+            ps.setString(1, (String) json.get("name"));
+            ps.setInt(2, Integer.parseInt((String) json.get("positionID")));
+            ps.setInt(3, Integer.parseInt((String) json.get("capacity")));
+            ps.setString(4, (String) json.get("email"));
+            ps.setInt(5, Integer.parseInt((String) json.get("numberOfSockets")));
+            ps.setInt(6, Integer.parseInt((String) json.get("numberOfEthernet")));
+            ps.setString(7, (String) json.get("note"));
             ps.setInt(8, classroom_id);
             ps.executeUpdate();
 
@@ -384,11 +377,14 @@ public class ClassroomResource {
                 PreparedStatement ps2 = con.prepareStatement(cleanEquipment);
                 ps2.setInt(1, classroom_id);
                 ps2.execute();
+                ArrayList<String> stringArray;
 
-                for (Integer equipmentId : classroom.getEquipmentsId()) {
+                stringArray = (ArrayList<String>) json.get("equipmentsId");
+
+                for (String equipmentId : stringArray) {
                     try ( PreparedStatement ps3 = con.prepareStatement(addEquipment)) {
                         ps3.setInt(1, classroom_id);
-                        ps3.setInt(2, equipmentId);
+                        ps3.setInt(2, Integer.parseInt(equipmentId));
                         ps3.executeUpdate();
                     }
                 }
@@ -561,8 +557,8 @@ public class ClassroomResource {
         }
         return null;
     }
-    
-        @GET
+
+    @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/display/all")

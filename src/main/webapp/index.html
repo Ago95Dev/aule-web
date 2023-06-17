@@ -34,7 +34,7 @@
 
                         <li><a href="#" class="nav-link px-2 text-white" id="nav-aule"> <i class="fa-solid fa-users-between-lines fa-lg"></i> Aule</a></li>
                         <li><a href="#" class="nav-link px-2 text-white" id="nav-eventi"> <i class="fa-regular fa-calendar-days fa-lg"></i></i> Eventi</a></li>
-                   
+
                     </ul>
 
                     <div class="text-end">
@@ -70,7 +70,7 @@
                         <button class="btn btn-success btn-auth mb-2" data-bs-toggle="modal" data-bs-target="#addAulaModal"><i class="fa-solid fa-plus"></i> Inserisci Aula</button>
                         <button class="btn btn-success btn-auth mb-2" data-bs-toggle="modal" data-bs-target="#assegnaAulaModal"><i class="fa-solid fa-users-viewfinder"></i> Assegna Aula a Gruppo</button>
                         <!-- Bottone Esporta CSV -->
-                        
+
                         <!--Da spostare nella singola riga dell'aula-->
                         <button class="btn btn-success btn-auth mb-2" onclick="aggiornaAula()">
                             <i class="fa-solid fa-sync"></i> Aggiorna Aula
@@ -91,451 +91,422 @@
 
             <!-- Modali per i form -->
             <div class="modal-body">
-            <!-- Modal per l'esportazione CSV -->
-            <!-- Modal per l'esportazione CSV -->
-<div class="modal fade" id="exportCSVModal" tabindex="-1" role="dialog" aria-labelledby="exportCSVModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exportCSVModalLabel">Esporta CSV</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <!-- Contenuto del modal -->
-          <p>Sei sicuro di voler esportare i dati in un file CSV?</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
-          <button id="exportCSVButton" class="btn btn-primary">Esporta</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Modal per l'importazione CSV -->
-  <div class="modal fade" id="importAuleModal" tabindex="-1" role="dialog" aria-labelledby="importAuleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="importAuleModalLabel">Importa Aule da CSV</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <!-- Contenuto del modal -->
-          <form id="importCSVForm" enctype="multipart/form-data">
-            <div class="mb-3">
-              <label for="csvFile" class="form-label">Seleziona un file CSV</label>
-              <input type="file" class="form-control" id="csvFile" name="csvFile" accept=".csv" required>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
-          <button type="submit" form="importCSVForm" class="btn btn-primary">Importa</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  
-  
-        
-            <!-- Modale Inserisci Aula -->
-            <div class="modal fade" id="addAulaModal" tabindex="-1" aria-labelledby="addAulaModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="addAulaModalLabel">Inserisci Aula</h5>
-                            <!--inserimento labels form-->
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <!-- Modal per l'esportazione CSV -->
+                <!-- Modal per l'esportazione CSV -->
+                <div class="modal fade" id="exportCSVModal" tabindex="-1" role="dialog" aria-labelledby="exportCSVModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exportCSVModalLabel">Esporta CSV</h5>
+                                <button type="button" id="exportCSVLogged" class="btn-close btn-auth" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Contenuto del modal -->
+                                <p>Sei sicuro di voler esportare i dati in un file CSV?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                                <button id="exportCSVButton" class="btn btn-primary">Esporta</button>
+                            </div>
                         </div>
-                        <div class="modal-body">
-                            <!-- Form per l'inserimento dell'aula -->
-                            <form id="addAulaForm">
-                                <div class="mb-3">
-                                    <label for="name" class="form-label">Nome</label>
-                                    <input type="text" class="form-control" id="name" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="positionID" class="form-label">Posizione</label>
-                                    <select class="form-control" id="positionID" required></select>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="capacity" class="form-label">Capacità</label>
-                                    <input type="number" class="form-control" id="capacity" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="email" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="email" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="numberOfEthernet" class="form-label">Numero di Ethernet</label>
-                                    <input type="number" class="form-control" id="numberOfEthernet" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="numberOfSockets" class="form-label">Numero di Prese</label>
-                                    <input type="number" class="form-control" id="numberOfSockets" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="note" class="form-label">Note</label>
-                                    <textarea class="form-control" id="note"></textarea>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="equipmentsId" class="form-label">Attrezzature</label>
-                                    <select class="form-control choosen-select" id="equipmentsId" multiple></select>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary">Invia</button>
-                                </div>
-                            </form> 
-                        </div>
-
                     </div>
                 </div>
-            </div>
 
-            <!-- Modale Assegna Aula a Gruppo -->
-            <div class="modal fade" id="assegnaAulaModal" tabindex="-1" aria-labelledby="assegnaAulaModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="assegnaAulaModalLabel">Assegna Aula a Gruppo</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <!-- Modal per l'importazione CSV -->
+                <div class="modal fade" id="importAuleModal" tabindex="-1" role="dialog" aria-labelledby="importAuleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="importAuleModalLabel">Importa Aule da CSV</h5>
+                                <button type="button" id="importCSVLogged" class="btn-close btn-auth" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Contenuto del modal -->
+                                <form id="importCSVForm" enctype="multipart/form-data">
+                                    <div class="mb-3">
+                                        <label for="csvFile" class="form-label">Seleziona un file CSV</label>
+                                        <input type="file" class="form-control" id="csvFile" name="csvFile" accept=".csv" required>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                                <button type="submit" form="importCSVForm" class="btn btn-primary">Importa</button>
+                            </div>
                         </div>
-                        <div class="modal-body">
-                            <!-- Form per l'assegnazione dell'aula a un gruppo -->
-                            <form id="addClassroomToGroupForm">
-                                <div class="mb-3">
-                                    <label for="classroomName" class="form-label">Nome Aula</label>
-                                    <select class="form-control" id="classroomName" required></select>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="groupName" class="form-label">Nome Gruppo</label>
-                                    <select class="form-control" id="groupName" required></select>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary">Aggiungi Aula al Gruppo</button>
-                                </div>
-                            </form> 
-
-                        </div>
-
                     </div>
                 </div>
-            </div>
 
-            <!-- Modale Informazioni Aula -->
-            <div class="modal fade" id="infoAulaModal" tabindex="-1" aria-labelledby="infoAulaModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="infoAulaModalLabel">Informazioni Aula</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <table class="table card-table table-vcenter text-nowrap datatable">
-                            <!--Riga dinamica da riempire-->
-                            <tbody id="table-body-info"></tbody>
-                        </table>
-                        <div class="modal-footer">
+
+
+
+                <!-- Modale Inserisci Aula -->
+                <div class="modal fade" id="addAulaModal" tabindex="-1" aria-labelledby="addAulaModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addAulaModalLabel">Inserisci Aula</h5>
+                                <!--inserimento labels form-->
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Form per l'inserimento dell'aula -->
+                                <form id="addAulaForm">
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">Nome</label>
+                                        <input type="text" class="form-control" id="name" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="positionID" class="form-label">Posizione</label>
+                                        <select class="form-control" id="positionID" required></select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="capacity" class="form-label">Capacità</label>
+                                        <input type="number" class="form-control" id="capacity" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="email" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="numberOfEthernet" class="form-label">Numero di Ethernet</label>
+                                        <input type="number" class="form-control" id="numberOfEthernet" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="numberOfSockets" class="form-label">Numero di Prese</label>
+                                        <input type="number" class="form-control" id="numberOfSockets" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="note" class="form-label">Note</label>
+                                        <textarea class="form-control" id="note"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="equipmentsId" class="form-label">Attrezzature</label>
+                                        <select class="form-control choosen-select" id="equipmentsId" multiple></select>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary">Invia</button>
+                                    </div>
+                                </form> 
+                            </div>
 
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Modale Attrezzature Aula -->
-            <div class="modal fade" id="attrezzatureAulaModal" tabindex="-1" aria-labelledby="attrezzatureAulaModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="attrezzatureAulaModalLabel">Attrezzature Aula</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <!-- Form per visualizzare le attrezzature dell'aula -->
-                            <!-- Campi del form -->
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                <!-- Modale Assegna Aula a Gruppo -->
+                <div class="modal fade" id="assegnaAulaModal" tabindex="-1" aria-labelledby="assegnaAulaModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="assegnaAulaModalLabel">Assegna Aula a Gruppo</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Form per l'assegnazione dell'aula a un gruppo -->
+                                <form id="addClassroomToGroupForm">
+                                    <div class="mb-3">
+                                        <label for="classroomName" class="form-label">Nome Aula</label>
+                                        <select class="form-control" id="classroomName" required></select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="groupName" class="form-label">Nome Gruppo</label>
+                                        <select class="form-control" id="groupName" required></select>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary">Aggiungi Aula al Gruppo</button>
+                                    </div>
+                                </form> 
+
+                            </div>
+
                         </div>
                     </div>
                 </div>
-            </div>
-            <!--Update Aula Form-->
-            <!-- Modale Aggiorna Aula -->
-            <div class="modal fade" id="updateAulaModal" tabindex="-1" aria-labelledby="updateAulaModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="updateAulaModalLabel">Aggiorna Aula</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <!-- Form per l'aggiornamento dell'aula -->
-                            <form id="updateAulaForm">
-                                <input type="hidden" id="classroomId" value="">
-                                <div class="mb-3">
-                                    <label for="nameUpdateRoom" class="form-label">Nome</label>
-                                    <input type="text" class="form-control" id="nameUpdateRoom" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="positionIDUpdateRoom" class="form-label">Posizione</label>
-                                    <select class="form-control" id="positionIDUpdateRoom" required></select>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="capacityUpdateRoom" class="form-label">Capacità</label>
-                                    <input type="number" class="form-control" id="capacityUpdateRoom" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="emailUpdateRoom" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="emailUpdateRoom" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="numberOfEthernetUpdateRoom" class="form-label">Numero di Ethernet</label>
-                                    <input type="number" class="form-control" id="numberOfEthernetUpdateRoom" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="numberOfSocketsUpdateRoom" class="form-label">Numero di Prese</label>
-                                    <input type="number" class="form-control" id="numberOfSocketsUpdateRoom" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="noteUpdateRoom" class="form-label">Note</label>
-                                    <textarea class="form-control" id="noteUpdateRoom"></textarea>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="equipmentsIdUpdateRoom" class="form-label">Attrezzature</label>
-                                    <select class="form-control choosen-select" id="equipmentsIdUpdateRoom" multiple></select>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary">Aggiorna</button>
-                                </div>
-                            </form>
+
+                <!-- Modale Informazioni Aula -->
+                <div class="modal fade" id="infoAulaModal" tabindex="-1" aria-labelledby="infoAulaModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="infoAulaModalLabel">Informazioni Aula</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <table class="table card-table table-vcenter text-nowrap datatable">
+                                <!--Riga dinamica da riempire-->
+                                <tbody id="table-body-info"></tbody>
+                            </table>
+                            <div class="modal-footer">
+
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-
-            <!-- Modal per inserire un evento -->
-            <div class="modal fade" id="addEventModal" tabindex="-1" aria-labelledby="addEventModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="addEventModalLabel">Inserisci Evento</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <!-- Form per inserire un evento -->
-                            <form id="addEventForm">
-                                <div class="mb-3">
-                                    <label for="eventName" class="form-label">Nome Evento</label>
-                                    <input type="text" class="form-control" id="eventName" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="eventDate" class="form-label">Data</label>
-                                    <input type="date" class="form-control" id="eventDate" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="startTime" class="form-label">Ora di inizio</label>
-                                    <input type="time" class="form-control" id="startTime" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="endTime" class="form-label">Ora di fine</label>
-                                    <input type="time" class="form-control" id="endTime" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="eventDescription" class="form-label">Descrizione</label>
-                                    <textarea class="form-control" id="eventDescription" rows="3" required></textarea>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="eventType" class="form-label">Tipo</label>
-                                    <select class="form-select" id="eventType">
-                                        <option value="LEZIONE" selected="selected">LEZIONE</option>
-                                        <option value="SEMINARIO">SEMINARIO</option>
-                                        <option value="PARZIALE">PARZIALE</option>
-                                        <option value="RIUNIONE">RIUNIONE</option>
-                                        <option value="ESAME">ESAME</option>
-                                        <option value="LAUREA">LAUREA</option>
-                                        <option value="ALTRO">ALTRO</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="eventEmail" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="eventEmail" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="classroomIdEvent" class="form-label">Nome Aula</label>
-                                    <select class="form-control" id="classroomIdEvent" required></select>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="courseIdEvent" class="form-label">ID Corso</label>
-                                    <select class="form-control" id="courseIdEvent" required></select>
-
-                                </div>
-                                <div class="mb-3">
-                                    <input type="checkbox" id="recurrentCheckbox" name="recurrentCheckbox" value="recurrent">
-                                    <label for="recurrentCheckbox">Evento Ricorrente</label><br>                                </div>
-                                <div class="mb-3 recurrentEventDiv" >
-                                    <label for="untilDate" class="form-label">Data di scadenza</label>
-                                    <input type="date" class="form-control" id="untilDate">
-                                </div>
-                                <div class="mb-3 recurrentEventDiv">
-                                    <label for="recurrencyType" class="form-label">Tipo di ricorrenza</label>
-                                    <select class="form-select" id="recurrencyType">
-                                        <option value="DAILY">Giornaliera</option>
-                                        <option value="WEEKLY">Settimanale</option>
-                                        <option value="MONTHLY">Mensile</option>
-                                    </select>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
-                            <button type="submit" class="btn btn-primary" form="addEventForm">Inserisci</button>
+                <!-- Modale Attrezzature Aula -->
+                <div class="modal fade" id="attrezzatureAulaModal" tabindex="-1" aria-labelledby="attrezzatureAulaModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="attrezzatureAulaModalLabel">Attrezzature Aula</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Form per visualizzare le attrezzature dell'aula -->
+                                <!-- Campi del form -->
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Modal per aggiornare un evento -->
-            <div class="modal fade" id="updateEventModal" tabindex="-1" aria-labelledby="updateEventModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-            <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="updateEventModalLabel">Aggiorna Evento</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <!-- Form per aggiornare un evento -->
-                <form id="updateEventForm">
-                    <input type="hidden" id="eventId" value="">
-                    <div class="mb-3">
-                        <label for="eventNameUpdate" class="form-label">Nome Evento</label>
-                        <input type="text" class="form-control" id="eventNameUpdate" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="eventDateUpdate" class="form-label">Data</label>
-                        <input type="date" class="form-control" id="eventDateUpdate" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="startTimeUpdate" class="form-label">Ora di inizio</label>
-                        <input type="time" class="form-control" id="startTimeUpdate" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="endTimeUpdate" class="form-label">Ora di fine</label>
-                        <input type="time" class="form-control" id="endTimeUpdate" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="eventDescriptionUpdate" class="form-label">Descrizione</label>
-                        <textarea class="form-control" id="eventDescriptionUpdate" rows="3" required></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="eventTypeUpdate" class="form-label">Tipo</label>
-                        <select class="form-select" id="eventTypeUpdate">
-                            <option value="LEZIONE">LEZIONE</option>
-                            <option value="SEMINARIO">SEMINARIO</option>
-                            <option value="PARZIALE">PARZIALE</option>
-                            <option value="RIUNIONE">RIUNIONE</option>
-                            <option value="ESAME">ESAME</option>
-                            <option value="LAUREA">LAUREA</option>
-                            <option value="ALTRO">ALTRO</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="eventEmailUpdate" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="eventEmailUpdate" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="classroomIdEventUpdate" class="form-label">Nome Aula</label>
-                        <select class="form-control" id="classroomIdEventUpdate" required></select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="courseIdEventUpdate" class="form-label">ID Corso</label>
-                        <select class="form-control" id="courseIdEventUpdate" required></select>
-                    </div>
-                    <div class="mb-3">
-                        <input type="checkbox" id="recurrentCheckboxUpdate" name="recurrentCheckboxUpdate" value="recurrent">
-                        <label for="recurrentCheckboxUpdate">Evento Ricorrente</label><br>
-                    </div>
-                    <div class="mb-3 recurrentEventDivUpdate">
-                        <label for="untilDateUpdate" class="form-label">Data di scadenza</label>
-                        <input type="date" class="form-control" id="untilDateUpdate">
-                    </div>
-                    <div class="mb-3 recurrentEventDivUpdate">
-                        <label for="recurrencyTypeUpdate" class="form-label">Tipo di ricorrenza</label>
-                        <select class="form-select" id="recurrencyTypeUpdate">
-                            <option value="DAILY">Giornaliera</option>
-                            <option value="WEEKLY">Settimanale</option>
-                            <option value="MONTHLY">Mensile</option>
-                        </select>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
-                <button type="submit" class="btn btn-primary" form="updateEventForm">Aggiorna</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-  
-            <!-- Modale Cerca Eventi Settimanali-->
-            <div class="modal fade" id="cercaEventiModal" tabindex="-1" aria-labelledby="cercaEventiModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="cercaEventiModalLabel">Cerca Eventi</h5>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                      <form>
-                        <div class="mb-3">
-                                <label for="eventClassroomName" class="form-label">Aula</label>
-                                <select class="form-control" id="eventClassroomName" required></select>       
+                <!--Update Aula Form-->
+                <!-- Modale Aggiorna Aula -->
+                <div class="modal fade" id="updateAulaModal" tabindex="-1" aria-labelledby="updateAulaModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="updateAulaModalLabel">Aggiorna Aula</h5>
+                                <button type="button" id="updateAuleShow" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Form per l'aggiornamento dell'aula -->
+                                <form id="updateAulaForm">
+                                    <input type="hidden" id="classroomIdUpdate" value="">
+                                    <div class="mb-3">
+                                        <label for="nameUpdateRoom" class="form-label">Nome</label>
+                                        <input type="text" class="form-control" id="nameUpdateRoom" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="positionIDUpdateRoom" class="form-label">Posizione</label>
+                                        <select class="form-control" id="positionIDUpdateRoom" required></select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="capacityUpdateRoom" class="form-label">Capacità</label>
+                                        <input type="number" class="form-control" id="capacityUpdateRoom" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="emailUpdateRoom" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="emailUpdateRoom" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="numberOfEthernetUpdateRoom" class="form-label">Numero di Ethernet</label>
+                                        <input type="number" class="form-control" id="numberOfEthernetUpdateRoom" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="numberOfSocketsUpdateRoom" class="form-label">Numero di Prese</label>
+                                        <input type="number" class="form-control" id="numberOfSocketsUpdateRoom" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="noteUpdateRoom" class="form-label">Note</label>
+                                        <textarea class="form-control" id="noteUpdateRoom"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="equipmentsIdUpdateRoom" class="form-label">Attrezzature</label>
+                                        <select class="form-control choosen-select" id="equipmentsIdUpdateRoom" multiple></select>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary">Aggiorna</button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                          <label for="settimanaPicker" class="form-label">Settimana</label>
-                          <input type="date" class="form-control" id="settimanaPicker">
-                        </div>
-                      </form>
                     </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
-                      <button type="button" class="btn btn-primary">Cerca</button>
-                    </div>
-                  </div>
                 </div>
-              </div>
 
-              
-            <!-- Modale Cerca Aule By Group -->
-            <div class="modal fade" id="cercaEventiModal" tabindex="-1" aria-labelledby="cercaEventiModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="filtroGruppiModalLabel">Filtra per gruppi</h5>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                      <form>
-                        <div class="mb-3">
-                            <label for="groupName" class="form-label">Nome Gruppo</label>
-                            <select class="form-control" id="groupName" required></select>
+
+                <!-- Modal per inserire un evento -->
+                <div class="modal fade" id="addEventModal" tabindex="-1" aria-labelledby="addEventModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addEventModalLabel">Inserisci Evento</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Form per inserire un evento -->
+                                <form id="addEventForm">
+                                    <div class="mb-3">
+                                        <label for="eventName" class="form-label">Nome Evento</label>
+                                        <input type="text" class="form-control" id="eventName" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="eventDate" class="form-label">Data</label>
+                                        <input type="date" class="form-control" id="eventDate" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="startTime" class="form-label">Ora di inizio</label>
+                                        <input type="time" class="form-control" id="startTime" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="endTime" class="form-label">Ora di fine</label>
+                                        <input type="time" class="form-control" id="endTime" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="eventDescription" class="form-label">Descrizione</label>
+                                        <textarea class="form-control" id="eventDescription" rows="3" required></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="eventType" class="form-label">Tipo</label>
+                                        <select class="form-select" id="eventType">
+                                            <option value="LEZIONE" selected="selected">LEZIONE</option>
+                                            <option value="SEMINARIO">SEMINARIO</option>
+                                            <option value="PARZIALE">PARZIALE</option>
+                                            <option value="RIUNIONE">RIUNIONE</option>
+                                            <option value="ESAME">ESAME</option>
+                                            <option value="LAUREA">LAUREA</option>
+                                            <option value="ALTRO">ALTRO</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="eventEmail" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="eventEmail" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="classroomIdEvent" class="form-label">Nome Aula</label>
+                                        <select class="form-control" id="classroomIdEvent" required></select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="courseIdEvent" class="form-label">ID Corso</label>
+                                        <select class="form-control" id="courseIdEvent" required></select>
+
+                                    </div>
+                                    <div class="mb-3">
+                                        <input type="checkbox" id="recurrentCheckbox" name="recurrentCheckbox" value="recurrent">
+                                        <label for="recurrentCheckbox">Evento Ricorrente</label><br>                                </div>
+                                    <div class="mb-3 recurrentEventDiv" >
+                                        <label for="untilDate" class="form-label">Data di scadenza</label>
+                                        <input type="date" class="form-control" id="untilDate">
+                                    </div>
+                                    <div class="mb-3 recurrentEventDiv">
+                                        <label for="recurrencyType" class="form-label">Tipo di ricorrenza</label>
+                                        <select class="form-select" id="recurrencyType">
+                                            <option value="DAILY">Giornaliera</option>
+                                            <option value="WEEKLY">Settimanale</option>
+                                            <option value="MONTHLY">Mensile</option>
+                                        </select>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                                <button type="submit" class="btn btn-primary" form="addEventForm">Inserisci</button>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                          <label for="settimanaPicker" class="form-label">Settimana</label>
-                          <input type="date" class="form-control" id="settimanaPicker">
-                        </div>
-                      </form>
                     </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
-                      <button type="button" class="btn btn-primary">Cerca</button>
-                    </div>
-                  </div>
                 </div>
-              </div>
+
+                <!-- Modal per aggiornare un evento -->
+                <div class="modal fade" id="updateEventModal" tabindex="-1" aria-labelledby="updateEventModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="updateEventModalLabel">Aggiorna Evento</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Form per aggiornare un evento -->
+                                <form id="updateEventForm">
+                                    <input type="hidden" id="eventId" value="">
+                                    <div class="mb-3">
+                                        <label for="eventNameUpdate" class="form-label">Nome Evento</label>
+                                        <input type="text" class="form-control" id="eventNameUpdate" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="eventDateUpdate" class="form-label">Data</label>
+                                        <input type="date" class="form-control" id="eventDateUpdate" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="startTimeUpdate" class="form-label">Ora di inizio</label>
+                                        <input type="time" class="form-control" id="startTimeUpdate" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="endTimeUpdate" class="form-label">Ora di fine</label>
+                                        <input type="time" class="form-control" id="endTimeUpdate" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="eventDescriptionUpdate" class="form-label">Descrizione</label>
+                                        <textarea class="form-control" id="eventDescriptionUpdate" rows="3" required></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="eventTypeUpdate" class="form-label">Tipo</label>
+                                        <select class="form-select" id="eventTypeUpdate">
+                                            <option value="LEZIONE">LEZIONE</option>
+                                            <option value="SEMINARIO">SEMINARIO</option>
+                                            <option value="PARZIALE">PARZIALE</option>
+                                            <option value="RIUNIONE">RIUNIONE</option>
+                                            <option value="ESAME">ESAME</option>
+                                            <option value="LAUREA">LAUREA</option>
+                                            <option value="ALTRO">ALTRO</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="eventEmailUpdate" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="eventEmailUpdate" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="classroomIdEventUpdate" class="form-label">Nome Aula</label>
+                                        <select class="form-control" id="classroomIdEventUpdate" required></select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="courseIdEventUpdate" class="form-label">ID Corso</label>
+                                        <select class="form-control" id="courseIdEventUpdate" required></select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <input type="checkbox" id="recurrentCheckboxUpdate" name="recurrentCheckboxUpdate" value="recurrent">
+                                        <label for="recurrentCheckboxUpdate">Evento Ricorrente</label><br>
+                                    </div>
+                                    <div class="mb-3 recurrentEventDivUpdate">
+                                        <label for="untilDateUpdate" class="form-label">Data di scadenza</label>
+                                        <input type="date" class="form-control" id="untilDateUpdate">
+                                    </div>
+                                    <div class="mb-3 recurrentEventDivUpdate">
+                                        <label for="recurrencyTypeUpdate" class="form-label">Tipo di ricorrenza</label>
+                                        <select class="form-select" id="recurrencyTypeUpdate">
+                                            <option value="DAILY">Giornaliera</option>
+                                            <option value="WEEKLY">Settimanale</option>
+                                            <option value="MONTHLY">Mensile</option>
+                                        </select>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                                <button type="submit" class="btn btn-primary" form="updateEventForm">Aggiorna</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Modale Cerca Eventi Settimanali-->
+                <div class="modal fade" id="cercaEventiModal" tabindex="-1" aria-labelledby="cercaEventiModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="cercaEventiModalLabel">Cerca Eventi</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div class="mb-3">
+                                        <label for="eventClassroomName" class="form-label">Aula</label>
+                                        <select class="form-control" id="eventClassroomName" required></select>       
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="settimanaPicker" class="form-label">Settimana</label>
+                                        <input type="date" class="form-control" id="settimanaPicker">
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                                <button type="button" class="btn btn-primary">Cerca</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
         </section>
   <!-- INIZIO TABELLA AULE-->
 
@@ -545,12 +516,7 @@
                 <div class="card-header d-flex justify-content-between">
                     <h3 class="card-title">Aule</h3>
                     <div>
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cercaAuleByGroup"><i class="fa-solid fa-magnifying-glass"></i> Filtro gruppi</button>
-                    
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cp"><i class="fa-solid fa-magnifying-glass"></i> </button>
-                    
-
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exportCSVModal">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exportCSVModal">
                         <i class="fa-solid fa-file-download"></i> Esporta aule <i class="fa-solid fa-file-csv fa-lg"></i>
                     </button>
                     <button class="btn btn-success btn-auth" data-bs-toggle="modal" data-bs-target="#importAuleModal">
@@ -558,7 +524,7 @@
                       </button>                      
                     </div>
                 </div>
-                
+
 
                 <div class="table-responsive">
                     <table class="table card-table table-vcenter text-nowrap datatable">
@@ -606,11 +572,11 @@
                 <div class="card-header d-flex justify-content-between">
                     <h3 class="card-title">Eventi</h3>
                     <div>
-                    <button class="btn btn-warning" onclick="toggleRecentEvents()">
+                    <button class="btn btn-warning mb-2" onclick="toggleRecentEvents()">
                         Solo Eventi Recenti
                         <input type="checkbox" id="recentEventsCheckbox">
                     </button>
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cercaEventiModal"><i class="fa-solid fa-magnifying-glass"></i> Cerca Eventi</button>
+                    <button class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#cercaEventiModal"><i class="fa-solid fa-magnifying-glass"></i> Cerca Eventi</button>
                     </div>
                 </div>
 
