@@ -4,6 +4,7 @@ import jakarta.json.Json;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -112,6 +113,113 @@ public class EventResource {
             Logger.getLogger(ClassroomResource.class.getName()).log(Level.SEVERE, null, ex);
             throw new RESTWebApplicationException(ex);
         }
+    }
+
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/update/{event_id}")
+    public Response updateEvent(@Context UriInfo uriinfo, Map<String, Object> event, @PathParam("event_id") Integer event_id, @Context SecurityContext securityContext) {
+        String updateEvent = "UPDATE event SET name = ?, date = ?, start_time = ?, end_time = ?, description = ?, type = ? , email = ?, course_id = ?, classroom_id = ? WHERE id = ?;";
+        String retriveRecurrentID = "SELECT recurrent_id FROM event_has_recurrent WHERE event_id = ?;";
+        String retriveEventIDs = "SELECT event_id FROM event_has_recurrent WHERE recurrent_id = ?;";
+        ArrayList<Integer> eventIDs = new ArrayList<Integer>(); // In case we want to modify reccurent ids  
+        int recurrent = 0, recurrent_id = 0;
+
+        // Reading the JSON
+        String dateAsString = (String) event.get("date");
+        LocalDate date = LocalDate.parse(dateAsString);
+        String startTime = (String) event.get("start_time");
+        String endTime = (String) event.get("end_time");
+        String description = (String) event.get("description");
+        String type = (String) event.get("type");
+        String email = (String) event.get("email");
+        int classroom_id = 0;
+        int course_id = 0;
+
+        if (event.get("recurrent") != null) {
+            recurrent = (int) event.get("recurrent");
+        }
+        if (event.get("classroom_id") != null) {
+            classroom_id = (int) event.get("classroom_id");
+        }
+        if (event.get("course_id") != null) {
+            course_id = (int) event.get("course_id");
+        }
+
+        if (recurrent == 0) {
+            try ( PreparedStatement ps1 = con.prepareStatement(updateEvent)) {
+                ps1.setString(1, (String) event.get("name"));
+                ps1.setDate(2, Date.valueOf(date));
+                ps1.setTime(3, Time.valueOf(startTime + ":00"));
+                ps1.setTime(4, Time.valueOf(endTime + ":00"));
+                ps1.setString(5, description);
+                ps1.setString(6, type);
+                ps1.setString(7, email);
+                if (course_id != 0) {
+                    ps1.setInt(8, course_id);
+                } else {
+                    ps1.setNull(8, java.sql.Types.INTEGER);
+                }
+                ps1.setInt(9, classroom_id);
+                ps1.setInt(10, event_id);
+                ps1.executeUpdate();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                Logger.getLogger(EventResource.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else if (recurrent == 1) {
+            try ( PreparedStatement ps2 = con.prepareStatement(retriveRecurrentID)) {
+                ps2.setInt(1, event_id);
+                ResultSet rs1 = ps2.executeQuery();
+                if (rs1.next()) {
+                    recurrent_id = rs1.getInt("recurrent_id");
+                }
+                if (recurrent_id != 0) {
+                    try ( PreparedStatement ps3 = con.prepareStatement(retriveEventIDs)) {
+                        ps3.setInt(1, recurrent_id);
+                        ResultSet rs2 = ps3.executeQuery();
+                        while (rs2.next()) {
+                            eventIDs.add(rs2.getInt("event_id"));
+                        }
+                        if (!eventIDs.isEmpty()) {
+                            for (int event_id_reccurent : eventIDs) {
+                                try ( PreparedStatement ps4 = con.prepareStatement(updateEvent)) {
+                                    ps4.setString(1, (String) event.get("name"));
+                                    ps4.setDate(2, Date.valueOf(date));
+                                    ps4.setTime(3, Time.valueOf(startTime + ":00"));
+                                    ps4.setTime(4, Time.valueOf(endTime + ":00"));
+                                    ps4.setString(5, description);
+                                    ps4.setString(6, type);
+                                    ps4.setString(7, email);
+                                    if (course_id != 0) {
+                                        ps4.setInt(8, course_id);
+                                    } else {
+                                        ps4.setNull(8, java.sql.Types.INTEGER);
+                                    }
+                                    ps4.setInt(9, classroom_id);
+                                    ps4.setInt(10, event_id_reccurent);
+                                    ps4.executeUpdate();
+                                } catch (SQLException ex) {
+                                    ex.printStackTrace();
+                                    Logger.getLogger(EventResource.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                        }
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                        Logger.getLogger(EventResource.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                Logger.getLogger(EventResource.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+
+        return null;
     }
 
     @POST
@@ -421,11 +529,79 @@ public class EventResource {
             if (responseMap.isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
-            System.out.println("responseMap");
             return Response.ok(responseMap).build();
         } catch (SQLException ex) {
             Logger.getLogger(ClassroomResource.class.getName()).log(Level.SEVERE, null, ex);
             throw new RESTWebApplicationException(ex);
         }
     }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/group/{group_id}")
+    public Response getEventsFromGroup(@Context UriInfo uriinfo, @PathParam("group_id") Integer group_id) {
+
+        String selectClassroomIDs = "SELECT classroom_id FROM group_has_classroom WHERE group_id = ?";
+        String selectEvents = "SELECT * FROM event WHERE classroom_id = ?";
+        String getCourse = "SELECT name FROM course WHERE id= ?";
+        String getClassNameQuery = "SELECT name FROM classroom WHERE id=?;";
+
+        ArrayList<Integer> classroomIds = new ArrayList<Integer>();
+        Map<String, Map<String, Object>> responseMap = new LinkedHashMap<>();
+
+        try ( PreparedStatement ps = con.prepareStatement(selectClassroomIDs)) {
+            ps.setInt(1, group_id);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                classroomIds.add(rs.getInt("classroom_id"));
+            }
+            for (int classroom_id : classroomIds) {
+                try ( PreparedStatement ps1 = con.prepareStatement(selectEvents)) {
+                    ps1.setInt(1, classroom_id);
+                    ResultSet rs1 = ps1.executeQuery();
+                    while (rs1.next()) {
+                        Map<String, Object> x = new LinkedHashMap<>();
+                        String id = String.valueOf(rs1.getInt("id"));
+                        x.put("id", rs1.getInt("id"));
+                        x.put("name", rs1.getString("name"));
+                        x.put("description", rs1.getString("description"));
+                        x.put("date", rs1.getDate("date").toString());
+                        x.put("start_time", rs1.getTime("start_time"));
+                        x.put("end_time", rs1.getTime("end_time"));
+                        x.put("email", rs1.getString("email"));
+                        x.put("type", rs1.getString("type"));
+                        x.put("classroom_id", rs1.getInt("classroom_id"));
+                        try ( PreparedStatement psClass = con.prepareStatement(getClassNameQuery)) {
+                            psClass.setInt(1, rs1.getInt("classroom_id"));
+                            ResultSet rsClass = psClass.executeQuery();
+                            if (rsClass.next()) {
+                                x.put("classroom", rsClass.getString("name"));
+                            }
+                        }
+                        if (rs1.getInt("course_id") >= 0) {
+                            try ( PreparedStatement psCourse = con.prepareStatement(getCourse)) {
+                                psCourse.setInt(1, rs1.getInt("course_id"));
+                                ResultSet rsCourse = psCourse.executeQuery();
+                                if (rsCourse.next()) {
+                                    x.put("course", rsCourse.getString("name"));
+                                }
+                            }
+
+                            responseMap.put(id, x);
+                        }
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(EventResource.class.getName()).log(Level.SEVERE, null, ex);
+                };
+            }
+            if (responseMap.isEmpty()) {
+                return Response.status(Response.Status.NO_CONTENT).build();
+            }
+            return Response.ok(responseMap).build();
+        } catch (SQLException ex) {
+            Logger.getLogger(EventResource.class.getName()).log(Level.SEVERE, null, ex);
+        };
+        return null;
+    }
+
 }
