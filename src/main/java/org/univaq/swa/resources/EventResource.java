@@ -1,6 +1,5 @@
 package org.univaq.swa.resources;
 
-import jakarta.json.Json;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -13,26 +12,53 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import jakarta.ws.rs.core.UriInfo;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.*;
+import java.text.DateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.Month;
 import java.time.Period;
 import java.time.YearMonth;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
-import org.json.JSONArray;
+import net.fortuna.ical4j.model.TimeZone;
+import net.fortuna.ical4j.model.TimeZoneRegistry;
+import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
+import net.fortuna.ical4j.model.component.VTimeZone;
+
 import org.univaq.swa.exceptions.CustomException;
 import org.univaq.swa.exceptions.RESTWebApplicationException;
 import org.univaq.swa.framework.security.DBConnection;
-import org.univaq.swa.model.Event;
-import org.univaq.swa.model.Type;
-import org.json.JSONObject;
+import org.univaq.swa.framework.security.Logged;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Locale;
+import net.fortuna.ical4j.data.CalendarOutputter;
+import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.property.CalScale;
+import net.fortuna.ical4j.model.property.Description;
+import net.fortuna.ical4j.model.property.Location;
+import net.fortuna.ical4j.model.property.ProdId;
+import net.fortuna.ical4j.model.property.Uid;
+import net.fortuna.ical4j.model.property.Version;
+import net.fortuna.ical4j.util.RandomUidGenerator;
+import net.fortuna.ical4j.util.UidGenerator;
+import net.fortuna.ical4j.validate.ValidationException;
 
 /**
  *
@@ -602,6 +628,95 @@ public class EventResource {
             Logger.getLogger(EventResource.class.getName()).log(Level.SEVERE, null, ex);
         };
         return null;
+    }
+
+    @POST
+    @Logged
+    @Produces("text/plain")
+    @Path("/icalendar/export")
+    public Response exportIcalendar(@Context UriInfo uriinfo, Map<String, Object> json, @Context SecurityContext securityContext) throws ParseException {
+
+        File file = new File("mycalendar.ics");
+
+        // Create a calendar
+        net.fortuna.ical4j.model.Calendar icsCalendar = new net.fortuna.ical4j.model.Calendar();
+        icsCalendar.getProperties().add(new ProdId("-//Events Calendar//iCal4j 1.0//EN"));
+        icsCalendar.getProperties().add(CalScale.GREGORIAN);
+        icsCalendar.getProperties().add(Version.VERSION_2_0);
+
+        String getEvents = "SELECT * FROM event WHERE date BETWEEN ? AND ?;";
+        String getClassNameQuery = "SELECT name FROM classroom WHERE id=?;";
+
+        TimeZoneRegistry registry = TimeZoneRegistryFactory.getInstance().createRegistry();
+        TimeZone timezone = registry.getTimeZone("Europe/Rome");
+        VTimeZone tz = timezone.getVTimeZone();
+
+        LocalDate start = LocalDate.parse((String) json.get("startDate"), DateTimeFormatter.ISO_DATE_TIME);
+        LocalDate end = LocalDate.parse((String) json.get("endDate"), DateTimeFormatter.ISO_DATE_TIME);
+
+        try ( PreparedStatement ps = con.prepareStatement(getEvents)) {
+            ps.setDate(1, Date.valueOf(start));
+            ps.setDate(2, Date.valueOf(end));
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+
+                LocalTime startLT = rs.getTime("start_time").toLocalTime();
+                LocalTime endLT = rs.getTime("end_time").toLocalTime();
+                LocalDate eventDate = rs.getDate("date").toLocalDate();
+
+                Calendar startDate = new GregorianCalendar();
+                startDate.setTimeZone(timezone);
+                startDate.set(eventDate.getYear(), eventDate.getMonthValue(), eventDate.getDayOfMonth(), startLT.getHour(), startLT.getMinute(), 0);
+
+                Calendar endDate = new GregorianCalendar();
+                endDate.setTimeZone(timezone);
+                endDate.set(eventDate.getYear(), eventDate.getMonthValue(), eventDate.getDayOfMonth(), endLT.getHour(), endLT.getMinute(), 0);
+
+                DateTime start_time = new DateTime(startDate.getTime());
+                DateTime end_time = new DateTime(endDate.getTime());
+                String eventName = rs.getString("name");
+
+                VEvent meeting = new VEvent(start_time, end_time, eventName);
+                meeting.getProperties().add(tz.getTimeZoneId());
+                meeting.getProperties().add(new Description(rs.getString("description")));
+                try ( PreparedStatement ps2 = con.prepareStatement(getClassNameQuery)) {
+                    ps2.setInt(1, rs.getInt("classroom_id"));
+                    ResultSet rs1 = ps2.executeQuery();
+                    if (rs1.next()) {
+                        meeting.getProperties().add(new Location(rs1.getString("name")));
+                    }
+                }
+                // generate unique identifier..
+                UidGenerator ug = new RandomUidGenerator();
+                Uid uid = ug.generateUid();
+                meeting.getProperties().add(uid);
+                // Add the event and print
+                icsCalendar.getComponents().add(meeting);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(EventResource.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        System.out.println(icsCalendar);
+
+        try {
+
+            FileOutputStream fout = new FileOutputStream(file);
+            CalendarOutputter outputter = new CalendarOutputter();
+            outputter.output(icsCalendar, fout);
+
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(EventResource.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(EventResource.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ValidationException ex) {
+            Logger.getLogger(EventResource.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (file.length() != 0) {
+            return Response.ok(file).build();
+        } else {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
     }
 
 }

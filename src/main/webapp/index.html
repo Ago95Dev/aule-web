@@ -554,10 +554,18 @@
                             </div>
                             <div class="modal-body">
                                 <p>Seleziona le opzioni desiderate per l'esportazione in formato iCalendar:</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
-                                <button type="button" class="btn btn-primary">Esporta</button>
+                                <form id="exportToICalendar">
+                                    <div class="mb-3">
+                                        <label for="settimanaPicker" class="form-label">Inizio</label>
+                                        <input type="date" class="form-control" id="startTimeForCalendar">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="settimanaPicker" class="form-label">Fine</label>
+                                        <input type="date" class="form-control" id="endTimeForCalendar">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Esporta</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                                </form>
                             </div>
                         </div>
                     </div>

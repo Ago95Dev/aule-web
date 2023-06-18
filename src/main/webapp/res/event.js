@@ -1,47 +1,47 @@
 $(document).ready(function () {
 
-    
-    
-    
+
+
+
     /*function populateGroupNamesEvents() {
-        $.ajax({
-            url: 'rest/classroom/group/all',
-            type: 'GET',
-            success: function (response) {
-                var groupNames = Object.keys(response); // array nomi dei gruppi
-                //var groupSelect = $('#' + label_Id);
-                var groupSelect = $('#groupNameEvents');
-                groupNames.forEach(function (groupName) {
-                    groupSelect.append('<option value="' + response[groupName] + '">' + groupName + '</option>');
-                });
-            },
-            error: function () {
-                console.log('Errore durante il recupero dei nomi dei gruppi');
-            }
-        }); 
-
-        function populateCourseNamesAddEvent() {
-        $.ajax({
-            url: 'rest/course/all',
-            type: 'GET',
-            success: function (response) {
-                var courseNames = Object.keys(response); //array di nomi delle aule
-
-                // choice box con nomi delle aule
-                var courseSelect = $('#courseIdEvent');
-                courseNames.forEach(function (courseName) {
-                    courseSelect.append('<option value="' + response[courseName] + '">' + courseName + '</option>');
-                });
-            },
-            error: function () {
-                console.log('Errore durante il recupero dei nomi delle aule');
-            }
-        });
-    }
-    populateCourseNamesAddEvent();
-
-       
-    } */
+     $.ajax({
+     url: 'rest/classroom/group/all',
+     type: 'GET',
+     success: function (response) {
+     var groupNames = Object.keys(response); // array nomi dei gruppi
+     //var groupSelect = $('#' + label_Id);
+     var groupSelect = $('#groupNameEvents');
+     groupNames.forEach(function (groupName) {
+     groupSelect.append('<option value="' + response[groupName] + '">' + groupName + '</option>');
+     });
+     },
+     error: function () {
+     console.log('Errore durante il recupero dei nomi dei gruppi');
+     }
+     }); 
+     
+     function populateCourseNamesAddEvent() {
+     $.ajax({
+     url: 'rest/course/all',
+     type: 'GET',
+     success: function (response) {
+     var courseNames = Object.keys(response); //array di nomi delle aule
+     
+     // choice box con nomi delle aule
+     var courseSelect = $('#courseIdEvent');
+     courseNames.forEach(function (courseName) {
+     courseSelect.append('<option value="' + response[courseName] + '">' + courseName + '</option>');
+     });
+     },
+     error: function () {
+     console.log('Errore durante il recupero dei nomi delle aule');
+     }
+     });
+     }
+     populateCourseNamesAddEvent();
+     
+     
+     } */
 
 
     function populateCourseNames(label_Id) {
@@ -53,7 +53,7 @@ $(document).ready(function () {
 
                 // choice box con nomi delle aule
                 var courseSelect = $('#' + label_Id);
-               // var courseSelect = $('#courseIdEvent');
+                // var courseSelect = $('#courseIdEvent');
                 courseNames.forEach(function (courseName) {
                     courseSelect.append('<option value="' + response[courseName] + '">' + courseName + '</option>');
                 });
@@ -181,7 +181,7 @@ $('#searchByGroup').submit(function (event) {
     var group_id = $('#groupNameEvents').val();
 
     $.ajax({
-        url: 'rest/event/group/'+ group_id,
+        url: 'rest/event/group/' + group_id,
         type: 'GET',
 
         success: function (response) {
@@ -230,11 +230,11 @@ function setUpdateEventForm(event_id) {
             console.log('Errore durante il recupero dei dati dal database');
         }
     });
-} 
+}
 
 // Update Event 
 $('#updateEventForm').submit(function (event) {
-    event.preventDefault(); 
+    event.preventDefault();
     var eventId = $('#eventId').val();
     console.log("prova" + eventId)
     var formData = {
@@ -265,6 +265,43 @@ $('#updateEventForm').submit(function (event) {
         }
     });
 });
+
+$('#exportToICalendar').submit(function (event) {
+    event.preventDefault();
+    var startDate = $('#startTimeForCalendar').val();
+    var endDate = $('#endTimeForCalendar').val();
+    const startDateArray = startDate.split("-");
+    const endDateArray = endDate.split("-");
+
+    var start = new Date(startDate).toJSON();
+    var end = new Date(endDate).toJSON();
+
+    var formData = {
+        startDate: start,
+        endDate: end
+    };
+
+    $.ajax({
+        url: 'rest/event/icalendar/export',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(formData),
+        success: function (data) {
+            var blob = new Blob([data]);
+            var link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = 'events.ics';
+            link.click();
+        },
+        error: function () {
+            console.log(JSON.stringify(formData));
+            alert('Errore durante aggiornamento');
+        }
+    });
+
+
+});
+
 
 $('#addEventForm').submit(function (event) {
     event.preventDefault();
@@ -342,6 +379,8 @@ $('#recurrentCheckbox').change(function (event) {
     }
     console.log(value);
 });
+
+
 
 function getInformazioniEvento(event_id) {
     console.log(event_id);
