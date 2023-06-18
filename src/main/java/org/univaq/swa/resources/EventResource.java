@@ -115,6 +115,9 @@ public class EventResource {
             ResultSet rs = ps.executeQuery();
             responseMap = createEvent(rs);
             try ( PreparedStatement ps2 = con.prepareStatement(getClassNameQuery)) {
+                if (responseMap.isEmpty()) {
+                    return Response.status(Response.Status.NO_CONTENT).build();
+                }
                 ps2.setInt(1, (int) responseMap.get("classroom_id"));
                 ResultSet rs1 = ps2.executeQuery();
                 if (rs1.next()) {
@@ -275,7 +278,7 @@ public class EventResource {
         if (courseIdFromJSON != null) {
             course_id = Integer.parseInt((String) event.get("course_id"));
         }
-        if (event.get("until_date") != "") {
+        if (event.get("until_date") != "" && event.get("until_date") != null) {
             try ( PreparedStatement ps1 = con.prepareStatement(addRecurrent, Statement.RETURN_GENERATED_KEYS)) {
 
                 String dateAsString = (String) event.get("until_date");
@@ -509,11 +512,11 @@ public class EventResource {
         String getNowEventsQuery = "SELECT * FROM event WHERE (date BETWEEN ? AND ?) AND classroom_id = ?;";
         String getCourse = "SELECT name FROM course WHERE id= ?";
         String getClassNameQuery = "SELECT name FROM classroom WHERE id=?;";
-        
+
         String date = (String) json.get("date");
-        int classroom_id = Integer.valueOf((String) json.get("classroomId")) ; 
-        
-        LocalDate choosenDate = LocalDate.parse(date,DateTimeFormatter.ISO_DATE_TIME);
+        int classroom_id = Integer.valueOf((String) json.get("classroomId"));
+
+        LocalDate choosenDate = LocalDate.parse(date, DateTimeFormatter.ISO_DATE_TIME);
         LocalDate start = YearMonth.of(choosenDate.getYear(), choosenDate.getMonth()).atDay(choosenDate.getDayOfMonth()).with(DayOfWeek.MONDAY);
         LocalDate end = YearMonth.of(choosenDate.getYear(), choosenDate.getMonth()).atDay(choosenDate.getDayOfMonth()).with(DayOfWeek.SUNDAY);
 

@@ -94,7 +94,7 @@ CREATE TABLE `course` (
 --
 
 INSERT INTO `course` (`id`, `name`) VALUES
-(1, 'Corso di sviluppo web');
+(1, 'Corso di sviluppo web'),(2,'Ingegneria Del Web'),(3,'Metodi Formali'),(4,'Tecnologie del Web'),(5,'Basi di Dati');
 
 -- --------------------------------------------------------
 

@@ -431,7 +431,6 @@ public class ClassroomResource {
     }
 
     @POST
-    @Logged
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/csv/import")
@@ -493,7 +492,6 @@ public class ClassroomResource {
     }
 
     @GET
-    @Logged
     @Produces("text/csv")
     @Path("/csv/export")
     public Response exportCsv(@Context UriInfo uriinfo,
