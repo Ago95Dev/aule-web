@@ -500,15 +500,20 @@ public class EventResource {
     }
 
     //WARNING terminale: GET ClassroomResource.getClassroom, should not consume any entity.
-    @GET
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("{classroom_id}/week/{date}")
-    public Response getWeekEvents(@Context UriInfo uriinfo, @PathParam("classroom_id") Integer classroom_id, @PathParam("date") String date) {
+    @Path("/week")
+    public Response WeekEvents(@Context UriInfo uriinfo, Map<String, Object> json) {
 
         String getNowEventsQuery = "SELECT * FROM event WHERE (date BETWEEN ? AND ?) AND classroom_id = ?;";
         String getCourse = "SELECT name FROM course WHERE id= ?";
         String getClassNameQuery = "SELECT name FROM classroom WHERE id=?;";
-        LocalDate choosenDate = LocalDate.parse(date);
+        
+        String date = (String) json.get("date");
+        int classroom_id = Integer.valueOf((String) json.get("classroomId")) ; 
+        
+        LocalDate choosenDate = LocalDate.parse(date,DateTimeFormatter.ISO_DATE_TIME);
         LocalDate start = YearMonth.of(choosenDate.getYear(), choosenDate.getMonth()).atDay(choosenDate.getDayOfMonth()).with(DayOfWeek.MONDAY);
         LocalDate end = YearMonth.of(choosenDate.getYear(), choosenDate.getMonth()).atDay(choosenDate.getDayOfMonth()).with(DayOfWeek.SUNDAY);
 

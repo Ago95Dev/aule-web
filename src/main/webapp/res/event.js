@@ -1,49 +1,6 @@
 $(document).ready(function () {
 
 
-
-
-    /*function populateGroupNamesEvents() {
-     $.ajax({
-     url: 'rest/classroom/group/all',
-     type: 'GET',
-     success: function (response) {
-     var groupNames = Object.keys(response); // array nomi dei gruppi
-     //var groupSelect = $('#' + label_Id);
-     var groupSelect = $('#groupNameEvents');
-     groupNames.forEach(function (groupName) {
-     groupSelect.append('<option value="' + response[groupName] + '">' + groupName + '</option>');
-     });
-     },
-     error: function () {
-     console.log('Errore durante il recupero dei nomi dei gruppi');
-     }
-     }); 
-     
-     function populateCourseNamesAddEvent() {
-     $.ajax({
-     url: 'rest/course/all',
-     type: 'GET',
-     success: function (response) {
-     var courseNames = Object.keys(response); //array di nomi delle aule
-     
-     // choice box con nomi delle aule
-     var courseSelect = $('#courseIdEvent');
-     courseNames.forEach(function (courseName) {
-     courseSelect.append('<option value="' + response[courseName] + '">' + courseName + '</option>');
-     });
-     },
-     error: function () {
-     console.log('Errore durante il recupero dei nomi delle aule');
-     }
-     });
-     }
-     populateCourseNamesAddEvent();
-     
-     
-     } */
-
-
     function populateCourseNames(label_Id) {
         $.ajax({
             url: 'rest/course/all',
@@ -145,12 +102,18 @@ $('#searchByClassAndDate').submit(function (event) {
     event.preventDefault();
 
     var classroomId = $('#eventClassroomName').val();
-    var date = $('#settimanaPickerForClassroom').val();
-
+    var dateFromInput = $('#settimanaPickerForClassroom').val();
+    var date = new Date(dateFromInput).toJSON();
+    
+    var formData = {
+        classroomId: classroomId,
+        date: date
+    };
     $.ajax({
-        url: 'rest/event/' + classroomId + '/week/' + date,
-        type: 'GET',
-
+        url: 'rest/event/week',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(formData),
         success: function (response) {
 
             $('#e-table-body').empty();
@@ -236,7 +199,6 @@ function setUpdateEventForm(event_id) {
 $('#updateEventForm').submit(function (event) {
     event.preventDefault();
     var eventId = $('#eventId').val();
-    console.log("prova" + eventId)
     var formData = {
         eventName: $('#eventNameUpdate').val(),
         eventDate: $('#eventDateUpdate').val(),
