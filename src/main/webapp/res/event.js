@@ -47,7 +47,7 @@ $(document).ready(function () {
                             '<td>' + event["description"] + '</td>' +
                             '<td>' + event["type"] + '</td>' +
                             '<td class="text-center">' + '<a style="text-decoration: none;" href="#" onClick="getInformazioniEvento(' + event["id"] + ')" data-bs-toggle="modal" data-bs-target="#infoEventoModal" class="text-reset" tabindex="-1"> <button class="btn btn-secondary"><i class="fa-solid fa-circle-info fa-lg"></i></button></a>' + ' '
-                            + '<a style="text-decoration: none;" href="#" onClick="setUpdateEventForm(' + event["id"] + ')" data-bs-toggle="modal" data-bs-target="#setUpdateEventForm" class="text-reset" tabindex="-1"><button class="btn btn-warning" data-bs-toggle="modal" id="updateButtonShow" data-bs-target="#updateEventModal"><i class="fa-solid fa-pen-to-square"></i></button>' +
+                            + '<a style="text-decoration: none;" href="#" onClick="setUpdateEventForm(' + event["id"] + ')" data-bs-toggle="modal" data-bs-target="#updateEventModal" class="text-reset" tabindex="-1"><button class="btn btn-warning btn-auth" data-bs-toggle="modal" id="updateButtonShow" data-bs-target="#updateEventModal"><i class="fa-solid fa-pen-to-square"></i></button>' +
                             '</tr>' + '<td class="text-end"></td>';
                     $('#e-table-body').append(row);
                 });
@@ -77,7 +77,7 @@ $(document).ready(function () {
                             '<td>' + event["description"] + '</td>' +
                             '<td>' + event["type"] + '</td>' +
                             '<td class="text-center">' + '<a style="text-decoration: none;" href="#" onClick="getInformazioniEvento(' + event["id"] + ')" data-bs-toggle="modal" data-bs-target="#infoEventoModal" class="text-reset" tabindex="-1"> <button class="btn btn-secondary"><i class="fa-solid fa-circle-info fa-lg"></i></button></a>' + ' '
-                            + '<a style="text-decoration: none;" href="#" onClick="#updateEventForm(' + event["id"] + ')" data-bs-toggle="modal" data-bs-target="#updateEventModal" class="text-reset" tabindex="-1"><button class="btn btn-warning" data-bs-toggle="modal" id="updateButtonShow" data-bs-target="#updateAulaModal"><i class="fa-solid fa-pen-to-square"></i></button>' +
+                            + '<a style="text-decoration: none;" href="#" onClick="setUpdateEventForm(' + event["id"] + ')" data-bs-toggle="modal" data-bs-target="#updateEventModal" class="text-reset" tabindex="-1"><button class="btn btn-warning btn-auth" data-bs-toggle="modal" id="updateButtonShow" data-bs-target="#updateEventModal"><i class="fa-solid fa-pen-to-square"></i></button>' +
                             '</tr>' + '<td class="text-end"></td>';
                     $('#e-table-body').append(row);
                 });
@@ -176,9 +176,7 @@ function setUpdateEventForm(event_id) {
         type: 'GET',
 
         success: function (response) {
-            // Rimozione righe statiche
-            $('#e-table-body-info').empty();
-
+            
             // Altri aggiornamenti dei campi del form
             $('#eventIdUpdate').val(event_id);
             $('#eventNameUpdate').val(response["eventName"]);

@@ -2,7 +2,8 @@
 $(document).ready(function () {
 
     var authToken = sessionStorage.getItem('authToken'); // Recupera il token salvato
-    // cursore 
+   
+   /* // cursore 
     $(".icon-button").on("mouseenter", function () {
         var overlayText = $(this).data("overlay-text");
         var position = $(this).offset();
@@ -16,8 +17,8 @@ $(document).ready(function () {
         });
     }).on("mouseleave", function () {
         $(".overlay-notification").hide();
-    });
-
+    });*/
+     
     function hideClassroomButtons() {
         $('#aule .btn').hide();
     }
@@ -31,7 +32,7 @@ $(document).ready(function () {
     function showEventButtons() {
         $('#eventi .btn').show();
     }
-
+    $("#eventTabSection").hide();
     // Al click sulla navbar "Eventi"
     $('#nav-eventi').click(function () {
         hideClassroomButtons();
@@ -67,7 +68,6 @@ $(document).ready(function () {
             $('#importCSVLogged').show();
             $('#exportCSVLogged').show();
             $('#updateButtonShow').show();
-
         }
     }
 
@@ -263,7 +263,7 @@ $(document).ready(function () {
                             '<td class="text-center">' + response[key]["capacity"] + '</td>' +
                             '<td class="text-center">' + response[key]["note"] + '</td>' +
                             '<td class="text-center">' + '<a style="text-decoration: none;" href="#" onClick="getInformazioniAula(' + response[key]["id"] + ')" data-bs-toggle="modal" data-bs-target="#infoAulaModal" class="text-reset" tabindex="-1"> <button class="btn btn-secondary"><i class="fa-solid fa-circle-info fa-lg"></i></button>' + ' '
-                            + '<a style="text-decoration: none;" href="#" onClick="setUpdateAulaForm(' + response[key]["id"] + ')" data-bs-toggle="modal" data-bs-target="#updateAulaModal" class="text-reset" tabindex="-1"><button class="btn btn-warning" data-bs-toggle="modal" id="updateButtonShow" data-bs-target="#updateAulaModal"><i class="fa-solid fa-pen-to-square"></i></button>' +
+                            + '<a style="text-decoration: none;" href="#" onClick="setUpdateAulaForm(' + response[key]["id"] + ')" data-bs-toggle="modal" data-bs-target="#updateAulaModal" class="text-reset" tabindex="-1"><button class="btn btn-warning btn-auth" data-bs-toggle="modal" id="updateButtonShow" data-bs-target="#updateAulaModal"><i class="fa-solid fa-pen-to-square"></i></button>' +
                             '<td class="text-end"></td>' +
                             '</tr>';
                     $('#table-body').append(row);

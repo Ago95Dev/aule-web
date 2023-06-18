@@ -6,9 +6,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!--style sito-->
         <link rel="stylesheet" href="res/css/restest.css"/>
-        <!--fix utili visualizzazione browser
+        <!--fix utili visualizzazione browser-->
         <link rel="stylesheet" href="res/css/reset.css"/>
-        <link rel="stylesheet" href="res/css/normalize.css"/> -->
+        <link rel="stylesheet" href="res/css/normalize.css"/> 
         <!--Bootstrap5 -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <!--Jquery-->
@@ -32,7 +32,7 @@
 
                     <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
 
-                        <li><a href="#" class="nav-link px-2 text-white" id="nav-aule"> <i class="fa-solid fa-users-between-lines fa-lg"></i> Aule</a></li>
+                        <li><a href="#" class="nav-link px-2 text-white" id="nav-aule"> <i class="fa-solid fa-people-roof fa-lg"></i> Aule</a></li>
                         <li><a href="#" class="nav-link px-2 text-white" id="nav-eventi"> <i class="fa-regular fa-calendar-days fa-lg"></i></i> Eventi</a></li>
 
                     </ul>
@@ -67,14 +67,10 @@
 
                 <div class="tab-content my-3" id="tabContent">
                     <div class="tab-pane fade show active" id="aule" role="tabpanel" aria-labelledby="auleTab">
-                        <button class="btn btn-success btn-auth mb-2" data-bs-toggle="modal" data-bs-target="#addAulaModal"><i class="fa-solid fa-plus"></i> Inserisci Aula</button>
-                        <button class="btn btn-success btn-auth mb-2" data-bs-toggle="modal" data-bs-target="#assegnaAulaModal"><i class="fa-solid fa-users-viewfinder"></i> Assegna Aula a Gruppo</button>
+                        
                         <!-- Bottone Esporta CSV -->
 
-                        <!--Da spostare nella singola riga dell'aula-->
-                        <button class="btn btn-success btn-auth mb-2" onclick="aggiornaAula()">
-                            <i class="fa-solid fa-sync"></i> Aggiorna Aula
-                        </button>                    
+                        <!--Da spostare nella singola riga dell'aula-->        
                     </div>
                     <div>
                     </div>
@@ -83,7 +79,6 @@
 
             <!-- Modali per i form -->
             <div class="modal-body">
-                <!-- Modal per l'esportazione CSV -->
                 <!-- Modal per l'esportazione CSV -->
                 <div class="modal fade" id="exportCSVModal" tabindex="-1" role="dialog" aria-labelledby="exportCSVModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
@@ -602,8 +597,10 @@
                 <div class="card-header d-flex justify-content-between">
                     <h3 class="card-title">Aule</h3>
                     <div>
+                        <button class="btn btn-success btn-auth" data-bs-toggle="modal" data-bs-target="#addAulaModal"><i class="fa-solid fa-plus"></i> Inserisci Aula</button>
+                        <button class="btn btn-success btn-auth" data-bs-toggle="modal" data-bs-target="#assegnaAulaModal"><i class="fa-solid fa-users-viewfinder"></i> Assegna Aula a Gruppo</button>
                         <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#auleByGroupModal">
-                            <i class="fa-solid fa-filter"></i> Aule per Gruppo
+                            <i class="fa-solid fa-users-between-lines"></i> Aule per Gruppo
                         </button>
                         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exportCSVModal">
                             <i class="fa-solid fa-file-download"></i> Esporta aule <i class="fa-solid fa-file-csv fa-lg"></i>
@@ -648,7 +645,7 @@
                     <div id="eventi">
                         <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addEventModal"><i class="fa-solid fa-check"></i> Inserisci Evento</button>                
                         <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#filterEventsModal">
-                            <i class="fa-solid fa-filter"></i> Eventi per Gruppo
+                            <i class="fa-solid fa-users-between-lines"></i> Eventi per Gruppo
                         </button>
                         <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#cercaEventiModal"><i class="fa-solid fa-magnifying-glass"></i> Cerca Eventi</button>
                         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exportICalModal">
