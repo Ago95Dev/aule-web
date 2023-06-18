@@ -586,17 +586,17 @@ public class ClassroomResource {
             throw new RESTWebApplicationException(ex);
         }
     }
-    
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/group/{group_id}")
-    public Response getEventsFromGroup(@Context UriInfo uriinfo, @PathParam("group_id") Integer group_id) {
+    public Response getAuleFromGroup(@Context UriInfo uriinfo, @PathParam("group_id") Integer group_id) {
 
         String selectClassroomIDs = "SELECT classroom_id FROM group_has_classroom WHERE group_id = ?";
         String selectClassrooms = "SELECT * FROM classroom WHERE id = ?";
-        
+
         ArrayList<Integer> classroomIds = new ArrayList<Integer>();
-        Map<String, Map<String, Object>> responseMap = new LinkedHashMap<>();
+        Map<String, Object> responseMap = new LinkedHashMap<>();
 
         try ( PreparedStatement ps = con.prepareStatement(selectClassroomIDs)) {
             ps.setInt(1, group_id);
@@ -609,20 +609,23 @@ public class ClassroomResource {
                     ps1.setInt(1, classroom_id);
                     ResultSet rs1 = ps1.executeQuery();
                     while (rs1.next()) {
-                        
-                        if (rs1.getInt("course_id") >= 0) {
-                         
-
-                        }
+                        Classroom classroom = new Classroom();
+                        classroom.setId(rs1.getInt("id"));
+                        classroom.setCapacity(rs1.getInt("capacity"));
+                        classroom.setEmail(rs1.getString("email"));
+                        classroom.setNote(rs1.getString("note"));
+                        responseMap.put(rs1.getString("name"), classroom);
                     }
                 } catch (SQLException ex) {
                     Logger.getLogger(EventResource.class.getName()).log(Level.SEVERE, null, ex);
-                };
+                }
             }
+            
             if (responseMap.isEmpty()) {
                 return Response.status(Response.Status.NO_CONTENT).build();
             }
             return Response.ok(responseMap).build();
+
         } catch (SQLException ex) {
             Logger.getLogger(EventResource.class.getName()).log(Level.SEVERE, null, ex);
         };

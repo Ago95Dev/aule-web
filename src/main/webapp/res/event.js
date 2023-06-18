@@ -174,6 +174,39 @@ $('#searchByClassAndDate').submit(function (event) {
     });
 });
 
+
+$('#searchByGroup').submit(function (event) {
+    event.preventDefault();
+
+    var group_id = $('#groupNameEvents').val();
+
+    $.ajax({
+        url: 'rest/event/group/'+ group_id,
+        type: 'GET',
+
+        success: function (response) {
+
+            $('#e-table-body').empty();
+            Object.keys(response).forEach(function (key) {
+
+                var event = response[key];
+                var row = '<tr>' +
+                        '<td>' + event["name"] + '</td>' +
+                        '<td>' + event["date"] + '</td>' +
+                        '<td>' + event["start_time"] + '</td>' +
+                        '<td>' + event["end_time"] + '</td>' +
+                        '<td>' + event["description"] + '</td>' +
+                        '<td>' + event["type"] + '</td>' +
+                        '</tr>';
+                $('#e-table-body').append(row);
+            });
+        },
+        error: function () {
+            alert('Errore durante il recupero degli eventi.');
+        }
+    });
+});
+
 function setUpdateEventForm(event_id) {
     $.ajax({
         url: 'rest/event/' + event_id,

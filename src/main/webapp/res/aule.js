@@ -244,7 +244,7 @@ $(document).ready(function () {
             }
         });
     }
-    
+
 
 
     function populateTable() {
@@ -263,8 +263,8 @@ $(document).ready(function () {
                             '<td class="text-center">' + response[key]["capacity"] + '</td>' +
                             '<td class="text-center">' + response[key]["note"] + '</td>' +
                             '<td class="text-center">' + '<a style="text-decoration: none;" href="#" onClick="getInformazioniAula(' + response[key]["id"] + ')" data-bs-toggle="modal" data-bs-target="#infoAulaModal" class="text-reset" tabindex="-1"> <button class="btn btn-secondary"><i class="fa-solid fa-circle-info fa-lg"></i></button>' + ' '
-                            +'<a style="text-decoration: none;" href="#" onClick="setUpdateAulaForm(' + response[key]["id"] + ')" data-bs-toggle="modal" data-bs-target="#updateAulaModal" class="text-reset" tabindex="-1"><button class="btn btn-warning" data-bs-toggle="modal" id="updateButtonShow" data-bs-target="#updateAulaModal"><i class="fa-solid fa-pen-to-square"></i></button>'+
-                    '<td class="text-end"></td>' +
+                            + '<a style="text-decoration: none;" href="#" onClick="setUpdateAulaForm(' + response[key]["id"] + ')" data-bs-toggle="modal" data-bs-target="#updateAulaModal" class="text-reset" tabindex="-1"><button class="btn btn-warning" data-bs-toggle="modal" id="updateButtonShow" data-bs-target="#updateAulaModal"><i class="fa-solid fa-pen-to-square"></i></button>' +
+                            '<td class="text-end"></td>' +
                             '</tr>';
                     $('#table-body').append(row);
                 });
@@ -290,54 +290,55 @@ $(document).ready(function () {
 
     populatePosition();
     populateEquipmentIDs();
-    
-   populateGroupNames('groupName');
-   // Filtro nomi by gruppi 
-   populateGroupNames('groupNameAule');
-   // Filtro eventi by gruppi 
-   populateGroupNames('groupNameEvents');
-   // populateGroupNames(); 
+
+    populateGroupNames('groupName');
+    // Filtro nomi by gruppi 
+    populateGroupNames('groupNameAule');
+    // Filtro eventi by gruppi 
+    populateGroupNames('groupNameEvents');
+    // populateGroupNames(); 
 
 
     populateTable();
 });
 
 function populateEquipmentUpdateIDs() {
-        $.ajax({
-            url: 'rest/classroom/equipment/all',
-            type: 'GET',
-            success: function (response) {
+    $.ajax({
+        url: 'rest/classroom/equipment/all',
+        type: 'GET',
+        success: function (response) {
 
-                var equipmentNames = Object.keys(response); // array nomi dei gruppi
-                var equipmentSelect = $('#equipmentsIdUpdateRoom');
-                equipmentNames.forEach(function (equipmentName) {
-                    equipmentSelect.append('<option value="' + response[equipmentName] + '">' + equipmentName + '</option>');
-                });
-            },
-            error: function () {
-                console.log('Errore durante il recupero delle posizione');
-            }
-        });
+            var equipmentNames = Object.keys(response); // array nomi dei gruppi
+            var equipmentSelect = $('#equipmentsIdUpdateRoom');
+            equipmentNames.forEach(function (equipmentName) {
+                equipmentSelect.append('<option value="' + response[equipmentName] + '">' + equipmentName + '</option>');
+            });
+        },
+        error: function () {
+            console.log('Errore durante il recupero delle posizione');
+        }
+    });
 }
 
-    function populatePosition() {
-        $.ajax({
-            url: 'rest/classroom/position/all',
-            type: 'GET',
-            success: function (response) {
-                console.log(response);
+function populatePosition() {
+    $.ajax({
+        url: 'rest/classroom/position/all',
+        type: 'GET',
+        success: function (response) {
+            console.log(response);
 
-                var positionNames = Object.keys(response); // array nomi dei gruppi
-                var positionSelect = $('#positionIDUpdateRoom');
-                positionNames.forEach(function (positionName) {
-                    positionSelect.append('<option value="' + response[positionName] + '">' + positionName + '</option>');
-                });
-            },
-            error: function () {
-                console.log('Errore durante il recupero delle posizione');
-            }
-        });
-    }
+            var positionNames = Object.keys(response); // array nomi dei gruppi
+            var positionSelect = $('#positionIDUpdateRoom');
+            positionNames.forEach(function (positionName) {
+                positionSelect.append('<option value="' + response[positionName] + '">' + positionName + '</option>');
+            });
+        },
+        error: function () {
+            console.log('Errore durante il recupero delle posizione');
+        }
+    });
+}
+
 function getInformazioniAula(classroom_id) {
     $.ajax({
         url: 'rest/classroom/' + classroom_id,
@@ -390,7 +391,7 @@ function setUpdateAulaForm(classroom_id) {
             if (typeof response["Group"][0] !== "undefined") {
                 name = response["Group"][0]["name"];
             }
-            
+
             $('#classroomIdUpdate').val(classroom_id);
             $('#nameUpdateRoom').val(response["name"]);
             $('#capacityUpdateRoom').val(response["capacity"]);
@@ -400,7 +401,7 @@ function setUpdateAulaForm(classroom_id) {
             $('#noteUpdateRoom').val(response["note"]);
             populateEquipmentUpdateIDs();
             populatePosition();
-            
+
         },
         error: function () {
             console.log('Errore durante il recupero dei dati dal database');
@@ -434,36 +435,73 @@ $('#addClassroomToGroupForm').submit(function (event) {
 });
 
 
+$('#searchAuleByGroup').submit(function (event) {
+    event.preventDefault();
+    var group_id = $('#groupNameAule').val();
+    console.log($('#groupNameAule').val());
+    
+    $.ajax({
+        url: 'rest/classroom/group/' + group_id,
+        type: 'GET',
+
+        success: function (response) {
+            //rimozione righe statiche
+            $('#table-body').empty();
+            Object.keys(response).forEach(key => {
+                
+                var row = '<tr>' +
+                        '<td class="text-center"><a style="text-decoration: none;" href="#" onClick="getInformazioniAula(' + response[key]["id"] + ')" data-bs-toggle="modal" data-bs-target="#infoAulaModal" class="text-reset" tabindex="-1">' + key + '</a></td>' +
+                        '<td class="text-center">' + response[key]["email"] + '</td>' +
+                        '<td class="text-center">' + response[key]["capacity"] + '</td>' +
+                        '<td class="text-center">' + response[key]["note"] + '</td>' +
+                        '<td class="text-center">' + '<a style="text-decoration: none;" href="#" onClick="getInformazioniAula(' + response[key]["id"] + ')" data-bs-toggle="modal" data-bs-target="#infoAulaModal" class="text-reset" tabindex="-1"> <button class="btn btn-secondary"><i class="fa-solid fa-circle-info fa-lg"></i></button>' + ' '
+                        + '<a style="text-decoration: none;" href="#" onClick="setUpdateAulaForm(' + response[key]["id"] + ')" data-bs-toggle="modal" data-bs-target="#updateAulaModal" class="text-reset" tabindex="-1"><button class="btn btn-warning" data-bs-toggle="modal" id="updateButtonShow" data-bs-target="#updateAulaModal"><i class="fa-solid fa-pen-to-square"></i></button>' +
+                        '<td class="text-end"></td>' +
+                        '</tr>';
+                $('#table-body').append(row);
+            });
+
+        },
+        error: function () {
+            console.log('Errore durante il recupero dei dati dal database');
+        }
+    });
+
+});
+
+
+
+
 
 $('#updateAulaForm').submit(function (event) {
-        event.preventDefault();
+    event.preventDefault();
 
-        var classroomId = $('#classroomIdUpdate').val();
+    var classroomId = $('#classroomIdUpdate').val();
 
-        var formData = {
-            name: $('#nameUpdateRoom').val(),
-            positionID: $('#positionIDUpdateRoom').val(),
-            capacity: $('#capacityUpdateRoom').val(),
-            email: $('#emailUpdateRoom').val(),
-            numberOfEthernet: $('#numberOfEthernetUpdateRoom').val(),
-            numberOfSockets: $('#numberOfSocketsUpdateRoom').val(),
-            note: $('#noteUpdateRoom').val(),
-            equipmentsId: $('#equipmentsIdUpdateRoom').val()
-        };
+    var formData = {
+        name: $('#nameUpdateRoom').val(),
+        positionID: $('#positionIDUpdateRoom').val(),
+        capacity: $('#capacityUpdateRoom').val(),
+        email: $('#emailUpdateRoom').val(),
+        numberOfEthernet: $('#numberOfEthernetUpdateRoom').val(),
+        numberOfSockets: $('#numberOfSocketsUpdateRoom').val(),
+        note: $('#noteUpdateRoom').val(),
+        equipmentsId: $('#equipmentsIdUpdateRoom').val()
+    };
 
-        //console.log(formData);
+    //console.log(formData);
 
-        $.ajax({
-            url: 'rest/classroom/updateClassroom/' + classroomId,
-            type: 'PUT',
-            contentType: 'application/json',
-            data: JSON.stringify(formData),
-            success: function () {
-                alert('Aula aggiornata');
-            },
-            error: function () {
-                console.log(JSON.stringify(formData));
-                alert('Errore durante aggiornamento');
-            }
-        });
+    $.ajax({
+        url: 'rest/classroom/updateClassroom/' + classroomId,
+        type: 'PUT',
+        contentType: 'application/json',
+        data: JSON.stringify(formData),
+        success: function () {
+            alert('Aula aggiornata');
+        },
+        error: function () {
+            console.log(JSON.stringify(formData));
+            alert('Errore durante aggiornamento');
+        }
     });
+});
