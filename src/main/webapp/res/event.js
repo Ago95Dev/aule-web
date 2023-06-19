@@ -197,22 +197,23 @@ function setUpdateEventForm(event_id) {
 $('#updateEventForm').submit(function (event) {
     event.preventDefault();
     var eventId = $('#eventId').val();
+    eventId = 3;
     var formData = {
-        eventName: $('#eventNameUpdate').val(),
-        eventDate: $('#eventDateUpdate').val(),
-        startTime: $('#startTimeUpdate').val(),
-        endTime: $('#endTimeUpdate').val(),
-        eventDescription: $('#eventDescriptionUpdate').val(),
-        eventType: $('#eventTypeUpdate').val(),
-        eventEmail: $('#eventEmailUpdate').val(),
-        classroomId: $('#classroomIdEventUpdate').val(),
-        courseId: $('#courseIdEventUpdate').val()
+        name: $('#eventNameUpdate').val(),
+        date: $('#eventDateUpdate').val(),
+        start_time: $('#startTimeUpdate').val(),
+        end_time: $('#endTimeUpdate').val(),
+        description: $('#eventDescriptionUpdate').val(),
+        type: $('#eventTypeUpdate').val(),
+        email: $('#eventEmailUpdate').val(),
+        classroom_id: $('#classroomIdEventUpdate').val(),
+        course_id: $('#courseIdEventUpdate').val()
     };
 
-    console.log(formData);
+    console.log("This event id" + eventId);
 
     $.ajax({
-        url: 'rest/event/updateEvent/' + eventId,
+        url: 'rest/event/update/' + eventId,
         type: 'PUT',
         contentType: 'application/json',
         data: JSON.stringify(formData),

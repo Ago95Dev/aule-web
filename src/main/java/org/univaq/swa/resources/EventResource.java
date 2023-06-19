@@ -157,6 +157,7 @@ public class EventResource {
 
         // Reading the JSON
         String dateAsString = (String) event.get("date");
+        System.out.println(dateAsString);
         LocalDate date = LocalDate.parse(dateAsString);
         String startTime = (String) event.get("start_time");
         String endTime = (String) event.get("end_time");
@@ -167,13 +168,13 @@ public class EventResource {
         int course_id = 0;
 
         if (event.get("recurrent") != null) {
-            recurrent = (int) event.get("recurrent");
+            recurrent = Integer.valueOf( (String) event.get("recurrent")) ;
         }
         if (event.get("classroom_id") != null) {
-            classroom_id = (int) event.get("classroom_id");
+            classroom_id = Integer.valueOf( (String) event.get("classroom_id"));
         }
         if (event.get("course_id") != null) {
-            course_id = (int) event.get("course_id");
+            course_id = Integer.valueOf((String) event.get("course_id"));
         }
 
         if (recurrent == 0) {
@@ -190,6 +191,7 @@ public class EventResource {
                 } else {
                     ps1.setNull(8, java.sql.Types.INTEGER);
                 }
+                System.out.println(classroom_id);
                 ps1.setInt(9, classroom_id);
                 ps1.setInt(10, event_id);
                 ps1.executeUpdate();
