@@ -116,7 +116,7 @@ public class EventResource {
             responseMap = createEvent(rs);
             try ( PreparedStatement ps2 = con.prepareStatement(getClassNameQuery)) {
                 if (responseMap.isEmpty()) {
-                    return Response.status(Response.Status.NO_CONTENT).build();
+                    return Response.status(Response.Status.NOT_FOUND).build();
                 }
                 ps2.setInt(1, (int) responseMap.get("classroom_id"));
                 ResultSet rs1 = ps2.executeQuery();
@@ -134,7 +134,7 @@ public class EventResource {
                 }
             }
             if (responseMap.isEmpty()) {
-                return Response.status(Response.Status.NO_CONTENT).build();
+                return Response.status(Response.Status.NOT_FOUND).build();
             }
             return Response.ok(responseMap).build();
 
@@ -248,7 +248,7 @@ public class EventResource {
 
         }
 
-        return null;
+        return Response.status(Response.Status.CREATED).build();
     }
 
     @POST
@@ -367,7 +367,7 @@ public class EventResource {
                 Logger.getLogger(EventResource.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        return Response.accepted().build();
+        return Response.status(Response.Status.CREATED).build();
     }
 
     @GET
@@ -704,8 +704,6 @@ public class EventResource {
         } catch (SQLException ex) {
             Logger.getLogger(EventResource.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println(icsCalendar);
-
         try {
 
             FileOutputStream fout = new FileOutputStream(file);

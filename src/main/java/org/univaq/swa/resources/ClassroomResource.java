@@ -151,7 +151,7 @@ public class ClassroomResource {
                 responseMap.put("Group", groupOfClassroom);
             }
             if (responseMap.isEmpty()) {
-                return Response.status(Response.Status.NO_CONTENT).build();
+                return Response.status(Response.Status.NOT_FOUND).build();
             }
             return Response.ok(responseMap).build();
 
@@ -184,7 +184,7 @@ public class ClassroomResource {
             }
 
             if (responseMap.isEmpty()) {
-                return Response.status(Response.Status.NO_CONTENT).build();
+                return Response.status(Response.Status.NOT_FOUND).build();
             }
             return Response.ok(responseMap).build();
         } catch (SQLException ex) {
@@ -217,7 +217,7 @@ public class ClassroomResource {
             }
             if (responseMap.isEmpty()) {
 
-                return Response.status(Response.Status.NO_CONTENT).build();
+                return Response.status(Response.Status.NOT_FOUND).build();
             }
             return Response.ok(responseMap).build();
         } catch (SQLException ex) {
@@ -249,7 +249,7 @@ public class ClassroomResource {
             }
             if (responseMap.isEmpty()) {
 
-                return Response.status(Response.Status.NO_CONTENT).build();
+                return Response.status(Response.Status.NOT_FOUND).build();
             }
             return Response.ok(responseMap).build();
         } catch (SQLException ex) {
@@ -275,7 +275,7 @@ public class ClassroomResource {
             }
 
             if (responseMap.isEmpty()) {
-                return Response.status(Response.Status.NO_CONTENT).build();
+                return Response.status(Response.Status.NOT_FOUND).build();
             }
             return Response.ok(responseMap).build();
 
@@ -576,7 +576,7 @@ public class ClassroomResource {
             }
 
             if (responseMap.isEmpty()) {
-                return Response.status(Response.Status.NO_CONTENT).build();
+                return Response.status(Response.Status.NOT_FOUND).build();
             }
             return Response.ok(responseMap).build();
         } catch (SQLException ex) {
