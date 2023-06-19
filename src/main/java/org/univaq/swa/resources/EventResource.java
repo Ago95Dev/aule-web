@@ -17,7 +17,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.*;
-import java.text.DateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -152,12 +151,12 @@ public class EventResource {
         String updateEvent = "UPDATE event SET name = ?, date = ?, start_time = ?, end_time = ?, description = ?, type = ? , email = ?, course_id = ?, classroom_id = ? WHERE id = ?;";
         String retriveRecurrentID = "SELECT recurrent_id FROM event_has_recurrent WHERE event_id = ?;";
         String retriveEventIDs = "SELECT event_id FROM event_has_recurrent WHERE recurrent_id = ?;";
+        String selectDateOfEvent = "SELECT date FROM event WHERE id = ?";
         ArrayList<Integer> eventIDs = new ArrayList<Integer>(); // In case we want to modify reccurent ids  
         int recurrent = 0, recurrent_id = 0;
 
         // Reading the JSON
         String dateAsString = (String) event.get("date");
-        System.out.println(dateAsString);
         LocalDate date = LocalDate.parse(dateAsString);
         String startTime = (String) event.get("start_time");
         String endTime = (String) event.get("end_time");
@@ -168,10 +167,10 @@ public class EventResource {
         int course_id = 0;
 
         if (event.get("recurrent") != null) {
-            recurrent = Integer.valueOf( (String) event.get("recurrent")) ;
+            recurrent = (int) event.get("recurrent");
         }
         if (event.get("classroom_id") != null) {
-            classroom_id = Integer.valueOf( (String) event.get("classroom_id"));
+            classroom_id = Integer.valueOf((String) event.get("classroom_id"));
         }
         if (event.get("course_id") != null) {
             course_id = Integer.valueOf((String) event.get("course_id"));
@@ -191,7 +190,6 @@ public class EventResource {
                 } else {
                     ps1.setNull(8, java.sql.Types.INTEGER);
                 }
-                System.out.println(classroom_id);
                 ps1.setInt(9, classroom_id);
                 ps1.setInt(10, event_id);
                 ps1.executeUpdate();
@@ -214,10 +212,23 @@ public class EventResource {
                             eventIDs.add(rs2.getInt("event_id"));
                         }
                         if (!eventIDs.isEmpty()) {
-                            for (int event_id_reccurent : eventIDs) {
+                            LocalDate dateOfEventRecurrent = date;
+                            for (int event_id_recurrent : eventIDs) {
+                                try ( PreparedStatement psSelectDate = con.prepareStatement(selectDateOfEvent)) {
+                                    psSelectDate.setInt(1, event_id_recurrent);
+                                    ResultSet dateRS = psSelectDate.executeQuery();
+                                    if(dateRS.next()){
+                                        dateOfEventRecurrent = LocalDate.parse( dateRS.getDate("date").toString());
+                                        System.out.println(dateOfEventRecurrent);
+                                    }
+                                } catch (SQLException ex) {
+                                    ex.printStackTrace();
+                                    Logger.getLogger(EventResource.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+
                                 try ( PreparedStatement ps4 = con.prepareStatement(updateEvent)) {
                                     ps4.setString(1, (String) event.get("name"));
-                                    ps4.setDate(2, Date.valueOf(date));
+                                    ps4.setDate(2, Date.valueOf(dateOfEventRecurrent));
                                     ps4.setTime(3, Time.valueOf(startTime + ":00"));
                                     ps4.setTime(4, Time.valueOf(endTime + ":00"));
                                     ps4.setString(5, description);
@@ -229,7 +240,7 @@ public class EventResource {
                                         ps4.setNull(8, java.sql.Types.INTEGER);
                                     }
                                     ps4.setInt(9, classroom_id);
-                                    ps4.setInt(10, event_id_reccurent);
+                                    ps4.setInt(10, event_id_recurrent);
                                     ps4.executeUpdate();
                                 } catch (SQLException ex) {
                                     ex.printStackTrace();

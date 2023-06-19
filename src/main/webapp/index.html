@@ -67,7 +67,7 @@
 
                 <div class="tab-content my-3" id="tabContent">
                     <div class="tab-pane fade show active" id="aule" role="tabpanel" aria-labelledby="auleTab">
-                        
+
                         <!-- Bottone Esporta CSV -->
 
                         <!--Da spostare nella singola riga dell'aula-->        
@@ -409,7 +409,8 @@
                                     </div>
                                     <div class="mb-3">
                                         <input type="checkbox" id="recurrentCheckbox" name="recurrentCheckbox" value="recurrent">
-                                        <label for="recurrentCheckbox">Evento Ricorrente</label><br>                                </div>
+                                        <label for="recurrentCheckbox">Evento Ricorrente</label><br>                              
+                                    </div>
                                     <div class="mb-3 recurrentEventDiv" >
                                         <label for="untilDate" class="form-label">Data di scadenza</label>
                                         <input type="date" class="form-control" id="untilDate">
@@ -443,7 +444,7 @@
                             <div class="modal-body">
                                 <!-- Form per aggiornare un evento -->
                                 <form id="updateEventForm">
-                                    <input type="hidden" id="eventId" value="">
+                                    <input type="hidden" id="eventIdUpdate" value="">
                                     <div class="mb-3">
                                         <label for="eventNameUpdate" class="form-label">Nome Evento</label>
                                         <input type="text" class="form-control" id="eventNameUpdate" required>
@@ -486,21 +487,13 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="courseIdEventUpdate" class="form-label">ID Corso</label>
-                                        <select class="form-control" id="courseIdEventUpdate" required></select>
+                                        <select class="form-control" id="courseIdEventUpdate"></select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <input type="checkbox" id="recurrentUpdateCheckbox" name="recurrentUpdateCheckbox" value="1">
+                                        <label for="recurrentUpdateCheckbox">Modifica gli eventi ricorrenti</label><br>                              
                                     </div>
 
-                                    <div class="mb-3 recurrentEventDivUpdate">
-                                        <label for="untilDateUpdate" class="form-label">Data di scadenza</label>
-                                        <input type="date" class="form-control" id="untilDateUpdate">
-                                    </div>
-                                    <div class="mb-3 recurrentEventDivUpdate">
-                                        <label for="recurrencyTypeUpdate" class="form-label">Tipo di ricorrenza</label>
-                                        <select class="form-select" id="recurrencyTypeUpdate">
-                                            <option value="DAILY">Giornaliera</option>
-                                            <option value="WEEKLY">Settimanale</option>
-                                            <option value="MONTHLY">Mensile</option>
-                                        </select>
-                                    </div>
                                 </form>
                             </div>
                             <div class="modal-footer">
@@ -672,8 +665,6 @@
                                 <th>Azioni</th>
                             </tr>
                         </thead>
-                        <tbody>
-                        </tbody>
                         <!--Riga dinamica da riempire-->
                         <tbody id="e-table-body"></tbody>
                     </table>

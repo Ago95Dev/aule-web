@@ -48,7 +48,7 @@ $(document).ready(function () {
                             '<td>' + event["type"] + '</td>' +
                             '<td class="text-center">' + '<a style="text-decoration: none;" href="#" onClick="getInformazioniEvento(' + event["id"] + ')" data-bs-toggle="modal" data-bs-target="#infoEventoModal" class="text-reset" tabindex="-1"> <button class="btn btn-secondary"><i class="fa-solid fa-circle-info fa-lg"></i></button></a>' + ' '
                             + '<a style="text-decoration: none;" href="#" onClick="setUpdateEventForm(' + event["id"] + ')" data-bs-toggle="modal" data-bs-target="#updateEventModal" class="text-reset" tabindex="-1"><button class="btn btn-warning btn-auth" data-bs-toggle="modal" id="updateButtonShow" data-bs-target="#updateEventModal"><i class="fa-solid fa-pen-to-square"></i></button>' +
-                            '</tr>' + '<td class="text-end"></td>';
+                            + '<td class="text-end"></td>' +  '</tr>';
                     $('#e-table-body').append(row);
                 });
             },
@@ -76,9 +76,9 @@ $(document).ready(function () {
                             '<td>' + event["end_time"] + '</td>' +
                             '<td>' + event["description"] + '</td>' +
                             '<td>' + event["type"] + '</td>' +
-                            '<td class="text-center">' + '<a style="text-decoration: none;" href="#" onClick="getInformazioniEvento(' + event["id"] + ')" data-bs-toggle="modal" data-bs-target="#infoEventoModal" class="text-reset" tabindex="-1"> <button class="btn btn-secondary"><i class="fa-solid fa-circle-info fa-lg"></i></button></a>' + ' '
+                            '<td class="text-center">' + '<a style="text-decoration: none;" href="#" onClick="getInformazioniEvento(' + event["id"] + ')" data-bs-toggle="modal" data-bs-target="#infoEventoModal" class="text-reset" tabindex="-1"> <button class="btn btn-secondary"><i class="fa-solid fa-circle-info fa-lg"></i></button>' + ''
                             + '<a style="text-decoration: none;" href="#" onClick="setUpdateEventForm(' + event["id"] + ')" data-bs-toggle="modal" data-bs-target="#updateEventModal" class="text-reset" tabindex="-1"><button class="btn btn-warning btn-auth" data-bs-toggle="modal" id="updateButtonShow" data-bs-target="#updateEventModal"><i class="fa-solid fa-pen-to-square"></i></button>' +
-                            '</tr>' + '<td class="text-end"></td>';
+                            + '<td class="text-end"></td>' + '</tr>';
                     $('#e-table-body').append(row);
                 });
             },
@@ -104,7 +104,7 @@ $('#searchByClassAndDate').submit(function (event) {
     var classroomId = $('#eventClassroomName').val();
     var dateFromInput = $('#settimanaPickerForClassroom').val();
     var date = new Date(dateFromInput).toJSON();
-    
+
     var formData = {
         classroomId: classroomId,
         date: date
@@ -175,17 +175,21 @@ function setUpdateEventForm(event_id) {
         url: 'rest/event/' + event_id,
         type: 'GET',
 
+        
         success: function (response) {
-            
+
             // Altri aggiornamenti dei campi del form
             $('#eventIdUpdate').val(event_id);
-            $('#eventNameUpdate').val(response["eventName"]);
-            $('#eventDateUpdate').val(response["eventDate"]);
-            $('#startTimeUpdate').val(response["startTime"]);
-            $('#endTimeUpdate').val(response["endTime"]);
-            $('#eventDescriptionUpdate').val(response["eventDescription"]);
-            $('#eventTypeUpdate').val(response["eventType"]);
-            $('#eventEmailUpdate').val(response["eventEmail"]);
+            $('#eventNameUpdate').val(response["name"]);
+            $('#eventDateUpdate').val(response["date"]);
+            $('#startTimeUpdate').val(response["start_time"]);
+            $('#endTimeUpdate').val(response["end_time"]);
+            $('#eventDescriptionUpdate').val(response["description"]);
+            $('#eventTypeUpdate').val(response["type"]);
+            $('#eventEmailUpdate').val(response["email"]);
+            $('#classroomIdEventUpdate').val(response["classroom_id"]);
+            $('#courseIdEventUpdate').val(response["course_id"]);
+
         },
         error: function () {
             console.log('Errore durante il recupero dei dati dal database');
@@ -196,21 +200,37 @@ function setUpdateEventForm(event_id) {
 // Update Event 
 $('#updateEventForm').submit(function (event) {
     event.preventDefault();
-    var eventId = $('#eventId').val();
-    eventId = 3;
+    var eventId = $('#eventIdUpdate').val();
+    var recurrentForUpdate;
+    var startTime = $('#startTimeUpdate').val();
+    var endTime = $('#endTimeUpdate').val();
+
+    if ($('#recurrentUpdateCheckbox').prop('checked')) {
+        recurrentForUpdate = 1;
+    } else {
+        recurrentForUpdate = 0;
+    }
+
+    if (startTime.length > 5) {
+        startTime = startTime.slice(0,5);
+    }
+
+    if (endTime.length > 5) {
+        endTime = endTime.slice(0,5);
+    }
+    
     var formData = {
         name: $('#eventNameUpdate').val(),
         date: $('#eventDateUpdate').val(),
-        start_time: $('#startTimeUpdate').val(),
-        end_time: $('#endTimeUpdate').val(),
+        start_time: startTime,
+        end_time: endTime,
         description: $('#eventDescriptionUpdate').val(),
         type: $('#eventTypeUpdate').val(),
         email: $('#eventEmailUpdate').val(),
         classroom_id: $('#classroomIdEventUpdate').val(),
-        course_id: $('#courseIdEventUpdate').val()
+        course_id: $('#courseIdEventUpdate').val(),
+        recurrent: recurrentForUpdate
     };
-
-    console.log("This event id" + eventId);
 
     $.ajax({
         url: 'rest/event/update/' + eventId,
@@ -266,7 +286,6 @@ $('#exportToICalendar').submit(function (event) {
 
 $('#addEventForm').submit(function (event) {
     event.preventDefault();
-
     var formData = {
         name: $('#eventName').val(),
         date: $('#eventDate').val(),
@@ -324,8 +343,19 @@ $('#eventType').change(function (event) {
         $('#courseIdEvent').prop("disabled", true);
 
     }
+});
 
+$('#eventTypeUpdate').change(function (event) {
+    var value = $('#eventTypeUpdate').val();
+    if (value === "LEZIONE" || value === "PARZIALE" || value === "ESAME") {
+        $('#courseIdEventUpdate').val("");
+        $('#courseIdEventUpdate').prop("disabled", false);
+    } else {
+        $('#courseIdEventUpdate').val("");
 
+        $('#courseIdEventUpdate').prop("disabled", true);
+
+    }
 });
 
 $('#recurrentCheckbox').change(function (event) {
@@ -338,7 +368,6 @@ $('#recurrentCheckbox').change(function (event) {
     } else {
         $('.recurrentEventDiv').hide();
     }
-    console.log(value);
 });
 
 
