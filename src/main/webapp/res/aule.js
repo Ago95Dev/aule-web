@@ -4,6 +4,7 @@ $(document).ready(function () {
     var authToken = sessionStorage.getItem('authToken'); // Recupera il token salvato
 
     removeNotAuthorizedButton();
+
    /* // cursore 
     $(".icon-button").on("mouseenter", function () {
         var overlayText = $(this).data("overlay-text");
@@ -38,7 +39,7 @@ $(document).ready(function () {
         $('#eventi .btn').show();
     }
     $("#eventTabSection").hide();
-    $('#updateButtonLink').hide();
+    $('#updateButtonShow').addClass('d-none');
     // Al click sulla navbar "Eventi"
     $('#nav-eventi').click(function () {
         hideClassroomButtons();
@@ -273,6 +274,7 @@ $(document).ready(function () {
                             + '<a id="updateButtonLink" style="text-decoration: none;" href="#" onClick="setUpdateAulaForm(' + response[key]["id"] + ')" data-bs-toggle="modal" data-bs-target="#updateAulaModal" class="text-reset" tabindex="-1"><button class="btn btn-warning btn-auth" data-bs-toggle="modal" id="updateButtonShow" data-bs-target="#updateAulaModal"><i class="fa-solid fa-pen-to-square"></i></button>'
                             + '<td class="text-end"></td>' +'</tr>';
                     $('#table-body').append(row);
+                    removeNotAuthorizedButton();
                 });
 
             },
@@ -464,6 +466,7 @@ $('#searchAuleByGroup').submit(function (event) {
                         + '<a style="text-decoration: none;" href="#" onClick="setUpdateAulaForm(' + response[key]["id"] + ')" data-bs-toggle="modal" data-bs-target="#updateAulaModal" class="text-reset" tabindex="-1"><button class="btn btn-warning" data-bs-toggle="modal" id="updateButtonShow" data-bs-target="#updateAulaModal"><i class="fa-solid fa-pen-to-square"></i></button>' +
                         '<td class="text-end"></td>' +
                         '</tr>';
+                        $
                 $('#table-body').append(row);
             });
 
