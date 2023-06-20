@@ -1,6 +1,5 @@
 $(document).ready(function () {
 
-
     function populateCourseNames(label_Id) {
         $.ajax({
             url: 'rest/course/all',
@@ -40,15 +39,15 @@ $(document).ready(function () {
                     var event = response[key];
 
                     var row = '<tr>' +
-                            '<td>' + event["name"] + '</td>' +
-                            '<td>' + event["date"] + '</td>' +
-                            '<td>' + event["start_time"] + '</td>' +
-                            '<td>' + event["end_time"] + '</td>' +
-                            '<td>' + event["description"] + '</td>' +
-                            '<td>' + event["type"] + '</td>' +
+                            '<td class="text-center">' + event["name"] + '</td>' +
+                            '<td class="text-center">' + event["date"] + '</td>' +
+                            '<td class="text-center">' + event["start_time"] + '</td>' +
+                            '<td class="text-center">' + event["end_time"] + '</td>' +
+                            '<td class="text-center">' + event["description"] + '</td>' +
+                            '<td class="text-center">' + event["type"] + '</td>' +
                             '<td class="text-center">' + '<a style="text-decoration: none;" href="#" onClick="getInformazioniEvento(' + event["id"] + ')" data-bs-toggle="modal" data-bs-target="#infoEventoModal" class="text-reset" tabindex="-1"> <button class="btn btn-secondary"><i class="fa-solid fa-circle-info fa-lg"></i></button></a>' + ' '
-                            + '<a style="text-decoration: none;" href="#" onClick="setUpdateEventForm(' + event["id"] + ')" data-bs-toggle="modal" data-bs-target="#updateEventModal" class="text-reset" tabindex="-1"><button class="btn btn-warning btn-auth" data-bs-toggle="modal" id="updateButtonShow" data-bs-target="#updateEventModal"><i class="fa-solid fa-pen-to-square"></i></button>' +
-                            + '<td class="text-end"></td>' +  '</tr>';
+                            + '<a style="text-decoration: none;" href="#" onClick="setUpdateEventForm(' + event["id"] + ')" data-bs-toggle="modal" data-bs-target="#updateEventModal" class="text-reset" tabindex="-1"><button class="btn btn-warning btn-auth" data-bs-toggle="modal" id="updateButtonShow" data-bs-target="#updateEventModal"><i class="fa-solid fa-pen-to-square"></i></button></a>'
+                            + '<td class="text-end"></td>' + '</tr>';
                     $('#e-table-body').append(row);
                 });
             },
@@ -70,14 +69,14 @@ $(document).ready(function () {
                     var event = response[key];
 
                     var row = '<tr>' +
-                            '<td>' + event["name"] + '</td>' +
-                            '<td>' + event["date"] + '</td>' +
-                            '<td>' + event["start_time"] + '</td>' +
-                            '<td>' + event["end_time"] + '</td>' +
-                            '<td>' + event["description"] + '</td>' +
-                            '<td>' + event["type"] + '</td>' +
-                            '<td class="text-center">' + '<a style="text-decoration: none;" href="#" onClick="getInformazioniEvento(' + event["id"] + ')" data-bs-toggle="modal" data-bs-target="#infoEventoModal" class="text-reset" tabindex="-1"> <button class="btn btn-secondary"><i class="fa-solid fa-circle-info fa-lg"></i></button>' + ''
-                            + '<a style="text-decoration: none;" href="#" onClick="setUpdateEventForm(' + event["id"] + ')" data-bs-toggle="modal" data-bs-target="#updateEventModal" class="text-reset" tabindex="-1"><button class="btn btn-warning btn-auth" data-bs-toggle="modal" id="updateButtonShow" data-bs-target="#updateEventModal"><i class="fa-solid fa-pen-to-square"></i></button>' +
+                            '<td class="text-center">' + event["name"] + '</td>' +
+                            '<td class="text-center">' + event["date"] + '</td>' +
+                            '<td class="text-center">' + event["start_time"] + '</td>' +
+                            '<td class="text-center">' + event["end_time"] + '</td>' +
+                            '<td class="text-center">' + event["description"] + '</td>' +
+                            '<td class="text-center">' + event["type"] + '</td>' +
+                            '<td class="text-center">' + '<a style="text-decoration: none;" href="#" onClick="getInformazioniEvento(' + event["id"] + ')" data-bs-toggle="modal" data-bs-target="#infoEventoModal" class="text-reset" tabindex="-1"> <button class="btn btn-secondary"><i class="fa-solid fa-circle-info fa-lg"></i></button>' + ' '
+                            + '<a style="text-decoration: none;" href="#" onClick="setUpdateEventForm(' + event["id"] + ')" data-bs-toggle="modal" data-bs-target="#updateEventModal" class="text-reset" tabindex="-1"><button class="btn btn-warning btn-auth" data-bs-toggle="modal" id="updateButtonShow" data-bs-target="#updateEventModal"><i class="fa-solid fa-pen-to-square"></i></button>'
                             + '<td class="text-end"></td>' + '</tr>';
                     $('#e-table-body').append(row);
                 });
@@ -330,7 +329,7 @@ $('#addEventForm').submit(function (event) {
 });
 
 
-
+/*
 $('#eventType').change(function (event) {
     console.log("z");
     var value = $('#eventType').val();
@@ -367,9 +366,9 @@ $('#recurrentCheckbox').change(function (event) {
         $('.recurrentEventDiv').show();
     } else {
         $('.recurrentEventDiv').hide();
-    }
+    } 
 });
-
+*/
 
 
 function getInformazioniEvento(event_id) {

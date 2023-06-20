@@ -2,6 +2,7 @@ $(document).ready(function() {
     
     const logout_send = $('#logoutButton');
 
+
     $('.dropdown-menu').submit(function(event) {
       event.preventDefault();
       

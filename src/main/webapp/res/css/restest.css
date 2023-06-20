@@ -12,7 +12,11 @@ nav {
     color: red; 
 }
 
-
+th {
+    border-color: inherit;
+    border-style: solid;
+    border-width: 0;
+  }
    
 /* Box Model Hack */
 *{
@@ -75,3 +79,7 @@ table.restest thead tr {
     font-weight: bold;
     border: 2px solid black;
 }
+
+.hidden-button {
+    display: none;
+  }
