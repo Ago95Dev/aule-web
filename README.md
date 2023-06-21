@@ -1,21 +1,21 @@
-# JAXRS_Base_T10
-> Template project for RESTful APIs with JAX-RS (Jersey) on JakartaEE9 and Tomcat 10
+## Aule Web
+Aule web is a project for the Advanced Web Developing course at @Univaq
 
-This is the skeleton of a Java web application configured to publish a RESTful API (with a sample resource) running on JakartaEE 9 and Tomcat 10
- 
-## Usage
+### Info:
+Aule web is an classroom managment web application.
 
-This is a *sample application* developed during the lectures of the  [**Sviluppo Web Avanzato course**](https://sviluppowebavanzato-univaq.github.io). The code is organized to best match the lecture topics and examples. It is not intended for production use and is not optimized in any way. 
+For any question you can contact us. 
 
-*This example code will be shown and described approximately during the 8th lecture of the course, so wait to download it, since it may get updated in the meanwhile.*
+#### Tech stack:
+The project has been built using **Java** (Jax-rs) on the backend. **MySQL** is the DBMS of choice. It was choosen to implement REST api.
+The frontend was done with HTML5 , CSS , JQuery. We used jasypt to encrypt passwords of the users. 
 
-## Installation
+#### Contributors:
 
-This is a Maven-based project. Simply download the code and open it in any Maven-enabled IDE such as Netbeans or Eclipse. Additionally, you may need to *configure the deploy settings*: the application is intended to be run on the **JakartaEE 9** platform inside **Apache Tomcat version 10**. Refer to your IDE help files to perform this step. For example, in Apache Netbeans, you must enter these settings in Project properties > Run.
+| Nome                | Email                                  |
+| ------------------- | -------------------------------------- |
+| Gianluca Rea        | gianluca.rea@student.univaq.it         |
+| Agostino D'Agostino | agostino.dagostino@student.univaq.it   |
 
-
----
-
-![University of L'Aquila](https://www.disim.univaq.it/skins/aqua/img/logo2021-2.png)
 
 

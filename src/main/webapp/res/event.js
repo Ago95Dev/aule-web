@@ -329,7 +329,7 @@ $('#addEventForm').submit(function (event) {
 });
 
 
-/*
+
 $('#eventType').change(function (event) {
     console.log("z");
     var value = $('#eventType').val();
@@ -368,7 +368,7 @@ $('#recurrentCheckbox').change(function (event) {
         $('.recurrentEventDiv').hide();
     } 
 });
-*/
+
 
 
 function getInformazioniEvento(event_id) {
