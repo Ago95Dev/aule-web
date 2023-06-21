@@ -1,156 +1,688 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>JAX-RS Template application (JakartaEE 10)</title>
+        <title>Aule Web</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="res/restest.css"/>
+        <!--style sito-->
+        <link rel="stylesheet" href="res/css/restest.css"/>
+        <!--fix utili visualizzazione browser-->
+        <link rel="stylesheet" href="res/css/reset.css"/>
+        <link rel="stylesheet" href="res/css/normalize.css"/>
+        <!--Bootstrap5 -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <!--Jquery-->
+        <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+        <!-- icone -->
+        <script src="https://kit.fontawesome.com/98e77ba19b.js" crossorigin="anonymous"></script>
+
+        <script src="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.jquery.min.js"></script>
+        <link href="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.min.css" rel="stylesheet"/>
+
+
+
     </head>
     <body>
-        <h1>JAX-RS Template application (JakartaEE 10)</h1>
-        <p>This is a template web application based on <strong>JakartaEE 10</strong> that runs on Apache <strong>Tomcat 10.1</strong> with <strong>Java 14</strong> or above.</p>
-        <p> The application is configured to expose RESTful resources through the <strong>JAX-RS</strong> reference implementation, <strong>Jersey</strong> (version 3, for Jakarta EE).</p>
-        <p> JAX-RS JSON serialization is handled by the <strong>Jackson</strong> JSON Provider (version 2, for Jakarta EE).</p>
+        <header class="p-3 bg-dark text-white">
+            <div class="container">
+                <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                    <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                        <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"/></svg>
+                    </a>
 
-        <p>The application also shows:</p>
-        <ul>
-            <li>how to <strong>perform the basic JAX-RS environment setup</strong> (class <em>org.univaq.swa.template.base.RESTApp</em>)</li>
-            <li>how to implement a simple <strong>resource class</strong> (class <em>org.univaq.swa.template.resources.SimpleRes</em>)</li>
-            <li>how to implement a simple <strong>WebApplicationException</strong> (class <em>org.univaq.swa.template.exceptions.RESTWebApplicationException</em>)</li>                        
-            <li>how to implement a custom <strong>exception mapper</strong> (classes <em>org.univaq.swa.template.exceptions.AppExceptionMapper</em> and <em>org.univaq.swa.template.exceptions.JacksonExceptionMapper</em>)</li>
-            <li>how to implement <strong>Jackson custom serializers and deserializers</strong> for Java classes (package <em>org.univaq.swa.framework.jackson</em>).</li>
-            <li>how to implement a <strong>filter to handle CORS preflight requests</strong> (class <em>org.univaq.swa.framework.security.CORSFilter</em>)</li>
-            <li>how to declare a <strong>JAX-RS authentication annotation</strong> (class <em>org.univaq.swa.framework.security.Logged</em>)</li>
-            <li>how to implement a simple <strong>login resource class</strong> to issue an access token (class <em>org.univaq.swa.framework.security.AuthenticationRes</em>)</li>
-            <li>how to implement a <strong>filter to handle JAX-RS authentication annotations</strong> (class <em>org.univaq.swa.framework.security.AuthLoggedFilter</em>)</li>
-        </ul>
+                    <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
 
-        <p>The RESTful resources, grouped under the /rest prefix, are the following:</p>
+                        <li><a href="#" class="nav-link px-2 text-white" id="nav-aule"> <i class="fa-solid fa-people-roof fa-lg"></i> Aule</a></li>
+                        <li><a href="#" class="nav-link px-2 text-white" id="nav-eventi"> <i class="fa-regular fa-calendar-days fa-lg"></i>Eventi</a></li>
 
-        <table class="restest" width="100%">
-            <thead>
-                <tr>
-                    <th>Path</th>
-                    <th>Method</th>
-                    <th>Parameters</th>
-                    <th>Payload</th>
-                    <th>Authentication</th>
-                    <th>URL to Try</th>
-                    <th>(Expected) Result</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td rowspan="2">/simple</td>
-                    <td>GET</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><a data-rest-test data-rest-test-target href="rest/simple"><small>GET rest/simple</small></a></td>
-                    <td  class="output">a list of greetings</td>
-                </tr>
-                <tr>
-                    <td>POST</td>
-                    <td></td>
-                    <td>any string</td>
-                    <td></td>
-                    <td><span data-rest-test-target data-rest-test-method="post" data-rest-test-payoad="testtest"  data-rest-test-status="201" data-rest-test-url="rest/simple"></span></td>
-                    <td class="output">the URL to item 1000</td>
-                </tr>
-                <tr>
-                    <td rowspan="2">/simple/{item}</td>
-                    <td rowspan="2">GET</td>
-                    <td rowspan="2">item: [0-9]+</td>
-                    <td rowspan="2"></td>
-                    <td rowspan="2"></td>
-                    <td><a data-rest-test data-rest-test-target href="rest/simple/14000"><small>GET rest/simple/14000</small></a></td>
-                    <td class="output" >200 with the item</td>
-                </tr>
-                <tr>
-                    <td><a data-rest-test data-rest-test-status="404" data-rest-test-target href="rest/simple/14"><small>GET rest/simple/14</small></a></td>
-                    <td  class="output">404</td>
-                </tr>            
-            </tbody>
-        </table>
+                    </ul>
 
-        <h2>Authentication</h2>
-        <p>To test the login/logout resource <em>(AuthenticationRes)</em>, use the login form below. <strong>Links marked with &#x1f512; on this page call
-                restful endpoints requiring a bearer token and can be clicked only after a successful login.</strong></p>
-
-        <table class="restest" width="100%">
-            <thead>
-                <tr>
-                    <th>Path</th>
-                    <th>Method</th>
-                    <th>Parameters</th>
-                    <th>Payload</th>
-                    <th>Authentication</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td ><span data-rest-test-token  data-rest-test-url="rest/auth/login" data-rest-test-method="post" data-rest-test-status="200"
-                               data-rest-test-content-type="application/x-www-form-urlencoded" data-rest-test-payload="username=u&password=p">/auth/login</span></td>
-                    <td>POST</td>
-                    <td></td>
-                    <td>form-encoded username and password</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td ><span data-rest-test-auth="1000"  data-rest-test-url="rest/auth/logout" data-rest-test-method="delete" data-rest-test-status="204">/auth/logout</span></td>
-                    <td>DELETE</td>
-                    <td></td>
-                    <td></td>
-                    <td>Bearer token</td>
-                </tr>
-                <tr>
-                    <td ><span data-rest-test-auth  data-rest-test-url="rest/auth/refresh" data-rest-test-method="get" data-rest-test-status="200">/auth/refresh</span></td>
-                    <td>GET</td>
-                    <td></td>
-                    <td></td>
-                    <td>Bearer token</td>
-                </tr>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="5">                        
-                        <form method="post" action="rest/auth/login" enctype="application/x-www-form-urlencoded">
-                            <p>Username: <input style="width:30%" type="text" value="u" id="username-field" name="username-field"/> 
-                                Password: <input style="width:30%" type="password" value="p" id="password-field" name="password-field"/>
-                                <input type="submit" value="login" name="login-button" id="login-button"/>
-                                <input type="submit" value="logout" name="logout-button" id="logout-button"/></p>      
+                    <div class="text-end">
+                        <button class="btn btn-secondary " type="button" id="loginButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            Login
+                        </button>
+                        <button class="btn btn-secondary " type="button" id="logoutButton">
+                            Logout
+                        </button>
+                        <form class="dropdown-menu p-4">
+                            <div class="mb-3">
+                                <label for="emailDropdown" class="form-label">Email address</label>
+                                <input type="email" class="form-control" id="emailDropdown">
+                            </div>
+                            <div class="mb-3">
+                                <label for="passwordDropdown" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="passwordDropdown">
+                            </div>
+                            <div class="mb-3">
+                            </div>
+                            <button type="submit" class="btn btn-secondary">Sign in</button>
                         </form>
-                        <form method="post" action="rest/auth/login" enctype="application/x-www-form-urlencoded">
-                            <p>Token: <input style="width:80%" type="text" id="token-field" name="token-field"/> <input type="submit" value="refresh" name="refresh-button" id="refresh-button"/></p>
-                        </form>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
+                    </div>
 
-        <div style="border: 1px solid gray; margin: 1em auto; padding: 1em">
-            <p>
-                <em>Note that this project includes a Javascript library that automatically checks the above endpoints when this webpage is opened. This library
-                    is not part of the JAX-RS framework and it is not required to implement RESTful resources, and has been developed only as an aid for the
-                    sample resources included in this project.</em>
-            </p>
-            <p>
-                <span class="rest-test-message-error" style="color: red">
-                    Some tested endpoints did not return the expected result
+                </div>
+            </div>
+        </header>
+        <section>
+            <div class="container">
 
-                </span>
-                <span class="rest-test-message-ok" style="color: green">
-                    All tested endpoints returned the correct result
-                </span>
-            </p>
-        </div>
+                <div class="tab-content my-3" id="tabContent">
+                    <div class="tab-pane fade show active" id="aule" role="tabpanel" aria-labelledby="auleTab">
+
+                        <!-- Bottone Esporta CSV -->
+
+                        <!--Da spostare nella singola riga dell'aula-->        
+                    </div>
+                    <div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modali per i form -->
+            <div class="modal-body">
+                <!-- Modal per l'esportazione CSV -->
+                <div class="modal fade" id="exportCSVModal" tabindex="-1" role="dialog" aria-labelledby="exportCSVModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exportCSVModalLabel">Esporta CSV</h5>
+                                <button type="button" id="exportCSVLogged" class="btn-close btn-auth" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Contenuto del modal -->
+                                <p>Sei sicuro di voler esportare i dati in un file CSV?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                                <button id="exportCSVButton" class="btn btn-primary">Esporta</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal per l'importazione CSV -->
+                <div class="modal fade" id="importAuleModal" tabindex="-1" role="dialog" aria-labelledby="importAuleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="importAuleModalLabel">Importa Aule da CSV</h5>
+                                <button type="button" id="importCSVLogged" class="btn-close btn-auth" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Contenuto del modal -->
+                                <form id="importCSVForm" enctype="multipart/form-data">
+                                    <div class="mb-3">
+                                        <label for="csvFile" class="form-label">Seleziona un file CSV</label>
+                                        <input type="file" class="form-control" id="csvFile" name="csvFile" accept=".csv" required>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                                <button type="submit" form="importCSVForm" class="btn btn-primary">Importa</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
 
 
 
-        <script src="res/restest.js">/* */</script>
-        <script>
-            let tester = new Restest();
-        </script>
+                <!-- Modale Inserisci Aula -->
+                <div class="modal fade" id="addAulaModal" tabindex="-1" aria-labelledby="addAulaModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addAulaModalLabel">Inserisci Aula</h5>
+                                <!--inserimento labels form-->
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Form per l'inserimento dell'aula -->
+                                <form id="addAulaForm">
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">Nome</label>
+                                        <input type="text" class="form-control" id="name" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="positionID" class="form-label">Posizione</label>
+                                        <select class="form-control" id="positionID" required></select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="capacity" class="form-label">Capacità</label>
+                                        <input type="number" class="form-control" id="capacity" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="email" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="numberOfEthernet" class="form-label">Numero di Ethernet</label>
+                                        <input type="number" class="form-control" id="numberOfEthernet" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="numberOfSockets" class="form-label">Numero di Prese</label>
+                                        <input type="number" class="form-control" id="numberOfSockets" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="note" class="form-label">Note</label>
+                                        <textarea class="form-control" id="note"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="equipmentsId" class="form-label">Attrezzature</label>
+                                        <select class="form-control choosen-select" id="equipmentsId" multiple></select>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary">Invia</button>
+                                    </div>
+                                </form> 
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modale Assegna Aula a Gruppo -->
+                <div class="modal fade" id="assegnaAulaModal" tabindex="-1" aria-labelledby="assegnaAulaModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="assegnaAulaModalLabel">Assegna Aula a Gruppo</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Form per l'assegnazione dell'aula a un gruppo -->
+                                <form id="addClassroomToGroupForm">
+                                    <div class="mb-3">
+                                        <label for="classroomName" class="form-label">Nome Aula</label>
+                                        <select class="form-control" id="classroomName" required></select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="groupName" class="form-label">Nome Gruppo</label>
+                                        <select class="form-control" id="groupName" required></select>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary">Aggiungi Aula al Gruppo</button>
+                                    </div>
+                                </form> 
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modale Informazioni Aula -->
+                <div class="modal fade" id="infoAulaModal" tabindex="-1" aria-labelledby="infoAulaModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="infoAulaModalLabel">Informazioni Aula</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <table class="table card-table table-vcenter text-nowrap datatable">
+                                <!--Riga dinamica da riempire-->
+                                <tbody id="table-body-info"></tbody>
+                            </table>
+                            <div class="modal-footer">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modale Attrezzature Aula -->
+                <div class="modal fade" id="attrezzatureAulaModal" tabindex="-1" aria-labelledby="attrezzatureAulaModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="attrezzatureAulaModalLabel">Attrezzature Aula</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Form per visualizzare le attrezzature dell'aula -->
+                                <!-- Campi del form -->
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Update Aula Form-->
+                <!-- Modale Aggiorna Aula -->
+                <div class="modal fade" id="updateAulaModal" tabindex="-1" aria-labelledby="updateAulaModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="updateAulaModalLabel">Aggiorna Aula</h5>
+                                <button type="button" id="updateAuleShow" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Form per l'aggiornamento dell'aula -->
+                                <form id="updateAulaForm">
+                                    <input type="hidden" id="classroomIdUpdate" value="">
+                                    <div class="mb-3">
+                                        <label for="nameUpdateRoom" class="form-label">Nome</label>
+                                        <input type="text" class="form-control" id="nameUpdateRoom" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="positionIDUpdateRoom" class="form-label">Posizione</label>
+                                        <select class="form-control" id="positionIDUpdateRoom" required></select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="capacityUpdateRoom" class="form-label">Capacità</label>
+                                        <input type="number" class="form-control" id="capacityUpdateRoom" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="emailUpdateRoom" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="emailUpdateRoom" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="numberOfEthernetUpdateRoom" class="form-label">Numero di Ethernet</label>
+                                        <input type="number" class="form-control" id="numberOfEthernetUpdateRoom" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="numberOfSocketsUpdateRoom" class="form-label">Numero di Prese</label>
+                                        <input type="number" class="form-control" id="numberOfSocketsUpdateRoom" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="noteUpdateRoom" class="form-label">Note</label>
+                                        <textarea class="form-control" id="noteUpdateRoom"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="equipmentsIdUpdateRoom" class="form-label">Attrezzature</label>
+                                        <select class="form-control choosen-select" id="equipmentsIdUpdateRoom" multiple></select>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary">Aggiorna</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modale Aule per Gruppo -->
+                <div class="modal fade" id="auleByGroupModal" tabindex="-1" aria-labelledby="auleByGroupModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="auleByGroupModalLabel">Aule per Gruppo</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="searchAuleByGroup">
+                                    <div class="mb-3">
+                                        <div class="mb-3">
+                                            <label for="groupNameAule" class="form-label">Nome Gruppo</label>
+                                            <select class="form-control" id="groupNameAule" required></select>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                                    <button type="submit" class="btn btn-primary">Visualizza</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+                <!-- INIZIO MODALI EVENTO -->
+
+                <!-- Modale Informazioni Evento  -->
+                <div class="modal fade" id="infoEventoModal" tabindex="-1" aria-labelledby="infoAulaModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="infoEventoModalLabel">Informazioni Evento</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <table class="table card-table table-vcenter text-nowrap datatable">
+                                <!--Riga dinamica da riempire-->
+                                <tbody id="e-table-body-info"></tbody>
+                            </table>
+                            <div class="modal-footer">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Modal per inserire un evento -->
+                <div class="modal fade" id="addEventModal" tabindex="-1" aria-labelledby="addEventModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addEventModalLabel">Inserisci Evento</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Form per inserire un evento -->
+                                <form id="addEventForm">
+                                    <div class="mb-3">
+                                        <label for="eventName" class="form-label">Nome Evento</label>
+                                        <input type="text" class="form-control" id="eventName" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="eventDate" class="form-label">Data</label>
+                                        <input type="date" class="form-control" id="eventDate" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="startTime" class="form-label">Ora di inizio</label>
+                                        <input type="time" class="form-control" id="startTime" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="endTime" class="form-label">Ora di fine</label>
+                                        <input type="time" class="form-control" id="endTime" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="eventDescription" class="form-label">Descrizione</label>
+                                        <textarea class="form-control" id="eventDescription" rows="3" required></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="eventType" class="form-label">Tipo</label>
+                                        <select class="form-select" id="eventType">
+                                            <option value="LEZIONE" selected="selected">LEZIONE</option>
+                                            <option value="SEMINARIO">SEMINARIO</option>
+                                            <option value="PARZIALE">PARZIALE</option>
+                                            <option value="RIUNIONE">RIUNIONE</option>
+                                            <option value="ESAME">ESAME</option>
+                                            <option value="LAUREA">LAUREA</option>
+                                            <option value="ALTRO">ALTRO</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="eventEmail" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="eventEmail" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="classroomIdEvent" class="form-label">Nome Aula</label>
+                                        <select class="form-control" id="classroomIdEvent" required></select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="courseIdEvent" class="form-label">ID Corso</label>
+                                        <select class="form-control" id="courseIdEvent" required></select>
+
+                                    </div>
+                                    <div class="mb-3">
+                                        <input type="checkbox" id="recurrentCheckbox" name="recurrentCheckbox" value="recurrent">
+                                        <label for="recurrentCheckbox">Evento Ricorrente</label><br>                              
+                                    </div>
+                                    <div class="mb-3 recurrentEventDiv" >
+                                        <label for="untilDate" class="form-label">Data di scadenza</label>
+                                        <input type="date" class="form-control" id="untilDate">
+                                    </div>
+                                    <div class="mb-3 recurrentEventDiv">
+                                        <label for="recurrencyType" class="form-label">Tipo di ricorrenza</label>
+                                        <select class="form-select" id="recurrencyType">
+                                            <option value="DAILY">Giornaliera</option>
+                                            <option value="WEEKLY">Settimanale</option>
+                                            <option value="MONTHLY">Mensile</option>
+                                        </select>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                                <button type="submit" class="btn btn-primary" form="addEventForm">Inserisci</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal per aggiornare un evento -->
+                <div class="modal fade" id="updateEventModal" tabindex="-1" aria-labelledby="updateEventModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="updateEventModalLabel">Aggiorna Evento</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Form per aggiornare un evento -->
+                                <form id="updateEventForm">
+                                    <input type="hidden" id="eventIdUpdate" value="">
+                                    <div class="mb-3">
+                                        <label for="eventNameUpdate" class="form-label">Nome Evento</label>
+                                        <input type="text" class="form-control" id="eventNameUpdate" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="eventDateUpdate" class="form-label">Data</label>
+                                        <input type="date" class="form-control" id="eventDateUpdate" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="startTimeUpdate" class="form-label">Ora di inizio</label>
+                                        <input type="time" class="form-control" id="startTimeUpdate" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="endTimeUpdate" class="form-label">Ora di fine</label>
+                                        <input type="time" class="form-control" id="endTimeUpdate" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="eventDescriptionUpdate" class="form-label">Descrizione</label>
+                                        <textarea class="form-control" id="eventDescriptionUpdate" rows="3" required></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="eventTypeUpdate" class="form-label">Tipo</label>
+                                        <select class="form-select" id="eventTypeUpdate">
+                                            <option value="LEZIONE">LEZIONE</option>
+                                            <option value="SEMINARIO">SEMINARIO</option>
+                                            <option value="PARZIALE">PARZIALE</option>
+                                            <option value="RIUNIONE">RIUNIONE</option>
+                                            <option value="ESAME">ESAME</option>
+                                            <option value="LAUREA">LAUREA</option>
+                                            <option value="ALTRO">ALTRO</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="eventEmailUpdate" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="eventEmailUpdate" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="classroomIdEventUpdate" class="form-label">Nome Aula</label>
+                                        <select class="form-control" id="classroomIdEventUpdate" required></select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="courseIdEventUpdate" class="form-label">ID Corso</label>
+                                        <select class="form-control" id="courseIdEventUpdate"></select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <input type="checkbox" id="recurrentUpdateCheckbox" name="recurrentUpdateCheckbox" value="1">
+                                        <label for="recurrentUpdateCheckbox">Modifica gli eventi ricorrenti</label><br>                              
+                                    </div>
+
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                                <button type="submit" class="btn btn-primary" form="updateEventForm">Aggiorna</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Modale Cerca Eventi Settimanali-->
+                <div class="modal fade" id="cercaEventiModal" tabindex="-1" aria-labelledby="cercaEventiModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="cercaEventiModalLabel">Cerca Eventi</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="searchByClassAndDate">
+                                    <div class="mb-3">
+                                        <label for="eventClassroomName" class="form-label">Aula</label>
+                                        <select class="form-control" id="eventClassroomName" required></select>       
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="settimanaPicker" class="form-label">Settimana</label>
+                                        <input type="date" class="form-control" id="settimanaPickerForClassroom">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Cerca</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                                </form>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal esportazione iCalendar -->
+                <div class="modal fade" id="exportICalModal" tabindex="-1" aria-labelledby="exportICalModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exportICalModalLabel">Esporta eventi in formato iCalendar</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Seleziona le opzioni desiderate per l'esportazione in formato iCalendar:</p>
+                                <form id="exportToICalendar">
+                                    <div class="mb-3">
+                                        <label for="settimanaPicker" class="form-label">Inizio</label>
+                                        <input type="date" class="form-control" id="startTimeForCalendar">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="settimanaPicker" class="form-label">Fine</label>
+                                        <input type="date" class="form-control" id="endTimeForCalendar">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Esporta</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal per il filtraggio degli eventi per gruppo -->
+                <div class="modal fade" id="filterEventsModal" tabindex="-1" aria-labelledby="filterEventsModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="filterEventsModalLabel">Filtra Eventi per Gruppo</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="searchByGroup">
+                                    <div class="mb-3">
+                                        <label for="groupNameEvents" class="form-label">Nome Gruppo</label>
+                                        <select class="form-control" id="groupNameEvents" required></select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Filtra</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </section>
+
+        <!-- INIZIO TABELLA AULE-->
+
+        <section id="aulaTabSection">
+
+            <div class="card mx-3">
+                <div class="card-header d-flex justify-content-between">
+                    <h3 class="card-title">Aule</h3>
+                    <div>
+                        <button class="btn btn-success btn-auth" data-bs-toggle="modal" data-bs-target="#addAulaModal"><i class="fa-solid fa-plus"></i> Inserisci Aula</button>
+                        <button class="btn btn-success btn-auth" data-bs-toggle="modal" data-bs-target="#assegnaAulaModal"><i class="fa-solid fa-users-viewfinder"></i> Assegna Aula a Gruppo</button>
+                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#auleByGroupModal">
+                            <i class="fa-solid fa-users-between-lines"></i> Aule per Gruppo
+                        </button>
+                        <button class="btn btn-primary btn-auth" data-bs-toggle="modal" data-bs-target="#exportCSVModal">
+                            <i class="fa-solid fa-file-download"></i> Esporta aule <i class="fa-solid fa-file-csv fa-lg"></i>
+                        </button>
+                        <button class="btn btn-success btn-auth" data-bs-toggle="modal" data-bs-target="#importAuleModal">
+                            <i class="fa-solid fa-upload"></i> Importa aule da <i class="fa-solid fa-file-csv fa-lg"></i>
+                        </button>                      
+                    </div>
+                </div>
+
+
+                <div class="table-responsive">
+                    <table class="table card-table table-vcenter text-nowrap datatable">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Nome</th>           
+                                <th class="text-center">Email</th>
+                                <th class="text-center">Capacità</th>
+                                <th class="text-center">Note</th>
+                                <th class="text-center">Azioni</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                        <!--Riga dinamica da riempire-->
+                        <tbody id="table-body"></tbody>
+                    </table>
+                </div>
+                <div class="card-footer d-flex align-items-center">
+                </div>
+            </div>
+
+
+        </section>
+
+        <!--TABELLA EVENTI-->
+        <section id="eventTabSection">
+
+            <div class="card mx-3">
+                <div class="card-header d-flex justify-content-between">
+                    <h3 class="card-title">Eventi</h3>
+                    <div id="eventi">
+                        <button class="btn btn-success btn-auth" data-bs-toggle="modal" data-bs-target="#addEventModal"><i class="fa-solid fa-check"></i> Inserisci Evento</button>                
+                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#filterEventsModal">
+                            <i class="fa-solid fa-users-between-lines"></i> Eventi per Gruppo
+                        </button>
+                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#cercaEventiModal"><i class="fa-solid fa-magnifying-glass"></i> Cerca Eventi</button>
+                        <button class="btn btn-primary btn-auth" data-bs-toggle="modal" data-bs-target="#exportICalModal">
+                            <i class="fa-solid fa-file-download"></i> Esporta eventi <i class="fa-solid fa-calendar-export fa-lg"></i>
+                        </button>
+                        <button class="btn btn-warning">
+                            Eventi ora
+                            <input type="checkbox" id="recentEventsCheckbox">
+                        </button>
+
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table card-table table-vcenter text-nowrap datatable">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>           
+                                <th>Data</th>
+                                <th>Inizio</th>
+                                <th>Fine</th>
+                                <th>Descrizione</th>
+                                <th>Tipo</th>
+                                <th>Azioni</th>
+                            </tr>
+                        </thead>
+                        <!--Riga dinamica da riempire-->
+                        <tbody id="e-table-body"></tbody>
+                    </table>
+                </div>
+                <div class="card-footer d-flex align-items-center">
+
+                </div>
+            </div>
+        </section>
+
+        <!-- SCRIPTS AUTH -->
+        <script src="res/auth.js"></script>
+        <!-- SCRIPTS PER LE AULE -->
+        <script src="res/aule.js"></script>
+        <!-- SCRIPTS PER EVENTI -->
+        <script src="res/event.js"></script>
+        <!-- Bootstrap5 CDN JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <!-- End Bootstrap5 CDN JS-->
     </body>
 </html>

@@ -10,6 +10,7 @@ public enum Type {
     SEMINARIO,
     PARZIALE,
     RIUNIONE,
+    ESAME,
     LAUREE,
     ALTRO
 }

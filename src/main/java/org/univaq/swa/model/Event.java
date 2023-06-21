@@ -1,6 +1,7 @@
 package org.univaq.swa.model;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 /**
  *
@@ -8,16 +9,17 @@ import java.util.Date;
  */
 public class Event {
     
-    private int id , eventCoordinatorID, courseID;
-    private String name, startTime, endTime, description;
-    private Date date;
+    private int id , courseID;
+    private String name, description, email;
+    private LocalTime startTime,endTime;
+    private LocalDate date;
     private Type type;
 
     public Event() {
     }
 
-    public Event(int eventCoordinatorID, int courseID, String name, String startTime, String endTime, String description, Date date, Type type) {
-        this.eventCoordinatorID = eventCoordinatorID;
+    public Event(String email, int courseID, String name, LocalTime startTime, LocalTime endTime, String description, LocalDate date, Type type) {
+        this.email = email;
         this.courseID = courseID;
         this.name = name;
         this.startTime = startTime;
@@ -27,9 +29,9 @@ public class Event {
         this.type = type;
     }
 
-    public Event(int id, int eventCoordinatorID, int courseID, String name, String startTime, String endTime, String description, Date date, Type type) {
+    public Event(int id, String eventCoordinatorID, int courseID, String name, LocalTime startTime, LocalTime endTime, String description, LocalDate date, Type type) {
         this.id = id;
-        this.eventCoordinatorID = eventCoordinatorID;
+        this.email = email;
         this.courseID = courseID;
         this.name = name;
         this.startTime = startTime;
@@ -47,12 +49,12 @@ public class Event {
         this.id = id;
     }
 
-    public int getEventCoordinatorID() {
-        return eventCoordinatorID;
+    public String getEmail() {
+        return email;
     }
 
-    public void setEventCoordinatorID(int eventCoordinatorID) {
-        this.eventCoordinatorID = eventCoordinatorID;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public int getCourseID() {
@@ -71,19 +73,19 @@ public class Event {
         this.name = name;
     }
 
-    public String getStartTime() {
+    public LocalTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(String startTime) {
+    public void setStartTime(LocalTime startTime) {
         this.startTime = startTime;
     }
 
-    public String getEndTime() {
+    public LocalTime getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(String endTime) {
+    public void setEndTime(LocalTime endTime) {
         this.endTime = endTime;
     }
 
@@ -95,11 +97,11 @@ public class Event {
         this.description = description;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
@@ -113,7 +115,7 @@ public class Event {
 
     @Override
     public String toString() {
-        return "Event{" + "id=" + id + ", eventCoordinatorID=" + eventCoordinatorID + ", courseID=" + courseID + ", name=" + name + ", startTime=" + startTime + ", endTime=" + endTime + ", description=" + description + ", date=" + date + ", type=" + type + '}';
+        return "Event{" + "id=" + id + ", eventCoordinatorID=" + email + ", courseID=" + courseID + ", name=" + name + ", startTime=" + startTime + ", endTime=" + endTime + ", description=" + description + ", date=" + date + ", type=" + type + '}';
     }
     
 }
